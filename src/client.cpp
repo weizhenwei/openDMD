@@ -38,12 +38,12 @@
 
 #include <stdio.h>
 
-#include "main.h"
+#include "src/main.h"
 
 using namespace opendmd;
 
 int opendmd::client_main(int argc, char *argv[]) {
-	printf("Hello, openDMD! This is client end.\n");
+    printf("Hello, openDMD! This is client end.\n");
 
-	return 0;
+    return 0;
 }

@@ -36,8 +36,8 @@
  ============================================================================
  */
 
-#ifndef SRC_MAIN_H
-#define SRC_MAIN_H
+#ifndef SRC_MAIN_H_
+#define SRC_MAIN_H_
 
 
 namespace opendmd {
@@ -48,4 +48,4 @@ extern int server_main(int argc, char *argv[]);
 
 }  // namespace opendmd
 
-#endif  // SRC_MAIN_H
+#endif  // SRC_MAIN_H_

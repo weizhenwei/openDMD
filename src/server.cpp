@@ -38,12 +38,12 @@
 
 #include <stdio.h>
 
-#include "main.h"
+#include "src/main.h"
 
 using namespace opendmd;
 
 int opendmd::server_main(int argc, char *argv[]) {
-	printf("Hello, openDMD! This is server end.\n");
+    printf("Hello, openDMD! This is server end.\n");
 
-	return 0;
+    return 0;
 }

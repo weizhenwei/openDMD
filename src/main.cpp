@@ -36,12 +36,12 @@
  ============================================================================
  */
 
-#include "main.h"
+#include "src/main.h"
 
 using namespace opendmd;
 
 int main(int argc, char *argv[]) {
-	client_main(argc, argv);
+    client_main(argc, argv);
 
-	return 0;
+    return 0;
 }
