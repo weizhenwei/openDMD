@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : main.cpp
+ Name        : main.h
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
  Date           :2015.06.24
  Copyright   :
@@ -32,16 +32,20 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : main entry of the project.
+ Description : header file of main.
  ============================================================================
  */
 
-#include "main.h"
+#ifndef SRC_MAIN_H
+#define SRC_MAIN_H
 
-using namespace opendmd;
 
-int main(int argc, char *argv[]) {
-	client_main(argc, argv);
+namespace opendmd {
 
-	return 0;
-}
+extern int client_main(int argc, char *argv[]);
+
+extern int server_main(int argc, char *argv[]);
+
+}  // namespace opendmd
+
+#endif  // SRC_MAIN_H

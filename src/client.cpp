@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : main.cpp
+ Name        : client.cpp
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
  Date           :2015.06.24
  Copyright   :
@@ -32,16 +32,18 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : main entry of the project.
+ Description : main entry of client.
  ============================================================================
  */
+
+#include <stdio.h>
 
 #include "main.h"
 
 using namespace opendmd;
 
-int main(int argc, char *argv[]) {
-	client_main(argc, argv);
+int opendmd::client_main(int argc, char *argv[]) {
+	printf("Hello, openDMD! This is client end.\n");
 
 	return 0;
 }

@@ -1,5 +1,8 @@
 AUTOMAKE_OPTIONS = foreign
 
 bin_PROGRAMS=openDMD
-openDMD_SOURCES=main.cpp
 
+AM_CPPFLAGS = -I$(top_srcdir)/src
+
+openDMD_SOURCES = main.cpp main.h client.cpp server.cpp
+include_HEADERS = main.h

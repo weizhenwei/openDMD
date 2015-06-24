@@ -26,3 +26,7 @@
 *.exe
 *.out
 *.app
+
+# annoying tmp file
+config.h.in~
+

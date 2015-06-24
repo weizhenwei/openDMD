@@ -15,8 +15,8 @@ $AUTOHEADER
 echo "Running autoconf..."
 $AUTOCONF
 
-echo "Running libtoolize..."
-$LIBTOOL --automake --copy --force
+#echo "Running libtoolize..."
+#$LIBTOOL --automake --copy --force
 
 echo "Running automake..."
 $AUTOMAKE --force-missing --add-missing --copy
