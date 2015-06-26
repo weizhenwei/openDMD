@@ -1661,7 +1661,9 @@ def GetHeaderGuardCPPVariable(filename):
   file_path_from_root = fileinfo.RepositoryName()
   if _root:
     file_path_from_root = re.sub('^' + _root + os.sep, '', file_path_from_root)
-  return re.sub(r'[-./\s]', '_', file_path_from_root).upper() + '_'
+  # return re.sub(r'[-./\s]', '_', file_path_from_root).upper() + '_'
+  # replaced by weizhenwei, 2015.06.26; Remove the annoying '_';
+  return re.sub(r'[-./\s]', '_', file_path_from_root).upper()
 
 
 def CheckForHeaderGuard(filename, lines, error):
@@ -1723,10 +1725,12 @@ def CheckForHeaderGuard(filename, lines, error):
   # The guard should be PATH_FILE_H_, but we also allow PATH_FILE_H__
   # for backward compatibility.
   if ifndef != cppvar:
-    error_level = 0
-    if ifndef != cppvar + '_':
-      error_level = 5
+    # removed by weizhenwei, 2015.06.26;
+    # error_level = 0
+    # if ifndef != cppvar + '_':
+    #   error_level = 5
 
+    error_level = 5
     ParseNolintSuppressions(filename, lines[ifndef_linenum], ifndef_linenum,
                             error)
     error(filename, ifndef_linenum, 'build/header_guard', error_level,
@@ -1739,10 +1743,12 @@ def CheckForHeaderGuard(filename, lines, error):
     return
 
   if endif != ('#endif  // %s' % cppvar):
-    error_level = 0
-    if endif != ('#endif  // %s' % (cppvar + '_')):
-      error_level = 5
+    # removed by weizhenwei, 2015.06.26;
+    # error_level = 0
+    # if endif != ('#endif  // %s' % (cppvar + '_')):
+    #   error_level = 5
 
+    error_level = 5
     ParseNolintSuppressions(filename, lines[endif_linenum], endif_linenum,
                             error)
     error(filename, endif_linenum, 'build/header_guard', error_level,

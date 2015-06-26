@@ -36,4 +36,6 @@ autom4te.cache/*
 # eclipse settings
 .settings/*
 
+# .cproject
+.cproject
 
