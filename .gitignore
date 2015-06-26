@@ -30,3 +30,10 @@
 # annoying tmp file
 config.h.in~
 
+#gnu autotools file
+autom4te.cache/*
+
+# eclipse settings
+.settings/*
+
+
