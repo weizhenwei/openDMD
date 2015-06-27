@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd build/mac
+cd mac
 cmake -G "Xcode" ../..
-cd ../..
+cd ..
 

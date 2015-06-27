@@ -1,2 +1,5 @@
+2015.06.27
+Replace project's build system using cmake, automake is depreciated.
+
 2015.06.24
-    Initialize the project.
+Initialize the project.
