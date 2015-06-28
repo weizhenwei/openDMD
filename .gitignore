@@ -27,8 +27,11 @@
 *.out
 *.app
 
-# build-system files;
+# build-system files
 build/cmdline/*
 build/linux/*
 build/mac/*
 
+# Eclipse CDT project file
+.cproject
+.project
