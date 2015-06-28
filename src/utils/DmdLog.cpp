@@ -36,19 +36,23 @@
  ============================================================================
  */
 
-// #include <stdlib.h>
-
 #include "DmdLog.h"
 
 namespace opendmd {
 
-DmdLog::DmdLog() : ident(nullptr), logopt(0), facility(0) {
+DmdLog::DmdLog() : m_uLevel(DMD_LOG_LEVEL_INFO) {
 }
 
 DmdLog::~DmdLog() {
-	if (!ident) {
-		// free(ident);
-		ident = nullptr;
+}
+
+DmdLog* DmdLog::instance() {
+	// TODO: Add mutex guard here.
+	if (!s_Log) {
+		s_Log = new DmdLog();
+		return s_Log;
+	} else {
+		return s_Log;
 	}
 }
 
