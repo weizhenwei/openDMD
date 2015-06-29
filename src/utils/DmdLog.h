@@ -42,27 +42,27 @@
 namespace opendmd {
 
 typedef enum {
-	DMD_LOG_LEVEL_EMERG = 0,
-	DMD_LOG_LEVEL_ALERT = 1,
-	DMD_LOG_LEVEL_CRIT = 2,
-	DMD_LOG_LEVEL_ERR = 3,
-	DMD_LOG_LEVEL_WARNING = 4,
-	DMD_LOG_LEVEL_NOTICE = 5,
-	DMD_LOG_LEVEL_INFO = 6,
-	DMD_LOG_LEVEL_DEBUG = 7,
+    DMD_LOG_LEVEL_EMERG = 0,
+    DMD_LOG_LEVEL_ALERT = 1,
+    DMD_LOG_LEVEL_CRIT = 2,
+    DMD_LOG_LEVEL_ERR = 3,
+    DMD_LOG_LEVEL_WARNING = 4,
+    DMD_LOG_LEVEL_NOTICE = 5,
+    DMD_LOG_LEVEL_INFO = 6,
+    DMD_LOG_LEVEL_DEBUG = 7,
 } DMD_LOG_LEVEL_T;
 
 class DmdLog {
 public:
-	DmdLog();
-	virtual ~DmdLog();
+    DmdLog();
+    virtual ~DmdLog();
 
-	static DmdLog* instance();
+    static DmdLog* instance();
 
 private:
-	DMD_LOG_LEVEL_T m_uLevel;
+    DMD_LOG_LEVEL_T m_uLevel;
 
-	static DmdLog *s_Log;
+    static DmdLog *s_Log;
 };
 
 }  // namespace opendmd

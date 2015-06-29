@@ -47,13 +47,13 @@ DmdLog::~DmdLog() {
 }
 
 DmdLog* DmdLog::instance() {
-	// TODO: Add mutex guard here.
-	if (!s_Log) {
-		s_Log = new DmdLog();
-		return s_Log;
-	} else {
-		return s_Log;
-	}
+    // TODO(weizhenwei): Add mutex guard here.
+    if (!s_Log) {
+        s_Log = new DmdLog();
+        return s_Log;
+    } else {
+        return s_Log;
+    }
 }
 
 }  // namespace opendmd
