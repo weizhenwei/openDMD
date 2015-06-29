@@ -41,12 +41,18 @@
 namespace opendmd {
 
 DmdMutex::DmdMutex() {
-    // TODO Auto-generated constructor stub
-
+    pthread_mutex_init(&m_Mutex, NULL);
 }
 
 DmdMutex::~DmdMutex() {
-    // TODO Auto-generated destructor stub
+    pthread_mutex_destroy(&m_Mutex);
+}
+int DmdMutex::Lock() {
+    return pthread_mutex_lock(&m_Mutex);
+}
+
+int DmdMutex::Unlock() {
+    return pthread_mutex_unlock(&m_Mutex);
 }
 
 }  // namespace opendmd

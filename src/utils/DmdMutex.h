@@ -50,6 +50,10 @@ class DmdMutex {
 public:
     DmdMutex();
     virtual ~DmdMutex();
+
+    int Lock();
+    int Unlock();
+
 private:
     DMD_THREAD_MUTEX_T m_Mutex;
 };
