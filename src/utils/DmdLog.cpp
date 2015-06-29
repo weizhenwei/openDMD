@@ -36,12 +36,15 @@
  ============================================================================
  */
 
+#include <stdio.h>
+#include <tr1/stdarg.h>  // c++ standard header file;
 #include "DmdLog.h"
 
 namespace opendmd {
 
 // TODO(weizhenwei): confirm that is this initialized at compile stage?
 DmdMutex *DmdLog::s_Mutex = new DmdMutex();
+DmdLog *DmdLog::s_Log = new DmdLog(DMD_LOG_LEVEL_INFO);
 
 DmdLog::DmdLog() : m_uLevel(DMD_LOG_LEVEL_INFO) {
 }
@@ -52,12 +55,48 @@ DmdLog::DmdLog(DMD_LOG_LEVEL_T logLevel) : m_uLevel(logLevel) {
 DmdLog::~DmdLog() {
 }
 
+const char *DmdLog::getLevel(DMD_LOG_LEVEL_T level) {
+    switch (level) {
+    case DMD_LOG_LEVEL_EMERG:
+        return "emerg";
+    case DMD_LOG_LEVEL_ALERT:
+        return "alert";
+    case DMD_LOG_LEVEL_CRIT:
+        return "crit";
+    case DMD_LOG_LEVEL_ERR:
+        return "err";
+    case DMD_LOG_LEVEL_WARNING:
+        return "warning";
+    case DMD_LOG_LEVEL_NOTICE:
+        return "notice";
+    case DMD_LOG_LEVEL_INFO:
+        return "info";
+    case DMD_LOG_LEVEL_DEBUG:
+        return "debug";
+    default:
+        return "NONE";
+    }
+
+    return "NONE";
+}
+void DmdLog::Log(DMD_LOG_LEVEL_T level, const char *format, ...) {
+    if (level > m_uLevel)
+        return;
+
+    s_Mutex->Lock();
+    va_list var_list;
+    va_start(var_list, format);
+    va_end(var_list);
+    fprintf(stdout, "[%s]: ", getLevel(level));
+    vfprintf(stdout, format, var_list);
+    s_Mutex->Unlock();
+}
+
 DmdLog* DmdLog::singleton() {
-    // TODO(weizhenwei): If DmdLog singleton is created at initialize phase
-    // of the program, there is no need to mutex here.
-    // This needs further confirmation.
     if (!s_Log) {
+        s_Mutex->Lock();
         s_Log = new DmdLog(DMD_LOG_LEVEL_INFO);
+        s_Mutex->Unlock();
         return s_Log;
     } else {
         return s_Log;
@@ -65,6 +104,3 @@ DmdLog* DmdLog::singleton() {
 }
 
 }  // namespace opendmd
-
-#endif  // SRC_UTILS_LOG_H
-

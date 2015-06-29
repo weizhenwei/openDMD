@@ -60,10 +60,13 @@ public:
     explicit DmdLog(DMD_LOG_LEVEL_T logLevel);
     virtual ~DmdLog();
 
+    void Log(DMD_LOG_LEVEL_T level, const char *format, ...);
+
     static DmdLog* singleton();
 
 private:
     DMD_LOG_LEVEL_T m_uLevel;
+    const char *getLevel(DMD_LOG_LEVEL_T level);
 
     static DmdLog *s_Log;
     static DmdMutex *s_Mutex;

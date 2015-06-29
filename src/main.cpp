@@ -36,11 +36,15 @@
  ============================================================================
  */
 
+#include "utils/DmdLog.h"
 #include "main.h"
 
 using namespace opendmd;
 
 int main(int argc, char *argv[]) {
+    DmdLog::singleton()->Log(DMD_LOG_LEVEL_INFO,
+            "At the beginning of main function.\n");
+
     client_main(argc, argv);
 
     return 0;

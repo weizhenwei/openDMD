@@ -36,14 +36,14 @@
  ============================================================================
  */
 
-#include <stdio.h>
-
+#include "utils/DmdLog.h"
 #include "main.h"
 
 using namespace opendmd;
 
 int opendmd::server_main(int argc, char *argv[]) {
-    printf("Hello, openDMD! This is server end.\n");
+    DmdLog::singleton()->Log(DMD_LOG_LEVEL_INFO,
+            "At the beginning of client_main function.\n");
 
     return 0;
 }
