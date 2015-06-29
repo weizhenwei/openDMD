@@ -40,16 +40,24 @@
 
 namespace opendmd {
 
+// TODO(weizhenwei): confirm that is this initialized at compile stage?
+DmdMutex *DmdLog::s_Mutex = new DmdMutex();
+
 DmdLog::DmdLog() : m_uLevel(DMD_LOG_LEVEL_INFO) {
+}
+
+DmdLog::DmdLog(DMD_LOG_LEVEL_T logLevel) : m_uLevel(logLevel) {
 }
 
 DmdLog::~DmdLog() {
 }
 
-DmdLog* DmdLog::instance() {
-    // TODO(weizhenwei): Add mutex guard here.
+DmdLog* DmdLog::singleton() {
+    // TODO(weizhenwei): If DmdLog singleton is created at initialize phase
+    // of the program, there is no need to mutex here.
+    // This needs further confirmation.
     if (!s_Log) {
-        s_Log = new DmdLog();
+        s_Log = new DmdLog(DMD_LOG_LEVEL_INFO);
         return s_Log;
     } else {
         return s_Log;

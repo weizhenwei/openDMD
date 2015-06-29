@@ -39,6 +39,8 @@
 #ifndef SRC_UTILS_DMDLOG_H
 #define SRC_UTILS_DMDLOG_H
 
+#include "DmdMutex.h"
+
 namespace opendmd {
 
 typedef enum {
@@ -55,14 +57,16 @@ typedef enum {
 class DmdLog {
 public:
     DmdLog();
+    explicit DmdLog(DMD_LOG_LEVEL_T logLevel);
     virtual ~DmdLog();
 
-    static DmdLog* instance();
+    static DmdLog* singleton();
 
 private:
     DMD_LOG_LEVEL_T m_uLevel;
 
     static DmdLog *s_Log;
+    static DmdMutex *s_Mutex;
 };
 
 }  // namespace opendmd
