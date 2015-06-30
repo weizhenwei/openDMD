@@ -37,7 +37,7 @@
  */
 
 #include <stdio.h>
-#include <tr1/stdarg.h>  // c++ standard header file;
+#include <stdarg.h>
 #include "DmdLog.h"
 
 namespace opendmd {
