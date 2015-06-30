@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : DmdLog.cpp
+ Name        : DmdConfig.h
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.06.28
+ Date           :2015.06.30
  Copyright   :
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
@@ -32,76 +32,36 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : log util implementation file.
+ Description : config util header file.
  ============================================================================
  */
 
-#include <stdio.h>
-#include <stdarg.h>
-#include "DmdLog.h"
+#ifndef SRC_UTILS_DMDCONFIG_H
+#define SRC_UTILS_DMDCONFIG_H
+
+#include "DmdMutex.h"
 
 namespace opendmd {
 
-// TODO(weizhenwei): confirm that is this initialized at compile stage?
-DmdMutex *DmdLog::s_Mutex = new DmdMutex();
-DmdLog *DmdLog::s_Log = new DmdLog(DMD_LOG_LEVEL_INFO);
+class DmdConfig {
+public:
+    DmdConfig();
+    explicit DmdConfig(const char *configFile);
+    virtual ~DmdConfig();
 
-DmdLog::DmdLog() : m_uLevel(DMD_LOG_LEVEL_INFO) {
-}
+    void init();
 
-DmdLog::DmdLog(DMD_LOG_LEVEL_T logLevel) : m_uLevel(logLevel) {
-}
+    void loadConfig(const char *configFile);
 
-DmdLog::~DmdLog() {
-}
+    static DmdConfig* singleton();
 
-const char *DmdLog::getLevel(DMD_LOG_LEVEL_T level) {
-    switch (level) {
-    case DMD_LOG_LEVEL_EMERG:
-        return "emerg";
-    case DMD_LOG_LEVEL_ALERT:
-        return "alert";
-    case DMD_LOG_LEVEL_CRIT:
-        return "crit";
-    case DMD_LOG_LEVEL_ERR:
-        return "err";
-    case DMD_LOG_LEVEL_WARNING:
-        return "warning";
-    case DMD_LOG_LEVEL_NOTICE:
-        return "notice";
-    case DMD_LOG_LEVEL_INFO:
-        return "info";
-    case DMD_LOG_LEVEL_DEBUG:
-        return "debug";
-    default:
-        return "NONE";
-    }
-
-    return "NONE";
-}
-
-void DmdLog::Log(DMD_LOG_LEVEL_T level, const char *format, ...) {
-    if (level > m_uLevel)
-        return;
-
-    s_Mutex->Lock();
-    va_list var_list;
-    va_start(var_list, format);
-    va_end(var_list);
-    fprintf(stdout, "[%s]: ", getLevel(level));
-    vfprintf(stdout, format, var_list);
-    s_Mutex->Unlock();
-}
-
-DmdLog* DmdLog::singleton() {
-    if (!s_Log) {
-        s_Mutex->Lock();
-        s_Log = new DmdLog(DMD_LOG_LEVEL_INFO);
-        s_Mutex->Unlock();
-        return s_Log;
-    } else {
-        return s_Log;
-    }
-}
+private:
+    static DmdConfig *s_Config;
+    static DmdMutex *s_configMutex;
+    const char *m_pConfigFile;
+};
 
 }  // namespace opendmd
+
+#endif  // SRC_UTILS_DMDCONFIG_H
+
