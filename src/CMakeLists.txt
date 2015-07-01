@@ -1,19 +1,26 @@
-set(SRC_LIST main.cpp main.h client.cpp server.cpp
+SET(SRC_LIST main.cpp main.h client.cpp server.cpp
         utils/DmdLog.h utils/DmdLog.cpp
         utils/DmdConfig.h utils/DmdConfig.cpp
         utils/DmdMutex.h utils/DmdMutex.cpp)
 
-MESSAGE(STATUS "PROJECT_SOURCE_DIR is ${PROJECT_SOURCE_DIR}")
-
-set(GLOG_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/vendor/glog/include)
-set(GLOG_LIB_DIR ${PROJECT_SOURCE_DIR}/vendor/glog/lib)
+MESSAGE(STATUS "CMAKE_SYSTEM_NAME is ${CMAKE_SYSTEM_NAME}")
+MESSAGE(STATUS "CMAKE_SYSTEM_PROCESSOR is ${CMAKE_SYSTEM_PROCESSOR}")
+IF(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    # MESSAGE(STATUS "CMAKE_SYSTEM_NAME is Linux")
+    IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
+        #MESSAGE(STATUS "CMAKE_SYSTEM_PROCESSOR is x86_64")
+        SET(GLOG_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/vendor/glog/linux-x86_64/include)
+        SET(GLOG_LIB_DIR ${PROJECT_SOURCE_DIR}/vendor/glog/linux-x86_64/lib)
+    ENDIF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
+ELSE(${CMAKE_SYSTEM} STREQUAL "Linux")
+ENDIF(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 
 LINK_DIRECTORIES(${GLOG_LIB_DIR})
 INCLUDE_DIRECTORIES(${GLOG_INCLUDE_DIR})
 MESSAGE(STATUS "GLOG_INCLUDE_DIR is ${GLOG_INCLUDE_DIR}")
 MESSAGE(STATUS "GLOG_LIB_DIR is ${GLOG_LIB_DIR}")
 
-add_executable(openDMD ${SRC_LIST})
+ADD_EXECUTABLE(openDMD ${SRC_LIST})
 TARGET_LINK_LIBRARIES(openDMD glog)
-add_subdirectory(include)
+ADD_SUBDIRECTORY(include)
 
