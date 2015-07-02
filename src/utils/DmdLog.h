@@ -39,19 +39,14 @@
 #ifndef SRC_UTILS_DMDLOG_H
 #define SRC_UTILS_DMDLOG_H
 
-#include "DmdMutex.h"
 
 namespace opendmd {
 
 typedef enum {
-    DMD_LOG_LEVEL_EMERG = 0,
-    DMD_LOG_LEVEL_ALERT = 1,
-    DMD_LOG_LEVEL_CRIT = 2,
-    DMD_LOG_LEVEL_ERR = 3,
-    DMD_LOG_LEVEL_WARNING = 4,
-    DMD_LOG_LEVEL_NOTICE = 5,
-    DMD_LOG_LEVEL_INFO = 6,
-    DMD_LOG_LEVEL_DEBUG = 7,
+    DMD_LOG_LEVEL_INFO = 0,
+    DMD_LOG_LEVEL_WARNING = 1,
+    DMD_LOG_LEVEL_ERROR = 2,
+    DMD_LOG_LEVEL_FATAL = 3,
 } DMD_LOG_LEVEL_T;
 
 class DmdLog {
@@ -60,16 +55,16 @@ public:
     explicit DmdLog(DMD_LOG_LEVEL_T logLevel);
     virtual ~DmdLog();
 
-    void Log(DMD_LOG_LEVEL_T level, const char *format, ...);
+    void Log(DMD_LOG_LEVEL_T level, const char *file, int line,
+            const char *format, ...);
 
     static DmdLog* singleton();
 
 private:
     DMD_LOG_LEVEL_T m_uLevel;
-    const char *getLevel(DMD_LOG_LEVEL_T level);
+    void initGLog();
 
     static DmdLog *s_Log;
-    static DmdMutex *s_Mutex;
 };
 
 }  // namespace opendmd

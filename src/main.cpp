@@ -36,25 +36,14 @@
  ============================================================================
  */
 
-#include <glog/logging.h>
 
 #include "utils/DmdLog.h"
 #include "main.h"
 
 using namespace opendmd;
 
-inline void initGLog() {
-    google::InitGoogleLogging("");
-    google::SetLogDestination(google::GLOG_INFO, "glog.log");
-    FLAGS_logbufsecs = 0;
-    FLAGS_max_log_size = 10;
-    google::SetStderrLogging(google::GLOG_INFO);
-    LOG(INFO) << "Hello, glog world!";
-}
-
 int main(int argc, char *argv[]) {
-    initGLog();
-    DmdLog::singleton()->Log(DMD_LOG_LEVEL_INFO,
+    DmdLog::singleton()->Log(DMD_LOG_LEVEL_INFO, __FILE__, __LINE__,
             "At the beginning of main function.\n");
 
     client_main(argc, argv);

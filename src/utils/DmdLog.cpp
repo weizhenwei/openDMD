@@ -38,70 +38,54 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <string>
+
+#include <glog/logging.h>
+
 #include "DmdLog.h"
 
 namespace opendmd {
 
-// TODO(weizhenwei): confirm that is this initialized at compile stage?
-DmdMutex *DmdLog::s_Mutex = new DmdMutex();
 DmdLog *DmdLog::s_Log = new DmdLog(DMD_LOG_LEVEL_INFO);
 
 DmdLog::DmdLog() : m_uLevel(DMD_LOG_LEVEL_INFO) {
+    initGLog();
 }
 
 DmdLog::DmdLog(DMD_LOG_LEVEL_T logLevel) : m_uLevel(logLevel) {
+    initGLog();
 }
 
 DmdLog::~DmdLog() {
 }
 
-const char *DmdLog::getLevel(DMD_LOG_LEVEL_T level) {
-    switch (level) {
-    case DMD_LOG_LEVEL_EMERG:
-        return "emerg";
-    case DMD_LOG_LEVEL_ALERT:
-        return "alert";
-    case DMD_LOG_LEVEL_CRIT:
-        return "crit";
-    case DMD_LOG_LEVEL_ERR:
-        return "err";
-    case DMD_LOG_LEVEL_WARNING:
-        return "warning";
-    case DMD_LOG_LEVEL_NOTICE:
-        return "notice";
-    case DMD_LOG_LEVEL_INFO:
-        return "info";
-    case DMD_LOG_LEVEL_DEBUG:
-        return "debug";
-    default:
-        return "NONE";
-    }
-
-    return "NONE";
+void DmdLog::initGLog() {
+    google::InitGoogleLogging("");
+    // google::SetLogDestination(google::GLOG_INFO, "opendmd-");
+    FLAGS_logbufsecs = 0;
+    FLAGS_max_log_size = 10;
+    // google::SetStderrLogging(google::GLOG_INFO);
+    google::SetStderrLogging(m_uLevel);
 }
 
-void DmdLog::Log(DMD_LOG_LEVEL_T level, const char *format, ...) {
+void DmdLog::Log(DMD_LOG_LEVEL_T level, const char *file, int line,
+        const char *format, ...) {
     if (level > m_uLevel)
         return;
 
-    s_Mutex->Lock();
+    // glog library is said thread-safe, so there is no need mutex here.
+    std::string msg(256, '\0');  // TODO(weizhenwei): truncate problem to fix.
     va_list var_list;
     va_start(var_list, format);
     va_end(var_list);
-    fprintf(stdout, "[%s]: ", getLevel(level));
-    vfprintf(stdout, format, var_list);
-    s_Mutex->Unlock();
+    vsnprintf((char *)msg.c_str(), 256, format, var_list);
+    // extend LOG(XX) macro to the following line.
+    google::LogMessage(file, line, m_uLevel).stream() << msg.c_str();
 }
 
 DmdLog* DmdLog::singleton() {
-    if (!s_Log) {
-        s_Mutex->Lock();
-        s_Log = new DmdLog(DMD_LOG_LEVEL_INFO);
-        s_Mutex->Unlock();
-        return s_Log;
-    } else {
-        return s_Log;
-    }
+    CHECK_NOTNULL(s_Log);
+    return s_Log;
 }
 
 }  // namespace opendmd
