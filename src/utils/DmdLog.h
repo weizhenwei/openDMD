@@ -39,6 +39,12 @@
 #ifndef SRC_UTILS_DMDLOG_H
 #define SRC_UTILS_DMDLOG_H
 
+#include <string>
+#include <sstream>
+
+using std::string;
+using std::stringstream;
+
 
 namespace opendmd {
 typedef enum {
@@ -49,6 +55,7 @@ typedef enum {
 } DMD_LOG_LEVEL_T;
 
 // TODO(weizhenwei): Make DmdLog as singleton.
+// glog library is said thread-safe, so there is no need mutex for DmdLog.
 class DmdLog {
 public:
     DmdLog();
@@ -56,7 +63,7 @@ public:
     virtual ~DmdLog();
 
     void Log(DMD_LOG_LEVEL_T level, const char *file, int line,
-            const char *format, ...);
+            const string &msg);
 
     static DmdLog* singleton();
 
@@ -67,8 +74,17 @@ private:
     static DmdLog *s_Log;
 };
 
-// TODO(weizhenwei): refactor DmdLog using c++ style output stream.
-#define DMD_LOG_INFO(format, args...) DmdLog::singleton()->Log(DMD_LOG_LEVEL_INFO, __FILE__, __LINE__, format, args)
+#define DMD_LOG(level, msg) \
+    do { \
+        stringstream strstream; \
+        strstream << msg; \
+        DmdLog::singleton()->Log(level, __FILE__, __LINE__, strstream.str()); \
+    } while (0)
+
+#define DMD_LOG_INFO(msg) DMD_LOG(DMD_LOG_LEVEL_INFO, msg)
+#define DMD_LOG_WARNING(msg) DMD_LOG(DMD_LOG_LEVEL_WARNING, msg)
+#define DMD_LOG_ERROR(msg) DMD_LOG(DMD_LOG_LEVEL_ERROR, msg)
+#define DMD_LOG_FATAL(msg) DMD_LOG(DMD_LOG_LEVEL_FATAL, msg)
 
 
 }  // namespace opendmd

@@ -37,11 +37,6 @@
  */
 
 
-#include <stdlib.h>
-#include <getopt.h>
-
-#include <string>
-
 #include "utils/DmdLog.h"
 #include "utils/DmdCmdlineParameter.h"
 #include "main.h"

@@ -42,7 +42,7 @@
 using namespace opendmd;
 
 int opendmd::server_main(int argc, char *argv[]) {
-    DMD_LOG_INFO("%s", "At the beginning of server_main function.\n");
+    DMD_LOG_INFO("At the beginning of server_main function.\n");
 
     return 0;
 }

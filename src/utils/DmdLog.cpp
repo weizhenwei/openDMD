@@ -75,18 +75,12 @@ void DmdLog::initGLog() {
 }
 
 void DmdLog::Log(DMD_LOG_LEVEL_T level, const char *file, int line,
-        const char *format, ...) {
+        const string &msg) {
     if (level < m_uLevel)
         return;
 
-    // glog library is said thread-safe, so there is no need mutex here.
-    std::string msg(256, '\0');  // TODO(weizhenwei): truncate problem to fix.
-    va_list var_list;
-    va_start(var_list, format);
-    va_end(var_list);
-    vsnprintf((char *)msg.c_str(), 256, format, var_list);
     // extend LOG(XX) macro to the following line.
-    google::LogMessage(file, line, m_uLevel).stream() << msg.c_str();
+    google::LogMessage(file, line, m_uLevel).stream() << msg;
 }
 
 DmdLog* DmdLog::singleton() {
