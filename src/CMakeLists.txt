@@ -1,6 +1,7 @@
 SET(SRC_LIST main.cpp main.h client.cpp server.cpp
         utils/DmdLog.h utils/DmdLog.cpp
         utils/DmdConfig.h utils/DmdConfig.cpp
+        utils/DmdCmdlineParameter.h utils/DmdCmdlineParameter.cpp
         utils/DmdMutex.h utils/DmdMutex.cpp)
 
 MESSAGE(STATUS "CMAKE_SYSTEM_NAME is ${CMAKE_SYSTEM_NAME}")

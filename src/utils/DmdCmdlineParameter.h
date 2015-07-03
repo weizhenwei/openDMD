@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : main.cpp
+ Name        : DmdCmdlineParameter.h
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.06.24
+ Date           :2015.07.03
  Copyright   :
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
@@ -32,42 +32,42 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : main entry of the project.
+ Description : header of cmdline parameter operation.
  ============================================================================
  */
 
+#ifndef SRC_UTILS_DMDCMDLINEPARAMETER_H
+#define SRC_UTILS_DMDCMDLINEPARAMETER_H
 
-#include <stdlib.h>
-#include <getopt.h>
-
-#include <iostream>
 #include <string>
 
-#include "utils/DmdLog.h"
-#include "utils/DmdCmdlineParameter.h"
-#include "main.h"
+namespace opendmd {
 
-using namespace opendmd;
+class DmdCmdlineParameter {
+public:
+    DmdCmdlineParameter();
+    virtual ~DmdCmdlineParameter();
 
-static void parseCmdline(int argc, char *argv[]) {
-    DmdCmdlineParameter::singleton()->parseCmdlineParameter(argc, argv);
+    static DmdCmdlineParameter* singleton();
+    void parseCmdlineParameter(int argc, char *argv[]);
+    void showHelp();
+    void showVersion();
+    inline bool isValidParameter() {return m_bValidParameter;}
+    inline bool isShowHelp() {return m_bShowHelp;}
+    inline bool isShowVersion() {return m_bShowVersion;}
 
-    if (DmdCmdlineParameter::singleton()->isShowHelp()) {
-        DmdCmdlineParameter::singleton()->showHelp();
-        exit(EXIT_SUCCESS);
-    }
-    if (DmdCmdlineParameter::singleton()->isShowVersion()) {
-        DmdCmdlineParameter::singleton()->showVersion();
-        exit(EXIT_SUCCESS);
-    }
-    if (!DmdCmdlineParameter::singleton()->isValidParameter()) {
-        exit(EXIT_FAILURE);
-    }
-}
-int main(int argc, char *argv[]) {
-    parseCmdline(argc, argv);
+private:
+    bool m_bValidParameter;
+    bool m_bShowHelp;
+    bool m_bShowVersion;
+    bool m_bDaemonize;
+    std::string *m_sProgramName;
+    std::string *m_sPid_file;
+    std::string *m_sCfg_file;
 
-    client_main(argc, argv);
+    static DmdCmdlineParameter *s_pCmdlineParameter;
+};
 
-    return 0;
-}
+}  // namespace opendmd
+
+#endif  // SRC_UTILS_DMDCMDLINEPARAMETER_H
