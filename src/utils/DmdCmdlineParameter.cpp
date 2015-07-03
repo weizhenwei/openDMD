@@ -38,6 +38,7 @@
 
 #include "DmdCmdlineParameter.h"
 
+#include <stdio.h>
 #include <getopt.h>
 #include <string>
 

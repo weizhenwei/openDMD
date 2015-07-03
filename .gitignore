@@ -37,3 +37,8 @@ build/xcode/*
 .project
 .settings/*
 
+# cscope and ctags file
+cscope.files
+cscope.out
+tags
+
