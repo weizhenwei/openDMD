@@ -49,6 +49,7 @@ typedef enum {
     DMD_LOG_LEVEL_FATAL = 3,
 } DMD_LOG_LEVEL_T;
 
+// TODO(weizhenwei): Make DmdLog as singleton.
 class DmdLog {
 public:
     DmdLog();

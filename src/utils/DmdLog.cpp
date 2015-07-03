@@ -46,7 +46,11 @@
 
 namespace opendmd {
 
+#if defined(DEBUG)
 DmdLog *DmdLog::s_Log = new DmdLog(DMD_LOG_LEVEL_INFO);
+#else
+DmdLog *DmdLog::s_Log = new DmdLog(DMD_LOG_LEVEL_ERROR);
+#endif
 
 DmdLog::DmdLog() : m_uLevel(DMD_LOG_LEVEL_INFO) {
     initGLog();
@@ -61,16 +65,18 @@ DmdLog::~DmdLog() {
 
 void DmdLog::initGLog() {
     google::InitGoogleLogging("");
-    // google::SetLogDestination(google::GLOG_INFO, "opendmd-");
-    FLAGS_logbufsecs = 0;
-    FLAGS_max_log_size = 10;
-    // google::SetStderrLogging(google::GLOG_INFO);
     google::SetStderrLogging(m_uLevel);
+#ifndef DEBUG
+    google::SetLogDestination(google::GLOG_INFO, "opendmd-log-");
+#endif
+    FLAGS_logbufsecs = 0;  // flush directly;
+    FLAGS_max_log_size = 100;
+    FLAGS_stop_logging_if_full_disk = true;
 }
 
 void DmdLog::Log(DMD_LOG_LEVEL_T level, const char *file, int line,
         const char *format, ...) {
-    if (level > m_uLevel)
+    if (level < m_uLevel)
         return;
 
     // glog library is said thread-safe, so there is no need mutex here.
