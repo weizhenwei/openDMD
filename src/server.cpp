@@ -42,8 +42,7 @@
 using namespace opendmd;
 
 int opendmd::server_main(int argc, char *argv[]) {
-    DmdLog::singleton()->Log(DMD_LOG_LEVEL_INFO, __FILE__, __LINE__,
-            "At the beginning of client_main function.\n");
+    DMD_LOG_INFO("%s", "At the beginning of server_main function.\n");
 
     return 0;
 }

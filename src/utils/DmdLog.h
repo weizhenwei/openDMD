@@ -41,7 +41,6 @@
 
 
 namespace opendmd {
-
 typedef enum {
     DMD_LOG_LEVEL_INFO = 0,
     DMD_LOG_LEVEL_WARNING = 1,
@@ -67,6 +66,10 @@ private:
 
     static DmdLog *s_Log;
 };
+
+// TODO(weizhenwei): refactor DmdLog using c++ style output stream.
+#define DMD_LOG_INFO(format, args...) DmdLog::singleton()->Log(DMD_LOG_LEVEL_INFO, __FILE__, __LINE__, format, args)
+
 
 }  // namespace opendmd
 
