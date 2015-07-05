@@ -46,11 +46,9 @@
 
 namespace opendmd {
 
-#if defined(DEBUG)
-DmdLog *DmdLog::s_Log = new DmdLog(DMD_LOG_LEVEL_INFO);
-#else
-DmdLog *DmdLog::s_Log = new DmdLog(DMD_LOG_LEVEL_ERROR);
-#endif
+DmdMutex DmdLog::s_Mutex;
+DmdLog* DmdLog::s_Log = NULL;
+
 
 DmdLog::DmdLog() : m_uLevel(DMD_LOG_LEVEL_INFO) {
     initGLog();
@@ -84,8 +82,19 @@ void DmdLog::Log(DMD_LOG_LEVEL_T level, const char *file, int line,
 }
 
 DmdLog* DmdLog::singleton() {
-    CHECK_NOTNULL(s_Log);
-    return s_Log;
+    if (s_Log) {
+        return s_Log;
+    } else {
+        s_Mutex.Lock();
+#if defined(DEBUG)
+        s_Log = new DmdLog(DMD_LOG_LEVEL_INFO);
+#else
+        s_Log = new DmdLog(DMD_LOG_LEVEL_ERROR);
+#endif
+        s_Mutex.Unlock();
+        CHECK_NOTNULL(s_Log);
+        return s_Log;
+    }
 }
 
 }  // namespace opendmd

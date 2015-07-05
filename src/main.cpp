@@ -36,6 +36,7 @@
  ============================================================================
  */
 
+#include <stdlib.h>
 
 #include "utils/DmdLog.h"
 #include "utils/DmdCmdlineParameter.h"

@@ -42,6 +42,8 @@
 #include <string>
 #include <sstream>
 
+#include "utils/DmdMutex.h"
+
 using std::string;
 using std::stringstream;
 
@@ -54,24 +56,24 @@ typedef enum {
     DMD_LOG_LEVEL_FATAL = 3,
 } DMD_LOG_LEVEL_T;
 
-// TODO(weizhenwei): Make DmdLog as singleton.
-// glog library is said thread-safe, so there is no need mutex for DmdLog.
 class DmdLog {
 public:
-    DmdLog();
-    explicit DmdLog(DMD_LOG_LEVEL_T logLevel);
-    virtual ~DmdLog();
-
     void Log(DMD_LOG_LEVEL_T level, const char *file, int line,
             const string &msg);
 
     static DmdLog* singleton();
 
 private:
+    // constructor and destructor as private to make DmdLog Singleton.
+    DmdLog();
+    explicit DmdLog(DMD_LOG_LEVEL_T logLevel);
+    virtual ~DmdLog();
+
     DMD_LOG_LEVEL_T m_uLevel;
     void initGLog();
 
-    static DmdLog *s_Log;
+    static DmdMutex s_Mutex;
+    static DmdLog* s_Log;
 };
 
 #define DMD_LOG(level, msg) \
