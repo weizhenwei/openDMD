@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : main.cpp
+ Name        : IDmdCaptureDevice.h
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.06.24
+ Date           :2015.07.06
  Copyright   :
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
@@ -32,44 +32,24 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : main entry of the project.
+ Description : base class interface of video capture device..
  ============================================================================
  */
 
-#include <stdlib.h>
+#ifndef SRC_INCLUDE_IDMDCAPTUREDEVICE_H
+#define SRC_INCLUDE_IDMDCAPTUREDEVICE_H
 
 #include "IDmdDatatype.h"
-#include "utils/DmdLog.h"
-#include "utils/DmdCmdlineParameter.h"
-#include "main.h"
 
-using namespace opendmd;
+namespace opendmd {
+class IDmdCaptureDevice {
+public:
+    virtual  IDmdCaptureDevice() = 0;
+    virtual ~IDmdCaptureDevice() = 0;
 
-static void parseCmdline(int argc, char *argv[]) {
-    DmdCmdlineParameter::singleton()->parseCmdlineParameter(argc, argv);
+    virtual DMD_S_RESULT setDevice();
+};
 
-    if (DmdCmdlineParameter::singleton()->isShowHelp()) {
-        DmdCmdlineParameter::singleton()->showHelp();
-        exit(EXIT_SUCCESS);
-    }
-    if (DmdCmdlineParameter::singleton()->isShowVersion()) {
-        DmdCmdlineParameter::singleton()->showVersion();
-        exit(EXIT_SUCCESS);
-    }
-    if (!DmdCmdlineParameter::singleton()->isValidParameter()) {
-        exit(EXIT_FAILURE);
-    }
-    if (DmdCmdlineParameter::singleton()->isDaemonize()) {
-        DmdCmdlineParameter::singleton()->daemonize();
-    }
-}
-int main(int argc, char *argv[]) {
-    parseCmdline(argc, argv);
+}  // namespace opendmd
 
-    client_main(argc, argv);
-
-    // to test daemonize;
-    // while (1);
-
-    return 0;
-}
+#endif  // SRC_INCLUDE_IDMDCAPTUREDEVICE_H

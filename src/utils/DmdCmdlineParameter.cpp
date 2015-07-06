@@ -101,7 +101,7 @@ void DmdCmdlineParameter::showVersion() {
 
 void DmdCmdlineParameter::daemonize() {
     pid_t pid;
-    int i, fd0, fd1, fd2;
+    int fd0, fd1, fd2;
     struct rlimit r1;
     struct sigaction sa;
     // FILE *fp = NULL;
@@ -111,7 +111,8 @@ void DmdCmdlineParameter::daemonize() {
 
     // get maximum numbers of file descriptors.
     if (getrlimit(RLIMIT_NOFILE, &r1) == -1) {
-        DMD_LOG_ERROR("getrlimit-file limit error: " << strerror(errno) << "\n");
+        DMD_LOG_ERROR("getrlimit-file limit error: " \
+                << strerror(errno) << "\n");
         exit(EXIT_FAILURE);
     }
 
@@ -159,7 +160,7 @@ void DmdCmdlineParameter::daemonize() {
     if (r1.rlim_max == RLIM_INFINITY) {
         r1.rlim_max = 1024;
     }
-    for (i = 0; i < r1.rlim_max; i++) {
+    for (unsigned int i = 0; i < r1.rlim_max; i++) {
         close(i);
     }
 
@@ -168,7 +169,8 @@ void DmdCmdlineParameter::daemonize() {
     fd1 = dup(0);
     fd2 = dup(0);
     if (fd0 != 0 || fd1 != 1 || fd2 != 2) {
-        DMD_LOG_ERROR("unexpected file descriptors: " << fd0 << fd1 << fd2 << "\n");
+        DMD_LOG_ERROR("unexpected file descriptors: " \
+                << fd0 << " " << fd1 << " " << fd2 << "\n");
         exit(EXIT_FAILURE);
     }
 

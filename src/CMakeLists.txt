@@ -1,4 +1,5 @@
 SET(SRC_LIST main.cpp main.h client.cpp server.cpp
+        include/IDmdDatatype.h include/IDmdCaptureDevice.h include/IDmdCaptureEngine.h
         utils/DmdLog.h utils/DmdLog.cpp
         utils/DmdConfig.h utils/DmdConfig.cpp
         utils/DmdCmdlineParameter.h utils/DmdCmdlineParameter.cpp
@@ -24,6 +25,8 @@ ENDIF(NOT GLOG_LIB_DIR OR NOT GLOG_INCLUDE_DIR)
 
 SET(SRC_DIR ${PROJECT_SOURCE_DIR}/src)
 INCLUDE_DIRECTORIES(${SRC_DIR})
+SET(INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/include)
+INCLUDE_DIRECTORIES(${INCLUDE_DIR})
 
 LINK_DIRECTORIES(${GLOG_LIB_DIR})
 INCLUDE_DIRECTORIES(${GLOG_INCLUDE_DIR})
