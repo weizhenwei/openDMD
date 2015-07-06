@@ -42,6 +42,8 @@
 #include <string>
 #include <sstream>
 
+#include <glog/logging.h>
+
 #include "utils/DmdMutex.h"
 
 using std::string;

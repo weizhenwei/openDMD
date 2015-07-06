@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : DmdLog.cpp
+ Name        : CDmdCaptureDeviceLinux.cpp
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.06.28
+ Date           :2015.07.06
  Copyright   :
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
@@ -32,67 +32,39 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : log util implementation file.
+ Description : concrete implementation file of capture device on platform.
  ============================================================================
  */
 
-#include <stdio.h>
-#include <stdarg.h>
-#include <string>
+#include "CDmdCaptureDeviceLinux.h"
 
-#include "DmdLog.h"
+#include "utils/DmdLog.h"
 
 namespace opendmd {
 
-DmdMutex DmdLog::s_Mutex;
-DmdLog* DmdLog::s_Log = NULL;
-
-
-DmdLog::DmdLog() : m_uLevel(DMD_LOG_LEVEL_INFO) {
-    initGLog();
+CDmdCaptureDeviceLinux::CDmdCaptureDeviceLinux() : m_pV4L2_info(NULL) {
 }
 
-DmdLog::DmdLog(DMD_LOG_LEVEL_T logLevel) : m_uLevel(logLevel) {
-    initGLog();
-}
-
-DmdLog::~DmdLog() {
-}
-
-void DmdLog::initGLog() {
-    google::InitGoogleLogging("");
-    google::SetStderrLogging(m_uLevel);
-#ifndef DEBUG
-    google::SetLogDestination(google::GLOG_INFO, "opendmd-log-");
-#endif
-    FLAGS_logbufsecs = 0;  // flush directly;
-    FLAGS_max_log_size = 100;
-    FLAGS_stop_logging_if_full_disk = true;
-}
-
-void DmdLog::Log(DMD_LOG_LEVEL_T level, const char *file, int line,
-        const string &msg) {
-    if (level < m_uLevel)
-        return;
-
-    // extend LOG(XX) macro to the following line.
-    google::LogMessage(file, line, m_uLevel).stream() << msg;
-}
-
-DmdLog* DmdLog::singleton() {
-    if (s_Log) {
-        return s_Log;
-    } else {
-        s_Mutex.Lock();
-#if defined(DEBUG)
-        s_Log = new DmdLog(DMD_LOG_LEVEL_INFO);
-#else
-        s_Log = new DmdLog(DMD_LOG_LEVEL_ERROR);
-#endif
-        s_Mutex.Unlock();
-        CHECK_NOTNULL(s_Log);
-        return s_Log;
+CDmdCaptureDeviceLinux::~CDmdCaptureDeviceLinux() {
+    if (m_pV4L2_info) {
+        delete m_pV4L2_info;
     }
 }
 
-}  // namespace opendmd
+void CDmdCaptureDeviceLinux::releaseV4L2() {
+    CHECK_NOTNULL(m_pV4L2_info);
+    // TODO(weizhenwei): release m_pV4L2_info;
+}
+
+DMD_S_RESULT CDmdCaptureDeviceLinux::init() {
+    if (m_pV4L2_info) {
+        releaseV4L2();
+    }
+    return DMD_S_OK;
+}
+
+DMD_S_RESULT CDmdCaptureDeviceLinux::setDevice() {
+    return DMD_S_OK;
+}
+
+} /* namespace opendmd */

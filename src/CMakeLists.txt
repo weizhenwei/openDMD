@@ -1,5 +1,6 @@
 SET(SRC_LIST main.cpp main.h client.cpp server.cpp
         include/IDmdDatatype.h include/IDmdCaptureDevice.h include/IDmdCaptureEngine.h
+        linux/CDmdCaptureDeviceLinux.h linux/CDmdCaptureDeviceLinux.cpp
         utils/DmdLog.h utils/DmdLog.cpp
         utils/DmdConfig.h utils/DmdConfig.cpp
         utils/DmdCmdlineParameter.h utils/DmdCmdlineParameter.cpp

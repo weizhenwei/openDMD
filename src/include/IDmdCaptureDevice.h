@@ -44,11 +44,14 @@
 namespace opendmd {
 class IDmdCaptureDevice {
 public:
-    virtual  IDmdCaptureDevice() = 0;
+    IDmdCaptureDevice();
     virtual ~IDmdCaptureDevice() = 0;
 
-    virtual DMD_S_RESULT setDevice();
+    virtual DMD_S_RESULT setDevice() = 0;
 };
+
+IDmdCaptureDevice::IDmdCaptureDevice() {}
+IDmdCaptureDevice::~IDmdCaptureDevice() {}
 
 }  // namespace opendmd
 

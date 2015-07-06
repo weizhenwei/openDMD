@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : DmdLog.cpp
+ Name        : CDmdCaptureDeviceLinux.h
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.06.28
+ Date           :2015.07.06
  Copyright   :
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
@@ -32,67 +32,57 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : log util implementation file.
+ Description : header file of capture device on platform.
  ============================================================================
  */
 
-#include <stdio.h>
-#include <stdarg.h>
+
+#ifndef SRC_LINUX_CDMDCAPTUREDEVICELINUX_H
+#define SRC_LINUX_CDMDCAPTUREDEVICELINUX_H
+
+#include <linux/videodev2.h>
+
 #include <string>
 
-#include "DmdLog.h"
+#include "IDmdCaptureDevice.h"
+
+using std::string;
 
 namespace opendmd {
 
-DmdMutex DmdLog::s_Mutex;
-DmdLog* DmdLog::s_Log = NULL;
+struct v4l2_device_info {
+    int video_device_fd;                                 // video device fd;
+    string video_device_path;                      // video device path;
+    struct v4l2_capability cap;                   // video device capabilities;
+    struct v4l2_input input;                       // video input;
+    struct v4l2_fmtdesc fmtdesc;            // video format enumeration;
+    struct v4l2_format format;                // video stream data format;
+    struct v4l2_requestbuffers reqbuffers;   // mmap buffers;
+    struct v4l2_buffer buffer;                             // video buffer;
+
+    int reqbuffer_count;                                      // req.count;
+    struct mmap_buffer *buffers;                  // mmap buffers;
+
+    int width;                               // picture width;
+    int height;                              // picture height;
+};
 
 
-DmdLog::DmdLog() : m_uLevel(DMD_LOG_LEVEL_INFO) {
-    initGLog();
-}
+class CDmdCaptureDeviceLinux : public IDmdCaptureDevice {
+public:
+    CDmdCaptureDeviceLinux();
+     ~CDmdCaptureDeviceLinux();
 
-DmdLog::DmdLog(DMD_LOG_LEVEL_T logLevel) : m_uLevel(logLevel) {
-    initGLog();
-}
+     DMD_S_RESULT init();
 
-DmdLog::~DmdLog() {
-}
+     // IDmdCaptureDevice
+     DMD_S_RESULT setDevice();
 
-void DmdLog::initGLog() {
-    google::InitGoogleLogging("");
-    google::SetStderrLogging(m_uLevel);
-#ifndef DEBUG
-    google::SetLogDestination(google::GLOG_INFO, "opendmd-log-");
-#endif
-    FLAGS_logbufsecs = 0;  // flush directly;
-    FLAGS_max_log_size = 100;
-    FLAGS_stop_logging_if_full_disk = true;
-}
-
-void DmdLog::Log(DMD_LOG_LEVEL_T level, const char *file, int line,
-        const string &msg) {
-    if (level < m_uLevel)
-        return;
-
-    // extend LOG(XX) macro to the following line.
-    google::LogMessage(file, line, m_uLevel).stream() << msg;
-}
-
-DmdLog* DmdLog::singleton() {
-    if (s_Log) {
-        return s_Log;
-    } else {
-        s_Mutex.Lock();
-#if defined(DEBUG)
-        s_Log = new DmdLog(DMD_LOG_LEVEL_INFO);
-#else
-        s_Log = new DmdLog(DMD_LOG_LEVEL_ERROR);
-#endif
-        s_Mutex.Unlock();
-        CHECK_NOTNULL(s_Log);
-        return s_Log;
-    }
-}
+private:
+     void releaseV4L2();
+     struct v4l2_device_info *m_pV4L2_info;
+};
 
 }  // namespace opendmd
+
+#endif  // SRC_LINUX_CDMDCAPTUREDEVICELINUX_H
