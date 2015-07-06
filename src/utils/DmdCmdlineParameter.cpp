@@ -39,10 +39,19 @@
 #include "DmdCmdlineParameter.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <getopt.h>
+#include <sys/stat.h>
+#include <sys/resource.h>
+
 #include <string>
 
 #include <glog/logging.h>
+
+#include "utils/DmdLog.h"
 
 
 namespace opendmd {
@@ -88,6 +97,92 @@ void DmdCmdlineParameter::showHelp() {
 void DmdCmdlineParameter::showVersion() {
     // TODO(weizhenwei): Add more copyright message here.
     fprintf(stdout, "openDMD 0.0.1\n");
+}
+
+void DmdCmdlineParameter::daemonize() {
+    pid_t pid;
+    int i, fd0, fd1, fd2;
+    struct rlimit r1;
+    struct sigaction sa;
+    // FILE *fp = NULL;
+
+    // clear file creation mask.
+    umask(0);
+
+    // get maximum numbers of file descriptors.
+    if (getrlimit(RLIMIT_NOFILE, &r1) == -1) {
+        DMD_LOG_ERROR("getrlimit-file limit error: " << strerror(errno) << "\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // fork and parent exits.
+    if ((pid = fork()) == -1) {
+        DMD_LOG_ERROR("fork error: " << strerror(errno) << "\n");
+        exit(EXIT_FAILURE);
+    } else if (pid > 0) {  // parent
+        exit(EXIT_SUCCESS);
+    }
+
+    // the folloing is runing by child.
+
+    // become a session leader to lose controlling  TTY.
+    if ((pid = setsid()) == -1) {
+        DMD_LOG_ERROR("setsid error: " << strerror(errno) << "\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // set SIGHUP sighandler;
+    sa.sa_handler = SIG_IGN;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    if (sigaction(SIGHUP, &sa, NULL) == -1) {
+        DMD_LOG_ERROR("sigaction error.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // fork again, the grandchild alive since then.
+    if ((pid = fork()) == -1) {
+        DMD_LOG_ERROR("fork 2 error: " << strerror(errno) << "\n");
+        exit(EXIT_FAILURE);
+    } else if (pid > 0) {  // parent
+        exit(EXIT_SUCCESS);
+    }
+
+    // change the current working directory to the root
+    // so we won't prevent file systems from being unmounted.
+    if (chdir("/") == -1) {
+        DMD_LOG_ERROR("chdir to / error: " << strerror(errno) << "\n");
+        exit(EXIT_FAILURE);
+    }
+
+    // close all open file descriptors.
+    if (r1.rlim_max == RLIM_INFINITY) {
+        r1.rlim_max = 1024;
+    }
+    for (i = 0; i < r1.rlim_max; i++) {
+        close(i);
+    }
+
+    // attach file descriptors 0, 1, and 2 to /dev/null.
+    fd0 = open("/dev/null", O_RDWR);
+    fd1 = dup(0);
+    fd2 = dup(0);
+    if (fd0 != 0 || fd1 != 1 || fd2 != 2) {
+        DMD_LOG_ERROR("unexpected file descriptors: " << fd0 << fd1 << fd2 << "\n");
+        exit(EXIT_FAILURE);
+    }
+
+#if 0
+    // write pid to file
+    pid = getpid();
+    global.pid = pid;  // refresh global's pid member;
+    if ((fp = fopen(global.pid_file, "w")) == NULL) {
+        dmd_log(LOG_ERR, "fopen pid file error:%s\n", strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+    fprintf(fp, "%d", pid);
+    fclose(fp);
+#endif
 }
 
 void DmdCmdlineParameter::parseCmdlineParameter(int argc, char *argv[]) {

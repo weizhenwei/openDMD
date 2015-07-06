@@ -52,9 +52,11 @@ public:
     void parseCmdlineParameter(int argc, char *argv[]);
     void showHelp();
     void showVersion();
+    void daemonize();
     inline bool isValidParameter() {return m_bValidParameter;}
     inline bool isShowHelp() {return m_bShowHelp;}
     inline bool isShowVersion() {return m_bShowVersion;}
+    inline bool isDaemonize() {return m_bDaemonize;}
 
 private:
     bool m_bValidParameter;

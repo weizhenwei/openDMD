@@ -58,11 +58,17 @@ static void parseCmdline(int argc, char *argv[]) {
     if (!DmdCmdlineParameter::singleton()->isValidParameter()) {
         exit(EXIT_FAILURE);
     }
+    if(DmdCmdlineParameter::singleton()->isDaemonize()) {
+        DmdCmdlineParameter::singleton()->daemonize();
+    }
 }
 int main(int argc, char *argv[]) {
     parseCmdline(argc, argv);
 
     client_main(argc, argv);
+
+    // to test daemonize;
+    // while (1);
 
     return 0;
 }
