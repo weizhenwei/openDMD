@@ -40,6 +40,8 @@
 #ifndef SRC_MAC_CDMDCAPTUREDEVICEMAC_H
 #define SRC_MAC_CDMDCAPTUREDEVICEMAC_H
 
+#include "IDmdCaptureDevice.h"
+
 namespace opendmd {
 
 class CDmdCaptureDeviceMac: public IDmdCaptureDevice {

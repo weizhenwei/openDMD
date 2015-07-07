@@ -1,6 +1,5 @@
 SET(SRC_LIST main.cpp main.h client.cpp server.cpp
         include/IDmdDatatype.h include/IDmdCaptureDevice.h include/IDmdCaptureEngine.h
-        linux/CDmdCaptureDeviceLinux.h linux/CDmdCaptureDeviceLinux.cpp
         utils/DmdLog.h utils/DmdLog.cpp
         utils/DmdConfig.h utils/DmdConfig.cpp
         utils/DmdCmdlineParameter.h utils/DmdCmdlineParameter.cpp
@@ -12,17 +11,21 @@ IF(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
         SET(GLOG_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/vendor/glog/linux-x86_64/include)
         SET(GLOG_LIB_DIR ${PROJECT_SOURCE_DIR}/vendor/glog/linux-x86_64/lib)
+        SET(PLATFORM_SPECIFIC_SRC linux/CDmdCaptureDeviceLinux.h
+            linux/CDmdCaptureDeviceLinux.cpp)
     ENDIF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
 ELSEIF(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
     IF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
         SET(GLOG_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/vendor/glog/mac-x86_64/include)
         SET(GLOG_LIB_DIR ${PROJECT_SOURCE_DIR}/vendor/glog/mac-x86_64/lib)
+        SET(PLATFORM_SPECIFIC_SRC mac/CDmdCaptureDeviceMac.h
+            mac/CDmdCaptureDeviceMac.cpp)
     ENDIF(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
 ENDIF(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 
-IF(NOT GLOG_LIB_DIR OR NOT GLOG_INCLUDE_DIR)
+IF(NOT GLOG_LIB_DIR OR NOT GLOG_INCLUDE_DIR OR NOT PLATFORM_SPECIFIC_SRC)
     MESSAGE(FATAL_ERROR "GLOG_LIB_DIR or GLOG_INCLUDE_DIR is not set")
-ENDIF(NOT GLOG_LIB_DIR OR NOT GLOG_INCLUDE_DIR)
+ENDIF(NOT GLOG_LIB_DIR OR NOT GLOG_INCLUDE_DIR OR NOT PLATFORM_SPECIFIC_SRC)
 
 SET(SRC_DIR ${PROJECT_SOURCE_DIR}/src)
 INCLUDE_DIRECTORIES(${SRC_DIR})
@@ -34,7 +37,7 @@ INCLUDE_DIRECTORIES(${GLOG_INCLUDE_DIR})
 MESSAGE(STATUS "GLOG_INCLUDE_DIR is ${GLOG_INCLUDE_DIR}")
 MESSAGE(STATUS "GLOG_LIB_DIR is ${GLOG_LIB_DIR}")
 
-ADD_EXECUTABLE(openDMD ${SRC_LIST})
+ADD_EXECUTABLE(openDMD ${SRC_LIST} ${PLATFORM_SPECIFIC_SRC})
 TARGET_LINK_LIBRARIES(openDMD glog)
 ADD_SUBDIRECTORY(include)
 
