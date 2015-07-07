@@ -32,7 +32,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : concrete implementation file of capture device on platform.
+ Description : concrete implementation file of capture device on linux platform.
  ============================================================================
  */
 
@@ -67,4 +67,4 @@ DMD_S_RESULT CDmdCaptureDeviceLinux::setDevice() {
     return DMD_S_OK;
 }
 
-} /* namespace opendmd */
+}  // namespace opendmd
