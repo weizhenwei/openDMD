@@ -36,8 +36,11 @@
  ============================================================================
  */
 
-#include "CDmdCaptureDeviceMac.h"
+// #include "CDmdCaptureDeviceMac.h"
 
 namespace opendmd {
+
+static void test_mac() {
+}
 
 }  // namespace opendmd

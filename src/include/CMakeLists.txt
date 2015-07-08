@@ -1,2 +1,0 @@
-set(HEADER IDmdCaptureEngine.h)
-

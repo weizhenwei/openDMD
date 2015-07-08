@@ -36,8 +36,11 @@
  ============================================================================
  */
 
-#include "CDmdCaptureDeviceLinux.h"
+// #include "CDmdCaptureDeviceLinux.h"
 
 namespace opendmd {
+
+static void test_linux() {
+}
 
 }  // namespace opendmd
