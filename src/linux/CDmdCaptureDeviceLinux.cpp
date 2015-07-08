@@ -46,6 +46,7 @@ CDmdCaptureDeviceLinux::CDmdCaptureDeviceLinux() : m_pV4L2_info(NULL) {
 }
 
 CDmdCaptureDeviceLinux::~CDmdCaptureDeviceLinux() {
+    // TODO(weizhenwei): add more delete operation on m_pV4L2_info's members;
     if (m_pV4L2_info) {
         delete m_pV4L2_info;
     }
@@ -56,15 +57,20 @@ void CDmdCaptureDeviceLinux::releaseV4L2() {
     // TODO(weizhenwei): release m_pV4L2_info;
 }
 
-DMD_S_RESULT CDmdCaptureDeviceLinux::init() {
+DMD_S_RESULT CDmdCaptureDeviceLinux::init(const char *deviceName) {
     if (m_pV4L2_info) {
         releaseV4L2();
     }
     return DMD_S_OK;
 }
 
-DMD_S_RESULT CDmdCaptureDeviceLinux::setDevice() {
+DMD_S_RESULT CDmdCaptureDeviceLinux::setDeviceName(const char *deviceName) {
     return DMD_S_OK;
 }
-
+DMD_S_RESULT CDmdCaptureDeviceLinux::getDeviceName(char *deviceName) {
+    return DMD_S_OK;
+}
+DMD_S_RESULT CDmdCaptureDeviceLinux::initDevice() {
+    return DMD_S_OK;
+}
 }  // namespace opendmd

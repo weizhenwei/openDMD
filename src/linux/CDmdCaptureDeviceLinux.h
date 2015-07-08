@@ -73,10 +73,12 @@ public:
     CDmdCaptureDeviceLinux();
      ~CDmdCaptureDeviceLinux();
 
-     DMD_S_RESULT init();
+     DMD_S_RESULT init(const char *deviceName);
 
-     // IDmdCaptureDevice
-     DMD_S_RESULT setDevice();
+     // IDmdCaptureDevice interface
+     DMD_S_RESULT setDeviceName(const char *deviceName);
+     DMD_S_RESULT getDeviceName(char *deviceName);
+     DMD_S_RESULT initDevice();
 
 private:
      void releaseV4L2();

@@ -47,7 +47,9 @@ public:
     IDmdCaptureDevice();
     virtual ~IDmdCaptureDevice() = 0;
 
-    virtual DMD_S_RESULT setDevice() = 0;
+    virtual DMD_S_RESULT setDeviceName(const char *deviceName) = 0;
+    virtual DMD_S_RESULT getDeviceName(char *deviceName) = 0;
+    virtual DMD_S_RESULT initDevice() = 0;
 };
 
 IDmdCaptureDevice::IDmdCaptureDevice() {}
