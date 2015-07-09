@@ -40,6 +40,8 @@
 #ifndef SRC_MAC_CDMDCAPTUREDEVICEMAC_H
 #define SRC_MAC_CDMDCAPTUREDEVICEMAC_H
 
+#import <Foundation/Foundation.h>
+
 #include "IDmdCaptureDevice.h"
 
 namespace opendmd {
@@ -48,6 +50,17 @@ class CDmdCaptureDeviceMac: public IDmdCaptureDevice {
 public:
     CDmdCaptureDeviceMac();
     ~CDmdCaptureDeviceMac();
+    
+    DMD_S_RESULT init(const char *deviceName);
+
+    // IDmdCaptureDevice
+    DMD_S_RESULT setDeviceName(const char *deviceName);
+    DMD_S_RESULT getDeviceName(char *deviceName);
+    DMD_S_RESULT initDevice();
+
+private:
+    NSString *m_sDeviceName;
+    id m_idDevice;  // AVCaptureDevice;
 };
 
 }  // namespace opendmd

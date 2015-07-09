@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : CDmdCaptureDeviceMac.cpp
+ Name        : CDmdCaptureDeviceMac.mm
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
  Date           :2015.07.07
  Copyright   :
@@ -40,12 +40,18 @@
 
 namespace opendmd {
 
-CDmdCaptureDeviceMac::CDmdCaptureDeviceMac() {
+CDmdCaptureDeviceMac::CDmdCaptureDeviceMac(): m_sDeviceName(NULL), m_idDevice(NULL) {
     // TODO(weizhenwei): Auto-generated constructor stub
 }
 
 CDmdCaptureDeviceMac::~CDmdCaptureDeviceMac() {
     // TODO(weizhenwei): Auto-generated destructor stub
+}
+
+DMD_S_RESULT CDmdCaptureDeviceMac::init(const char *deviceName) {
+    m_sDeviceName = [NSString stringWithUTF8String:deviceName];
+
+    return DMD_S_OK;
 }
 
 }  // namespace opendmd
