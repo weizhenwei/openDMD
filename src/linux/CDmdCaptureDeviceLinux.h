@@ -82,7 +82,7 @@ public:
 
 private:
      void releaseV4L2();
-     struct v4l2_device_info *m_pV4L2_info;
+     struct v4l2_device_info m_pV4L2_info;
 };
 
 }  // namespace opendmd

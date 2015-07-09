@@ -36,13 +36,16 @@
  ============================================================================
  */
 
+
 #include "CDmdCaptureDeviceLinux.h"
+#include <string.h>
 
 #include "utils/DmdLog.h"
 
 namespace opendmd {
 
-CDmdCaptureDeviceLinux::CDmdCaptureDeviceLinux() : m_pV4L2_info(NULL) {
+CDmdCaptureDeviceLinux::CDmdCaptureDeviceLinux() {
+    memset(&m_pV4L2_info, 0, sizeof(struct v4l2_device_info));
 }
 
 CDmdCaptureDeviceLinux::~CDmdCaptureDeviceLinux() {
@@ -53,7 +56,6 @@ CDmdCaptureDeviceLinux::~CDmdCaptureDeviceLinux() {
 }
 
 void CDmdCaptureDeviceLinux::releaseV4L2() {
-    CHECK_NOTNULL(m_pV4L2_info);
     // TODO(weizhenwei): release m_pV4L2_info;
 }
 
