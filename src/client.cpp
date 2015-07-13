@@ -37,12 +37,17 @@
  */
 
 #include "utils/DmdLog.h"
+#include "IDmdCaptureDevice.h"
+#include "CDmdCaptureDeviceLinux.h"
 #include "main.h"
 
 using namespace opendmd;
 
 int opendmd::client_main(int argc, char *argv[]) {
     DMD_LOG_INFO("At the beginning of client_main function.\n");
+    IDmdCaptureDevice *capDevice = new CDmdCaptureDeviceLinux();
+    capDevice->initDevice("/dev/video0");
 
+    delete capDevice;
     return 0;
 }

@@ -39,20 +39,17 @@
 
 #include "CDmdCaptureDeviceLinux.h"
 #include <string.h>
-
 #include "utils/DmdLog.h"
 
 namespace opendmd {
 
 CDmdCaptureDeviceLinux::CDmdCaptureDeviceLinux() {
-    memset(&m_pV4L2_info, 0, sizeof(struct v4l2_device_info));
+    m_pV4L2_info.video_device_path = string("/dev/video0");
+    m_bCaptureOn = false;
 }
 
 CDmdCaptureDeviceLinux::~CDmdCaptureDeviceLinux() {
     // TODO(weizhenwei): add more delete operation on m_pV4L2_info's members;
-    if (m_pV4L2_info) {
-        delete m_pV4L2_info;
-    }
 }
 
 void CDmdCaptureDeviceLinux::releaseV4L2() {
@@ -60,9 +57,12 @@ void CDmdCaptureDeviceLinux::releaseV4L2() {
 }
 
 DMD_S_RESULT CDmdCaptureDeviceLinux::init(const char *deviceName) {
-    if (m_pV4L2_info) {
-        releaseV4L2();
+    if (m_bCaptureOn) {
+        DMD_LOG_ERROR("Capture Device " << m_pV4L2_info.video_device_path << "is already running\n");
+        return DMD_S_FAIL;
     }
+    m_pV4L2_info.video_device_path.clear();
+    m_pV4L2_info.video_device_path.assign(deviceName);
     return DMD_S_OK;
 }
 
@@ -72,7 +72,15 @@ DMD_S_RESULT CDmdCaptureDeviceLinux::setDeviceName(const char *deviceName) {
 DMD_S_RESULT CDmdCaptureDeviceLinux::getDeviceName(char *deviceName) {
     return DMD_S_OK;
 }
-DMD_S_RESULT CDmdCaptureDeviceLinux::initDevice() {
+DMD_S_RESULT CDmdCaptureDeviceLinux::initDevice(const char *deviceName) {
+    if (m_bCaptureOn) {
+        DMD_LOG_ERROR("Capture Device " << m_pV4L2_info.video_device_path << "is already running\n");
+        return DMD_S_FAIL;
+    }
+    m_pV4L2_info.video_device_path.clear();
+    m_pV4L2_info.video_device_path.assign(deviceName);
+    m_bCaptureOn = true;
+
     return DMD_S_OK;
 }
 }  // namespace opendmd
