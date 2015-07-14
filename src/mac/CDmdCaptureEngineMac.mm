@@ -36,11 +36,12 @@
  ============================================================================
  */
 
-#include "CDmdCaptureEngineMac.h"
+#import "CDmdCaptureEngineMac.h"
+#import <Cocoa/Cocoa.h>
 
 namespace opendmd {
 
-CDmdCaptureEngineMac::CDmdCaptureEngineMac() : m_pCaptureDevice(NULL) {
+CDmdCaptureEngineMac::CDmdCaptureEngineMac() : m_pCaptureDevice(nil) {
     // TODO Auto-generated constructor stub
 }
 
@@ -51,4 +52,13 @@ CDmdCaptureEngineMac::~CDmdCaptureEngineMac() {
     }
 }
 
+DMD_S_RESULT CDmdCaptureEngineMac::initEngine() {
+    return DMD_S_OK;
+}
+DMD_S_RESULT CDmdCaptureEngineMac::startCapture() {
+    return DMD_S_OK;
+}
+DMD_S_RESULT CDmdCaptureEngineMac::stopCapture() {
+    return DMD_S_OK;
+}
 }  // namespace opendmd

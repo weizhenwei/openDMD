@@ -39,7 +39,10 @@
 #ifndef SRC_MAC_CDMDCAPTUREENGINEMAC_H
 #define SRC_MAC_CDMDCAPTUREENGINEMAC_H
 
-#include "IDmdCaptureDevice.h"
+#import "IDmdCaptureDevice.h"
+#import "IDmdCaptureEngine.h"
+
+class IDmdCaptureEngine;
 
 namespace opendmd {
 class CDmdCaptureEngineMac : public IDmdCaptureEngine {

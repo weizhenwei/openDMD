@@ -38,16 +38,26 @@
 
 #include "utils/DmdLog.h"
 #include "IDmdCaptureDevice.h"
+#if defined(MACOSX)
+#include "CDmdCaptureDeviceMac.h"
+#elif defined(LINUX)
 #include "CDmdCaptureDeviceLinux.h"
+#endif
 #include "main.h"
 
 using namespace opendmd;
 
 int opendmd::client_main(int argc, char *argv[]) {
     DMD_LOG_INFO("At the beginning of client_main function.\n");
+#if defined(LINUX)
     IDmdCaptureDevice *capDevice = new CDmdCaptureDeviceLinux();
     capDevice->initDevice("/dev/video0");
-
     delete capDevice;
+#elif defined(MACOSX)
+    IDmdCaptureDevice *capDevice = new CDmdCaptureDeviceMac();
+    capDevice->initDevice("tobeimplemented");
+    delete capDevice;
+#endif
+
     return 0;
 }

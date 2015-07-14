@@ -36,11 +36,11 @@
  ============================================================================
  */
 
-#include "CDmdCaptureDeviceMac.h"
+#import "CDmdCaptureDeviceMac.h"
 
 namespace opendmd {
 
-CDmdCaptureDeviceMac::CDmdCaptureDeviceMac(): m_sDeviceName(NULL), m_idDevice(NULL) {
+CDmdCaptureDeviceMac::CDmdCaptureDeviceMac(): m_sDeviceName(NULL), m_idDevice(0) {
     // TODO(weizhenwei): Auto-generated constructor stub
 }
 
@@ -49,9 +49,20 @@ CDmdCaptureDeviceMac::~CDmdCaptureDeviceMac() {
 }
 
 DMD_S_RESULT CDmdCaptureDeviceMac::init(const char *deviceName) {
-    m_sDeviceName = [NSString stringWithUTF8String:deviceName];
+//    m_sDeviceName = [NSString stringWithUTF8String:deviceName];
 
     return DMD_S_OK;
 }
+
+DMD_S_RESULT CDmdCaptureDeviceMac::setDeviceName(const char *deviceName) {
+    return DMD_S_OK;
+}
+DMD_S_RESULT CDmdCaptureDeviceMac::getDeviceName(char *deviceName) {
+    return DMD_S_OK;
+}
+DMD_S_RESULT CDmdCaptureDeviceMac::initDevice(const char *deviceName) {
+    return DMD_S_OK;
+}
+
 
 }  // namespace opendmd

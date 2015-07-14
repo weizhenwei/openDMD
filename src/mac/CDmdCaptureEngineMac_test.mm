@@ -36,7 +36,7 @@
  ============================================================================
  */
 
-#include "CDmdCaptureEngineMac.h"
+#import "CDmdCaptureEngineMac.h"
 
 namespace opendmd {
 
