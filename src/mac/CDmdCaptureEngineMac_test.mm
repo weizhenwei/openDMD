@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : CDmdCaptureDeviceMac_test.mm
+ Name        : CDmdCaptureEngineMac_test.cpp
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.07.07
+ Date           :2015.07.14
  Copyright   :
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
@@ -32,15 +32,12 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : unit test file of Mac Capture Device.
+ Description : test file of capture engine on mac platform.
  ============================================================================
  */
 
-// #include "CDmdCaptureDeviceMac.h"
+#include "CDmdCaptureEngineMac.h"
 
 namespace opendmd {
 
-static void test_mac() {
-}
-
-}  // namespace opendmd
+} /* namespace opendmd */

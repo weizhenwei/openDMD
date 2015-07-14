@@ -39,6 +39,7 @@
 
 #include "CDmdCaptureDeviceLinux.h"
 #include <string.h>
+#include <string>
 #include "utils/DmdLog.h"
 
 namespace opendmd {
@@ -58,7 +59,8 @@ void CDmdCaptureDeviceLinux::releaseV4L2() {
 
 DMD_S_RESULT CDmdCaptureDeviceLinux::init(const char *deviceName) {
     if (m_bCaptureOn) {
-        DMD_LOG_ERROR("Capture Device " << m_pV4L2_info.video_device_path << "is already running\n");
+        DMD_LOG_ERROR("Capture Device " << m_pV4L2_info.video_device_path
+                << "is already running\n");
         return DMD_S_FAIL;
     }
     m_pV4L2_info.video_device_path.clear();
@@ -74,7 +76,8 @@ DMD_S_RESULT CDmdCaptureDeviceLinux::getDeviceName(char *deviceName) {
 }
 DMD_S_RESULT CDmdCaptureDeviceLinux::initDevice(const char *deviceName) {
     if (m_bCaptureOn) {
-        DMD_LOG_ERROR("Capture Device " << m_pV4L2_info.video_device_path << "is already running\n");
+        DMD_LOG_ERROR("Capture Device " << m_pV4L2_info.video_device_path
+                << "is already running\n");
         return DMD_S_FAIL;
     }
     m_pV4L2_info.video_device_path.clear();

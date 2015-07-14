@@ -39,16 +39,15 @@
 #ifndef SRC_INCLUDE_IDMDCAPTUREENGINE_H
 #define SRC_INCLUDE_IDMDCAPTUREENGINE_H
 
+#include "IDmdDatatype.h"
 
 namespace opendmd {
 
 class IDmdCaptureEngine {
  public:
-    virtual IDmdCaptureEngine();
-    virtual ~IDmdCaptureEngine();
-
-    virtual void startCapture() = 0;
-    virtual void stopCapture() = 0;
+    virtual DMD_S_RESULT initEngine() = 0;
+    virtual DMD_S_RESULT startCapture() = 0;
+    virtual DMD_S_RESULT stopCapture() = 0;
 };
 
 }  // namespace opendmd

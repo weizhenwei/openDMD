@@ -32,7 +32,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : header file of capture device on platform.
+ Description : header file of capture device on mac platform.
  ============================================================================
  */
 
@@ -50,10 +50,10 @@ class CDmdCaptureDeviceMac: public IDmdCaptureDevice {
 public:
     CDmdCaptureDeviceMac();
     ~CDmdCaptureDeviceMac();
-    
+
     DMD_S_RESULT init(const char *deviceName);
 
-    // IDmdCaptureDevice
+    // IDmdCaptureDevice interface
     DMD_S_RESULT setDeviceName(const char *deviceName);
     DMD_S_RESULT getDeviceName(char *deviceName);
     DMD_S_RESULT initDevice();
