@@ -40,8 +40,8 @@
 #ifndef SRC_MAC_CDMDCAPTUREDEVICEMAC_H
 #define SRC_MAC_CDMDCAPTUREDEVICEMAC_H
 
-// #import <Foundation/Foundation.h>
-
+#import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 #include <string>
 #import "IDmdCaptureDevice.h"
 
@@ -60,10 +60,8 @@ public:
     DMD_S_RESULT initDevice(const char *deviceName);
 
 private:
-//    NSString *m_sDeviceName;
-    std::string *m_sDeviceName;
-//    id m_idDevice;  // AVCaptureDevice;
-    int m_idDevice;
+    NSString *m_sDeviceName;
+    id m_idDevice;  // AVCaptureDevice;
 };
 
 }  // namespace opendmd

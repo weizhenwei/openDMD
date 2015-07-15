@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : CDmdCaptureDeviceMac.mm
+ Name        : client.cpp
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.07.07
+ Date           :2015.06.24
  Copyright   :
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
@@ -32,37 +32,23 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : concrete implementation file of capture device on mac platform.
+ Description : main entry of client.
  ============================================================================
  */
 
-#import "CDmdCaptureDeviceMac.h"
+#include "utils/DmdLog.h"
+#include "IDmdCaptureDevice.h"
+#include "CDmdCaptureDeviceLinux.h"
+#include "main.h"
 
-namespace opendmd {
+using namespace opendmd;
 
-CDmdCaptureDeviceMac::CDmdCaptureDeviceMac(): m_sDeviceName(nil), m_idDevice(nil) {
-    // TODO(weizhenwei): Auto-generated constructor stub
+int opendmd::client_main(int argc, char *argv[]) {
+    DMD_LOG_INFO("At the beginning of client_main function.\n");
+    IDmdCaptureDevice *capDevice = new CDmdCaptureDeviceLinux();
+    capDevice->initDevice("/dev/video0");
+    delete capDevice;
+
+    return 0;
 }
 
-CDmdCaptureDeviceMac::~CDmdCaptureDeviceMac() {
-    // TODO(weizhenwei): Auto-generated destructor stub
-}
-
-DMD_S_RESULT CDmdCaptureDeviceMac::init(const char *deviceName) {
-//    m_sDeviceName = [NSString stringWithUTF8String:deviceName];
-
-    return DMD_S_OK;
-}
-
-DMD_S_RESULT CDmdCaptureDeviceMac::setDeviceName(const char *deviceName) {
-    return DMD_S_OK;
-}
-DMD_S_RESULT CDmdCaptureDeviceMac::getDeviceName(char *deviceName) {
-    return DMD_S_OK;
-}
-DMD_S_RESULT CDmdCaptureDeviceMac::initDevice(const char *deviceName) {
-    return DMD_S_OK;
-}
-
-
-}  // namespace opendmd

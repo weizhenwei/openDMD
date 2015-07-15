@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : client.cpp
+ Name        : server.cpp
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
  Date           :2015.06.24
  Copyright   :
@@ -32,32 +32,17 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : main entry of client.
+ Description : main entry of server.
  ============================================================================
  */
 
 #include "utils/DmdLog.h"
-#include "IDmdCaptureDevice.h"
-#if defined(MACOSX)
-#include "CDmdCaptureDeviceMac.h"
-#elif defined(LINUX)
-#include "CDmdCaptureDeviceLinux.h"
-#endif
 #include "main.h"
 
 using namespace opendmd;
 
-int opendmd::client_main(int argc, char *argv[]) {
-    DMD_LOG_INFO("At the beginning of client_main function.\n");
-#if defined(LINUX)
-    IDmdCaptureDevice *capDevice = new CDmdCaptureDeviceLinux();
-    capDevice->initDevice("/dev/video0");
-    delete capDevice;
-#elif defined(MACOSX)
-    IDmdCaptureDevice *capDevice = new CDmdCaptureDeviceMac();
-    capDevice->initDevice("tobeimplemented");
-    delete capDevice;
-#endif
+int opendmd::server_main(int argc, char *argv[]) {
+    DMD_LOG_INFO("At the beginning of server_main function.\n");
 
     return 0;
 }
