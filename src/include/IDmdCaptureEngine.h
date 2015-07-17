@@ -45,6 +45,9 @@ namespace opendmd {
 
 class IDmdCaptureEngine {
  public:
+    IDmdCaptureEngine() {}
+    virtual ~IDmdCaptureEngine() {}
+
     virtual DMD_S_RESULT initEngine() = 0;
     virtual DMD_S_RESULT startCapture() = 0;
     virtual DMD_S_RESULT stopCapture() = 0;

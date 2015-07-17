@@ -81,7 +81,7 @@ DmdCmdlineParameter::~DmdCmdlineParameter() {
 }
 
 DmdCmdlineParameter *DmdCmdlineParameter::singleton() {
-    CHECK_NOTNULL(s_pCmdlineParameter);
+    DMD_CHECK_NOTNULL(s_pCmdlineParameter);
     return s_pCmdlineParameter;
 }
 

@@ -90,7 +90,7 @@ DmdLog* DmdLog::singleton() {
         s_Log = new DmdLog(DMD_LOG_LEVEL_ERROR);
 #endif
         s_Mutex.Unlock();
-        CHECK_NOTNULL(s_Log);
+        DMD_CHECK_NOTNULL(s_Log);
         return s_Log;
     }
 }

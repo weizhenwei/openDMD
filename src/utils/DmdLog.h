@@ -90,7 +90,7 @@ private:
 #define DMD_LOG_ERROR(msg) DMD_LOG(DMD_LOG_LEVEL_ERROR, msg)
 #define DMD_LOG_FATAL(msg) DMD_LOG(DMD_LOG_LEVEL_FATAL, msg)
 
-
+#define DMD_CHECK_NOTNULL(ptr) CHECK_NOTNULL(ptr)
 }  // namespace opendmd
 
 #endif  // SRC_UTILS_DMDLOG_H

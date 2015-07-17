@@ -44,6 +44,9 @@
 namespace opendmd {
 class IDmdCaptureDevice {
 public:
+    IDmdCaptureDevice() {}
+    virtual ~IDmdCaptureDevice() {}
+
     virtual DMD_S_RESULT setDeviceName(const char *deviceName) = 0;
     virtual DMD_S_RESULT getDeviceName(char *deviceName) = 0;
     virtual DMD_S_RESULT initDevice(const char *deviceName) = 0;
