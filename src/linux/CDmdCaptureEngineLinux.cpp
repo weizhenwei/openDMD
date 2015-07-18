@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : CDmdCaptureDeviceLinux_test.cpp
+ Name        : CDmdCaptureEngineLinux.cpp
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.07.06
+ Date           :2015.07.18
  Copyright   :
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
@@ -32,11 +32,20 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : unit test file of Linux Capture Device.
+ Description : implementation file of capture engine on linux platform.
  ============================================================================
  */
 
-// #include "CDmdCaptureDeviceLinux.h"
+#include "CDmdCaptureEngineLinux.h"
 
 namespace opendmd {
+
+CDmdCaptureEngineLinux::CDmdCaptureEngineLinux() {
+    // TODO(weizhenwei): Auto-generated constructor stub
+}
+
+CDmdCaptureEngineLinux::~CDmdCaptureEngineLinux() {
+    // TODO(weizhenwei): Auto-generated destructor stub
+}
+
 }  // namespace opendmd
