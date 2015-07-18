@@ -39,12 +39,23 @@
 #ifndef SRC_LINUX_CDMDCAPTUREENGINELINUX_H
 #define SRC_LINUX_CDMDCAPTUREENGINELINUX_H
 
+#include "IDmdCaptureDevice.h"
+#include "IDmdCaptureEngine.h"
+
 namespace opendmd {
 
-class CDmdCaptureEngineLinux {
+class CDmdCaptureEngineLinux : public IDmdCaptureEngine {
 public:
     CDmdCaptureEngineLinux();
     ~CDmdCaptureEngineLinux();
+
+    // IDmdCaptureDevice interface;
+    DMD_S_RESULT initEngine();
+    DMD_S_RESULT startCapture();
+    DMD_S_RESULT stopCapture();
+
+private:
+    IDmdCaptureDevice *m_pCaptureDevice;
 };
 
 }  // namespace opendmd

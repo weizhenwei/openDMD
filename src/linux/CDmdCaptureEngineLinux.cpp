@@ -40,12 +40,25 @@
 
 namespace opendmd {
 
-CDmdCaptureEngineLinux::CDmdCaptureEngineLinux() {
+CDmdCaptureEngineLinux::CDmdCaptureEngineLinux() : m_pCaptureDevice(NULL) {
     // TODO(weizhenwei): Auto-generated constructor stub
 }
 
 CDmdCaptureEngineLinux::~CDmdCaptureEngineLinux() {
     // TODO(weizhenwei): Auto-generated destructor stub
+    if (m_pCaptureDevice) {
+        delete m_pCaptureDevice;
+    }
+}
+
+DMD_S_RESULT CDmdCaptureEngineLinux::initEngine() {
+    return DMD_S_OK;
+}
+DMD_S_RESULT CDmdCaptureEngineLinux::startCapture() {
+    return DMD_S_OK;
+}
+DMD_S_RESULT CDmdCaptureEngineLinux::stopCapture() {
+    return DMD_S_OK;
 }
 
 }  // namespace opendmd

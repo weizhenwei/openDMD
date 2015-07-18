@@ -39,6 +39,8 @@
 #ifndef SRC_INCLUDE_IDMDDATATYPE_H
 #define SRC_INCLUDE_IDMDDATATYPE_H
 
+#include <stddef.h>
+
 namespace opendmd {
 
 typedef enum {
