@@ -38,8 +38,13 @@
 
 
 #include "CDmdCaptureDeviceLinux.h"
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <string.h>
 #include <string>
+
 #include "utils/DmdLog.h"
 
 namespace opendmd {
@@ -86,4 +91,18 @@ DMD_S_RESULT CDmdCaptureDeviceLinux::initDevice(const char *deviceName) {
 
     return DMD_S_OK;
 }
+
+const char *GetDeviceName() {
+    const char *devicePath = "/dev/video0";
+    int fd = -1;
+    if ((fd = open(devicePath, O_RDWR)) == -1) {
+        DMD_LOG_ERROR("Video device " << devicePath << " is not available:"
+                << strerror(errno));
+        return NULL;
+    } else {
+        close(fd);
+        return devicePath;
+    }
+}
+
 }  // namespace opendmd

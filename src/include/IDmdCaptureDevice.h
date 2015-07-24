@@ -52,6 +52,7 @@ public:
     virtual DMD_S_RESULT initDevice(const char *deviceName) = 0;
 };
 
+extern const char *GetDeviceName();
 }  // namespace opendmd
 
 #endif  // SRC_INCLUDE_IDMDCAPTUREDEVICE_H
