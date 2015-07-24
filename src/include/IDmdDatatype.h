@@ -39,7 +39,7 @@
 #ifndef SRC_INCLUDE_IDMDDATATYPE_H
 #define SRC_INCLUDE_IDMDDATATYPE_H
 
-#include <stddef.h>
+#include <stddef.h>  // "NULL" is defined in this header file!
 
 namespace opendmd {
 
