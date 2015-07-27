@@ -45,9 +45,13 @@ using namespace opendmd;
 
 int opendmd::client_main(int argc, char *argv[]) {
     DMD_LOG_INFO("At the beginning of client_main function.\n");
+    const char *pDeviceName = GetDeviceName();
+    if (!pDeviceName) {
+        return DMD_S_FAIL;
+    }
     IDmdCaptureDevice *capDevice = new CDmdCaptureDeviceMac();
-    capDevice->initDevice("tobeimplemented");
+    capDevice->initDevice(pDeviceName);
     delete capDevice;
-
-    return 0;
+    
+    return DMD_S_OK;
 }
