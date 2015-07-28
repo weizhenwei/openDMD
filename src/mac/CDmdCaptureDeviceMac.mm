@@ -36,9 +36,12 @@
  ============================================================================
  */
 
+#import "CDmdCaptureDeviceMac.h"
+
 #import <AVFoundation/AVFoundation.h>
 
-#import "CDmdCaptureDeviceMac.h"
+
+#include "utils/DmdLog.h"
 
 namespace opendmd {
 
@@ -66,14 +69,14 @@ DMD_S_RESULT CDmdCaptureDeviceMac::initDevice(const char *deviceName) {
     return DMD_S_OK;
 }
 
-// TODO(weizhenwei): get device name in mac way.
 const char *GetDeviceName() {
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     if (nil == device) {
+        DMD_LOG_ERROR("Could not get video device");
         return NULL;
     }
-    
-    const char *deviceName = [[device localizedName] UTF8String];
+
+    const char *deviceName = [[device uniqueID] UTF8String];
     
     return deviceName;
 }

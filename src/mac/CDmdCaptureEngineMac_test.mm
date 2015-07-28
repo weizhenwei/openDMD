@@ -40,4 +40,4 @@
 
 namespace opendmd {
 
-} /* namespace opendmd */
+}  // namespace opendmd
