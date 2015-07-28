@@ -50,26 +50,46 @@
 namespace opendmd {
 
 CDmdCaptureDeviceLinux::CDmdCaptureDeviceLinux() {
-    m_pV4L2_info.video_device_path = string("/dev/video0");
+    memset(&m_V4L2_info, '\0', sizeof(struct v4l2_device_info));
+    m_strDeviceName = string("");
     m_bCaptureOn = false;
 }
 
 CDmdCaptureDeviceLinux::~CDmdCaptureDeviceLinux() {
     // TODO(weizhenwei): add more delete operation on m_pV4L2_info's members;
-}
-
-void CDmdCaptureDeviceLinux::releaseV4L2() {
-    // TODO(weizhenwei): release m_pV4L2_info;
+    if (m_V4L2_info.video_device_path) {
+        delete [] m_V4L2_info.video_device_path;
+        m_V4L2_info.video_device_path = NULL;
+    }
 }
 
 DMD_S_RESULT CDmdCaptureDeviceLinux::init(const char *deviceName) {
     if (m_bCaptureOn) {
-        DMD_LOG_ERROR("Capture Device " << m_pV4L2_info.video_device_path
+        DMD_LOG_ERROR("Capture Device " << m_strDeviceName
                 << "is already running\n");
         return DMD_S_FAIL;
     }
-    m_pV4L2_info.video_device_path.clear();
-    m_pV4L2_info.video_device_path.assign(deviceName);
+
+    if (!m_strDeviceName.empty()) {
+        m_strDeviceName.clear();
+    }
+    m_strDeviceName.assign(deviceName);
+
+    if (m_V4L2_info.video_device_path) {
+        delete m_V4L2_info.video_device_path;
+    }
+    size_t strLen = strlen(deviceName);
+    char *pDeviceName = new char[strLen+1];
+    if (!pDeviceName) {
+        DMD_LOG_ERROR("new pDeviceName = NULL");
+        return DMD_S_FAIL;
+    }
+    memset(pDeviceName, '\0', strLen + 1);
+    strcpy(pDeviceName, deviceName);
+    m_V4L2_info.video_device_path = pDeviceName;
+
+    m_bCaptureOn = true;
+
     return DMD_S_OK;
 }
 
@@ -80,17 +100,14 @@ DMD_S_RESULT CDmdCaptureDeviceLinux::getDeviceName(char *deviceName) {
     return DMD_S_OK;
 }
 DMD_S_RESULT CDmdCaptureDeviceLinux::initDevice(const char *deviceName) {
-    if (m_bCaptureOn) {
-        DMD_LOG_ERROR("Capture Device " << m_pV4L2_info.video_device_path
-                << "is already running\n");
+    if (!deviceName) {
+        DMD_LOG_ERROR("device name is NULL");
         return DMD_S_FAIL;
     }
-    m_pV4L2_info.video_device_path.clear();
-    m_pV4L2_info.video_device_path.assign(deviceName);
-    m_bCaptureOn = true;
 
-    return DMD_S_OK;
+    return init(deviceName);
 }
+
 DMD_S_RESULT CDmdCaptureDeviceLinux::startCapture() {
     return DMD_S_OK;
 }

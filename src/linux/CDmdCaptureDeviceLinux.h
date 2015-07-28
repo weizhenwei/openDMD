@@ -52,7 +52,7 @@ namespace opendmd {
 
 struct v4l2_device_info {
     int video_device_fd;                                 // video device fd;
-    string video_device_path;                      // video device path;
+    const char * video_device_path;                      // video device path;
     struct v4l2_capability cap;                   // video device capabilities;
     struct v4l2_input input;                       // video input;
     struct v4l2_fmtdesc fmtdesc;            // video format enumeration;
@@ -83,8 +83,8 @@ public:
      DMD_S_RESULT stopCapture();
 
 private:
-     void releaseV4L2();
-     struct v4l2_device_info m_pV4L2_info;
+     struct v4l2_device_info m_V4L2_info;
+     string m_strDeviceName;
      bool m_bCaptureOn;
 };
 
