@@ -79,6 +79,8 @@ public:
      DMD_S_RESULT setDeviceName(const char *deviceName);
      DMD_S_RESULT getDeviceName(char *deviceName);
      DMD_S_RESULT initDevice(const char *deviceName);
+     DMD_S_RESULT startCapture();
+     DMD_S_RESULT stopCapture();
 
 private:
      void releaseV4L2();

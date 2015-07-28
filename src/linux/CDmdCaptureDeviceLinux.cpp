@@ -91,6 +91,12 @@ DMD_S_RESULT CDmdCaptureDeviceLinux::initDevice(const char *deviceName) {
 
     return DMD_S_OK;
 }
+DMD_S_RESULT CDmdCaptureDeviceLinux::startCapture() {
+    return DMD_S_OK;
+}
+DMD_S_RESULT CDmdCaptureDeviceLinux::stopCapture() {
+    return DMD_S_OK;
+}
 
 const char *GetDeviceName() {
     const char *devicePath = "/dev/video0";

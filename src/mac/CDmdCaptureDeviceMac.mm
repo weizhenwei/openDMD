@@ -68,6 +68,12 @@ DMD_S_RESULT CDmdCaptureDeviceMac::getDeviceName(char *deviceName) {
 DMD_S_RESULT CDmdCaptureDeviceMac::initDevice(const char *deviceName) {
     return DMD_S_OK;
 }
+DMD_S_RESULT CDmdCaptureDeviceMac::startCapture() {
+    return DMD_S_OK;
+}
+DMD_S_RESULT CDmdCaptureDeviceMac::stopCapture() {
+    return DMD_S_OK;
+}
 
 const char *GetDeviceName() {
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
