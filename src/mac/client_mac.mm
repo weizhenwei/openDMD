@@ -49,6 +49,8 @@ int opendmd::client_main(int argc, char *argv[]) {
     if (!pDeviceName) {
         return DMD_S_FAIL;
     }
+
+    DMD_LOG_INFO("Device Name: " << pDeviceName);
     IDmdCaptureDevice *capDevice = new CDmdCaptureDeviceMac();
     capDevice->initDevice(pDeviceName);
     delete capDevice;
