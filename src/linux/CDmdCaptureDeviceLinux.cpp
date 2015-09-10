@@ -52,6 +52,7 @@ namespace opendmd {
 CDmdCaptureDeviceLinux::CDmdCaptureDeviceLinux() {
     memset(&m_V4L2_info, '\0', sizeof(struct v4l2_device_info));
     m_strDeviceName = string("");
+    m_bDeviceNameSet = false;
     m_bCaptureOn = false;
 }
 
@@ -94,27 +95,28 @@ DMD_S_RESULT CDmdCaptureDeviceLinux::init(const char *deviceName) {
 }
 
 DMD_S_RESULT CDmdCaptureDeviceLinux::setDeviceName(const char *deviceName) {
-    return DMD_S_OK;
-}
-DMD_S_RESULT CDmdCaptureDeviceLinux::getDeviceName(char *deviceName) {
-    return DMD_S_OK;
-}
-DMD_S_RESULT CDmdCaptureDeviceLinux::initDevice(const char *deviceName) {
-    if (!deviceName) {
-        DMD_LOG_ERROR("device name is NULL");
+    if (NULL != deviceName) {
+        m_strDeviceName = deviceName;
+        m_bDeviceNameSet = true;
+
+        return DMD_S_OK;
+    } else {
+        m_bDeviceNameSet = false;
         return DMD_S_FAIL;
     }
-
-    return init(deviceName);
+}
+DMD_S_RESULT CDmdCaptureDeviceLinux::getDeviceName(char **deviceName) {
+    if (m_bDeviceNameSet) {
+        *deviceName = m_strDeviceName.c_str();
+        return DMD_S_OK;
+    } else {
+        *deviceName = NULL;
+        return DMD_S_FAIL;
+    }
 }
 
-DMD_S_RESULT CDmdCaptureDeviceLinux::startCapture() {
-    return DMD_S_OK;
-}
-DMD_S_RESULT CDmdCaptureDeviceLinux::stopCapture() {
-    return DMD_S_OK;
-}
 
+// global function definition;
 const char *GetDeviceName() {
     const char *devicePath = "/dev/video0";
     int fd = -1;

@@ -77,15 +77,14 @@ public:
 
      // IDmdCaptureDevice interface
      DMD_S_RESULT setDeviceName(const char *deviceName);
-     DMD_S_RESULT getDeviceName(char *deviceName);
-     DMD_S_RESULT initDevice(const char *deviceName);
-     DMD_S_RESULT startCapture();
-     DMD_S_RESULT stopCapture();
+     DMD_S_RESULT getDeviceName(char **deviceName);
+     DMD_BOOL     isDeviceNameSet();
 
 private:
      struct v4l2_device_info m_V4L2_info;
      string m_strDeviceName;
-     bool m_bCaptureOn;
+     DMD_BOOL m_bDeviceNameSet;
+     DMD_BOOL m_bCaptureOn;
 };
 
 }  // namespace opendmd

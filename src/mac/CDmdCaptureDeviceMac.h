@@ -61,7 +61,7 @@ public:
 
 private:
     NSString *m_sDeviceName;
-    DMD_BOOL m_bDeviceSet;
+    DMD_BOOL m_bDeviceNameSet;
 };
 
 }  // namespace opendmd

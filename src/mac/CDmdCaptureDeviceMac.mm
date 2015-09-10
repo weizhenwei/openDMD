@@ -45,19 +45,19 @@
 
 namespace opendmd {
 
-CDmdCaptureDeviceMac::CDmdCaptureDeviceMac(): m_sDeviceName(nil), m_bDeviceSet(false) {}
+CDmdCaptureDeviceMac::CDmdCaptureDeviceMac(): m_sDeviceName(nil), m_bDeviceNameSet(false) {}
 
 CDmdCaptureDeviceMac::~CDmdCaptureDeviceMac() {}
 
 DMD_S_RESULT CDmdCaptureDeviceMac::init(const char *deviceName) {
     if (NULL != deviceName) {
         m_sDeviceName = [NSString stringWithUTF8String:deviceName];
-        m_bDeviceSet = true;
+        m_bDeviceNameSet = true;
         
         return DMD_S_FAIL;
     } else {
         m_sDeviceName = nil;
-        m_bDeviceSet = false;
+        m_bDeviceNameSet = false;
         
         return DMD_S_OK;
     }
@@ -66,17 +66,17 @@ DMD_S_RESULT CDmdCaptureDeviceMac::init(const char *deviceName) {
 DMD_S_RESULT CDmdCaptureDeviceMac::setDeviceName(const char *deviceName) {
     if (NULL != deviceName) {
         m_sDeviceName = [NSString stringWithUTF8String:deviceName];
-        m_bDeviceSet = true;
+        m_bDeviceNameSet = true;
         return DMD_S_FAIL;
     } else {
         m_sDeviceName = nil;
-        m_bDeviceSet = false;
+        m_bDeviceNameSet = false;
         return DMD_S_OK;
     }
 }
 
 DMD_S_RESULT CDmdCaptureDeviceMac::getDeviceName(char **deviceName) {
-    if (m_bDeviceSet) {
+    if (m_bDeviceNameSet) {
         *deviceName = (char *)[m_sDeviceName UTF8String];
         return DMD_S_OK;
     } else {
@@ -87,7 +87,7 @@ DMD_S_RESULT CDmdCaptureDeviceMac::getDeviceName(char **deviceName) {
     
 
 DMD_BOOL CDmdCaptureDeviceMac::isDeviceNameSet() {
-    return m_bDeviceSet;
+    return m_bDeviceNameSet;
 }
 
 // global function definition;
