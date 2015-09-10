@@ -45,36 +45,52 @@
 
 namespace opendmd {
 
-CDmdCaptureDeviceMac::CDmdCaptureDeviceMac(): m_sDeviceName(nil), m_idDevice(nil) {
-    // TODO(weizhenwei): Auto-generated constructor stub
-}
+CDmdCaptureDeviceMac::CDmdCaptureDeviceMac(): m_sDeviceName(nil), m_bDeviceSet(false) {}
 
-CDmdCaptureDeviceMac::~CDmdCaptureDeviceMac() {
-    // TODO(weizhenwei): Auto-generated destructor stub
-}
+CDmdCaptureDeviceMac::~CDmdCaptureDeviceMac() {}
 
 DMD_S_RESULT CDmdCaptureDeviceMac::init(const char *deviceName) {
-//    m_sDeviceName = [NSString stringWithUTF8String:deviceName];
-
-    return DMD_S_OK;
+    if (NULL != deviceName) {
+        m_sDeviceName = [NSString stringWithUTF8String:deviceName];
+        m_bDeviceSet = true;
+        
+        return DMD_S_FAIL;
+    } else {
+        m_sDeviceName = nil;
+        m_bDeviceSet = false;
+        
+        return DMD_S_OK;
+    }
 }
 
 DMD_S_RESULT CDmdCaptureDeviceMac::setDeviceName(const char *deviceName) {
-    return DMD_S_OK;
-}
-DMD_S_RESULT CDmdCaptureDeviceMac::getDeviceName(char *deviceName) {
-    return DMD_S_OK;
-}
-DMD_S_RESULT CDmdCaptureDeviceMac::initDevice(const char *deviceName) {
-    return DMD_S_OK;
-}
-DMD_S_RESULT CDmdCaptureDeviceMac::startCapture() {
-    return DMD_S_OK;
-}
-DMD_S_RESULT CDmdCaptureDeviceMac::stopCapture() {
-    return DMD_S_OK;
+    if (NULL != deviceName) {
+        m_sDeviceName = [NSString stringWithUTF8String:deviceName];
+        m_bDeviceSet = true;
+        return DMD_S_FAIL;
+    } else {
+        m_sDeviceName = nil;
+        m_bDeviceSet = false;
+        return DMD_S_OK;
+    }
 }
 
+DMD_S_RESULT CDmdCaptureDeviceMac::getDeviceName(char **deviceName) {
+    if (m_bDeviceSet) {
+        *deviceName = (char *)[m_sDeviceName UTF8String];
+        return DMD_S_OK;
+    } else {
+        *deviceName = NULL;
+        return DMD_S_FAIL;
+    }
+}
+    
+
+DMD_BOOL CDmdCaptureDeviceMac::isDeviceNameSet() {
+    return m_bDeviceSet;
+}
+
+// global function definition;
 const char *GetDeviceName() {
     AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     if (nil == device) {

@@ -48,10 +48,8 @@ public:
     virtual ~IDmdCaptureDevice() {}
 
     virtual DMD_S_RESULT setDeviceName(const char *deviceName) = 0;
-    virtual DMD_S_RESULT getDeviceName(char *deviceName) = 0;
-    virtual DMD_S_RESULT initDevice(const char *deviceName) = 0;
-    virtual DMD_S_RESULT startCapture() = 0;
-    virtual DMD_S_RESULT stopCapture() = 0;
+    virtual DMD_S_RESULT getDeviceName(char **deviceName) = 0;
+    virtual DMD_BOOL     isDeviceNameSet() = 0;
 };
 
 extern const char *GetDeviceName();

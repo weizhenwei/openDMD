@@ -43,11 +43,37 @@
 
 namespace opendmd {
 
+#define DMD_BOOL bool
+
 typedef enum {
     DMD_S_OK = 0x0,
     DMD_S_FAIL = 0x1,
 } DMD_S_RESULT;
 
+typedef enum {
+    DmdUnknown = 0,
+
+    // yuv color space;
+    DmdI420,
+    DmdYV12,
+    DmdNV12,
+    DmdNV21,
+    DmdYUY2,
+
+    // rgb color space;
+    DmdRGB24,
+    DmdBGR24,
+    DmdRGBA32,
+    DmdBGRA32,
+} DmdVideoType;
+
+typedef struct {
+    DmdVideoType    video_type;
+    unsigned int    width;
+    unsigned int    height;
+    float           frame_rate;
+    unsigned long   time_stamp;
+} DmdVideoFormat;
 
 }  // namespace opendmd
 

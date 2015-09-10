@@ -56,14 +56,12 @@ public:
 
     // IDmdCaptureDevice interface
     DMD_S_RESULT setDeviceName(const char *deviceName);
-    DMD_S_RESULT getDeviceName(char *deviceName);
-    DMD_S_RESULT initDevice(const char *deviceName);
-    DMD_S_RESULT startCapture();
-    DMD_S_RESULT stopCapture();
+    DMD_S_RESULT getDeviceName(char **deviceName);
+    DMD_BOOL     isDeviceNameSet();
 
 private:
     NSString *m_sDeviceName;
-    id m_idDevice;  // AVCaptureDevice;
+    DMD_BOOL m_bDeviceSet;
 };
 
 }  // namespace opendmd
