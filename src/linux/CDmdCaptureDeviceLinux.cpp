@@ -107,14 +107,16 @@ DMD_S_RESULT CDmdCaptureDeviceLinux::setDeviceName(const char *deviceName) {
 }
 DMD_S_RESULT CDmdCaptureDeviceLinux::getDeviceName(char **deviceName) {
     if (m_bDeviceNameSet) {
-        *deviceName = m_strDeviceName.c_str();
+        *deviceName =(char *) m_strDeviceName.c_str();
         return DMD_S_OK;
     } else {
         *deviceName = NULL;
         return DMD_S_FAIL;
     }
 }
-
+DMD_BOOL    CDmdCaptureDeviceLinux:: isDeviceNameSet() {
+    return m_bDeviceNameSet;
+}
 
 // global function definition;
 const char *GetDeviceName() {

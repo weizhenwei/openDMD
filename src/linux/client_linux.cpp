@@ -50,7 +50,7 @@ int opendmd::client_main(int argc, char *argv[]) {
         return DMD_S_FAIL;
     }
     IDmdCaptureDevice *capDevice = new CDmdCaptureDeviceLinux();
-    capDevice->initDevice(pDeviceName);
+    capDevice->setDeviceName(pDeviceName);
     delete capDevice;
 
     return DMD_S_OK;
