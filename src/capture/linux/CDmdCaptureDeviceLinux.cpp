@@ -39,6 +39,7 @@
 
 #include "CDmdCaptureDeviceLinux.h"
 
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -107,14 +108,14 @@ DMD_RESULT CDmdCaptureDeviceLinux::setDeviceName(const char *deviceName) {
 }
 DMD_RESULT CDmdCaptureDeviceLinux::getDeviceName(char **deviceName) {
     if (m_bDeviceNameSet) {
-        *deviceName = static_cast<char *>(m_strDeviceName.c_str());
+        *deviceName = (char *)m_strDeviceName.c_str();
         return DMD_S_OK;
     } else {
         *deviceName = NULL;
         return DMD_S_FAIL;
     }
 }
-DMD_BOOL    CDmdCaptureDeviceLinux:: isDeviceNameSet() {
+DMD_BOOL CDmdCaptureDeviceLinux::isDeviceNameSet() {
     return m_bDeviceNameSet;
 }
 

@@ -78,7 +78,7 @@ public:
      // IDmdCaptureDevice interface
      DMD_RESULT setDeviceName(const char *deviceName);
      DMD_RESULT getDeviceName(char **deviceName);
-     DMD_BOOL     isDeviceNameSet();
+     DMD_BOOL isDeviceNameSet();
 
 private:
      struct v4l2_device_info m_V4L2_info;
