@@ -37,8 +37,8 @@
  */
 
 
-#ifndef SRC_MAC_CDMDCAPTUREDEVICEMAC_H
-#define SRC_MAC_CDMDCAPTUREDEVICEMAC_H
+#ifndef SRC_CAPTURE_MAC_CDMDCAPTUREDEVICEMAC_H
+#define SRC_CAPTURE_MAC_CDMDCAPTUREDEVICEMAC_H
 
 #import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
@@ -66,4 +66,5 @@ private:
 
 }  // namespace opendmd
 
-#endif  // SRC_MAC_CDMDCAPTUREDEVICEMAC_H
+#endif  // SRC_CAPTURE_MAC_CDMDCAPTUREDEVICEMAC_H
+

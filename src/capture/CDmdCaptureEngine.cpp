@@ -42,13 +42,11 @@
 #include "IDmdCaptureEngine.h"
 
 namespace opendmd {
-DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine)
-{
+DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
     return DMD_S_OK;
 }
 
-DMD_S_RESULT ReleaseVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine)
-{
+DMD_S_RESULT ReleaseVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
     return DMD_S_OK;
 }
 

@@ -57,6 +57,7 @@ int opendmd::client_main(int argc, char *argv[]) {
     capDevice->getDeviceName(&ppDeviceName);
     DMD_LOG_INFO("Device Name: " << ppDeviceName);
     delete capDevice;
-    
+
     return DMD_S_OK;
 }
+

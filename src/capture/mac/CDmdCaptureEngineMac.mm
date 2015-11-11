@@ -42,11 +42,9 @@
 namespace opendmd {
 
 CDmdCaptureEngineMac::CDmdCaptureEngineMac() : m_pCaptureDevice(nil) {
-    // TODO Auto-generated constructor stub
 }
 
 CDmdCaptureEngineMac::~CDmdCaptureEngineMac() {
-    // TODO Auto-generated destructor stub
     if (m_pCaptureDevice) {
         delete m_pCaptureDevice;
     }
@@ -55,10 +53,14 @@ CDmdCaptureEngineMac::~CDmdCaptureEngineMac() {
 DMD_RESULT CDmdCaptureEngineMac::initEngine() {
     return DMD_S_OK;
 }
+
 DMD_RESULT CDmdCaptureEngineMac::startCapture() {
     return DMD_S_OK;
 }
+
 DMD_RESULT CDmdCaptureEngineMac::stopCapture() {
     return DMD_S_OK;
 }
+
 }  // namespace opendmd
+

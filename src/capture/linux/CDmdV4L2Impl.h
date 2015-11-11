@@ -36,8 +36,8 @@
  ============================================================================
  */
 
-#ifndef SRC_LINUX_CDMDV4L2IMPL_H
-#define SRC_LINUX_CDMDV4L2IMPL_H
+#ifndef SRC_CAPTURE_LINUX_CDMDV4L2IMPL_H
+#define SRC_CAPTURE_LINUX_CDMDV4L2IMPL_H
 
 #include "IDmdDatatype.h"
 #include "CDmdCaptureDeviceLinux.h"
@@ -86,4 +86,4 @@ public:
 
 }  // namespace opendmd
 
-#endif  // SRC_LINUX_CDMDV4L2IMPL_H
+#endif  // SRC_CAPTURE_LINUX_CDMDV4L2IMPL_H

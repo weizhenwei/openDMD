@@ -36,8 +36,8 @@
  ============================================================================
  */
 
-#ifndef SRC_LINUX_CDMDCAPTUREENGINELINUX_H
-#define SRC_LINUX_CDMDCAPTUREENGINELINUX_H
+#ifndef SRC_CAPTURE_LINUX_CDMDCAPTUREENGINELINUX_H
+#define SRC_CAPTURE_LINUX_CDMDCAPTUREENGINELINUX_H
 
 #include "IDmdCaptureDevice.h"
 #include "IDmdCaptureEngine.h"
@@ -60,4 +60,5 @@ private:
 
 }  // namespace opendmd
 
-#endif  // SRC_LINUX_CDMDCAPTUREENGINELINUX_H
+#endif  // SRC_CAPTURE_LINUX_CDMDCAPTUREENGINELINUX_H
+

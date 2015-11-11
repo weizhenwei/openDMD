@@ -36,8 +36,8 @@
  ============================================================================
  */
 
-#ifndef SRC_MAC_CDMDCAPTUREENGINEMAC_H
-#define SRC_MAC_CDMDCAPTUREENGINEMAC_H
+#ifndef SRC_CAPTURE_MAC_CDMDCAPTUREENGINEMAC_H
+#define SRC_CAPTURE_MAC_CDMDCAPTUREENGINEMAC_H
 
 #import "IDmdCaptureDevice.h"
 #import "IDmdCaptureEngine.h"
@@ -60,5 +60,6 @@ private:
 };
 
 }  // namespace opendmd
-#endif  // SRC_MAC_CDMDCAPTUREENGINEMAC_H
+
+#endif  // SRC_CAPTURE_MAC_CDMDCAPTUREENGINEMAC_H
 

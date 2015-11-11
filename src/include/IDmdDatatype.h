@@ -39,6 +39,7 @@
 #ifndef SRC_INCLUDE_IDMDDATATYPE_H
 #define SRC_INCLUDE_IDMDDATATYPE_H
 
+#include <stdint.h>
 #include <stddef.h>  // "NULL" is defined in this header file!
 
 namespace opendmd {
@@ -72,13 +73,10 @@ typedef struct {
     unsigned int    width;
     unsigned int    height;
     float           frame_rate;
-    unsigned long   time_stamp;
+    uint64_t        time_stamp;
 } DmdVideoFormat;
 
 }  // namespace opendmd
 
-
-
-
-
 #endif  // SRC_INCLUDE_IDMDDATATYPE_H
+

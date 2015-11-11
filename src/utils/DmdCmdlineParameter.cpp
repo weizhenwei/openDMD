@@ -46,10 +46,9 @@
 #include <getopt.h>
 #include <sys/stat.h>
 #include <sys/resource.h>
-
 #include <string>
 
-#include <glog/logging.h>
+#include "glog/logging.h"
 
 #include "utils/DmdLog.h"
 

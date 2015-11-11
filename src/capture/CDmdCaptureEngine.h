@@ -36,12 +36,12 @@
  ============================================================================
  */
 
-#ifndef SRC_DMDCAPTURE_CDMDCAPTUREENGINE_H
-#define SRC_DMDCAPTURE_CDMDCAPTUREENGINE_H
+#ifndef SRC_CAPTURE_CDMDCAPTUREENGINE_H
+#define SRC_CAPTURE_CDMDCAPTUREENGINE_H
 
 namespace opendmd {
     DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine);
     DMD_RESULT ReleaseVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine);
 }  // namespace opendmd
 
-#endif  // SRC_DMDCAPTURE_CDMDCAPTUREENGINE_H
+#endif  // SRC_CAPTURE_CDMDCAPTUREENGINE_H

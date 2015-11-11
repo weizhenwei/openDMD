@@ -42,7 +42,7 @@
 #include <string>
 #include <sstream>
 
-#include <glog/logging.h>
+#include "glog/logging.h"
 
 #include "utils/DmdMutex.h"
 

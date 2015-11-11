@@ -45,7 +45,8 @@
 
 namespace opendmd {
 
-CDmdCaptureDeviceMac::CDmdCaptureDeviceMac(): m_sDeviceName(nil), m_bDeviceNameSet(false) {}
+CDmdCaptureDeviceMac::CDmdCaptureDeviceMac(): m_sDeviceName(nil),
+    m_bDeviceNameSet(false) {}
 
 CDmdCaptureDeviceMac::~CDmdCaptureDeviceMac() {}
 
@@ -53,12 +54,12 @@ DMD_RESULT CDmdCaptureDeviceMac::init(const char *deviceName) {
     if (NULL != deviceName) {
         m_sDeviceName = [NSString stringWithUTF8String:deviceName];
         m_bDeviceNameSet = true;
-        
+
         return DMD_S_FAIL;
     } else {
         m_sDeviceName = nil;
         m_bDeviceNameSet = false;
-        
+
         return DMD_S_OK;
     }
 }
@@ -84,7 +85,6 @@ DMD_RESULT CDmdCaptureDeviceMac::getDeviceName(char **deviceName) {
         return DMD_S_FAIL;
     }
 }
-    
 
 DMD_BOOL CDmdCaptureDeviceMac::isDeviceNameSet() {
     return m_bDeviceNameSet;
@@ -92,15 +92,17 @@ DMD_BOOL CDmdCaptureDeviceMac::isDeviceNameSet() {
 
 // global function definition;
 const char *GetDeviceName() {
-    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    AVCaptureDevice *device =
+        [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     if (nil == device) {
         DMD_LOG_ERROR("Could not get video device");
         return NULL;
     }
 
     const char *deviceName = [[device uniqueID] UTF8String];
-    
+
     return deviceName;
 }
 
 }  // namespace opendmd
+

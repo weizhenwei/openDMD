@@ -86,7 +86,7 @@ DMD_RESULT CDmdCaptureDeviceLinux::init(const char *deviceName) {
         return DMD_S_FAIL;
     }
     memset(pDeviceName, '\0', strLen + 1);
-    strcpy(pDeviceName, deviceName);
+    snprintf(pDeviceName, strLen + 1, "%s", deviceName);
     m_V4L2_info.video_device_path = pDeviceName;
 
     m_bCaptureOn = true;
@@ -107,7 +107,7 @@ DMD_RESULT CDmdCaptureDeviceLinux::setDeviceName(const char *deviceName) {
 }
 DMD_RESULT CDmdCaptureDeviceLinux::getDeviceName(char **deviceName) {
     if (m_bDeviceNameSet) {
-        *deviceName =(char *) m_strDeviceName.c_str();
+        *deviceName = static_cast<char *>(m_strDeviceName.c_str());
         return DMD_S_OK;
     } else {
         *deviceName = NULL;
