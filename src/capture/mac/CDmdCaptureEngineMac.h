@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : CDmdCaptureEngineMac.cpp
+ Name        : CDmdCaptureEngineMac.h
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
  Date           :2015.07.14
  Copyright   :
@@ -32,33 +32,33 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : implementation file of capture engine on mac platform.
+ Description : header file of capture engine on mac platform.
  ============================================================================
  */
 
-#import "CDmdCaptureEngineMac.h"
-#import <Cocoa/Cocoa.h>
+#ifndef SRC_MAC_CDMDCAPTUREENGINEMAC_H
+#define SRC_MAC_CDMDCAPTUREENGINEMAC_H
+
+#import "IDmdCaptureDevice.h"
+#import "IDmdCaptureEngine.h"
+
+class IDmdCaptureEngine;
 
 namespace opendmd {
+class CDmdCaptureEngineMac : public IDmdCaptureEngine {
+public:
+    CDmdCaptureEngineMac();
+    ~CDmdCaptureEngineMac();
 
-CDmdCaptureEngineMac::CDmdCaptureEngineMac() : m_pCaptureDevice(nil) {
-    // TODO Auto-generated constructor stub
-}
+    // IDmdCaptureDevice interface;
+    DMD_RESULT initEngine();
+    DMD_RESULT startCapture();
+    DMD_RESULT stopCapture();
 
-CDmdCaptureEngineMac::~CDmdCaptureEngineMac() {
-    // TODO Auto-generated destructor stub
-    if (m_pCaptureDevice) {
-        delete m_pCaptureDevice;
-    }
-}
+private:
+    IDmdCaptureDevice *m_pCaptureDevice;
+};
 
-DMD_S_RESULT CDmdCaptureEngineMac::initEngine() {
-    return DMD_S_OK;
-}
-DMD_S_RESULT CDmdCaptureEngineMac::startCapture() {
-    return DMD_S_OK;
-}
-DMD_S_RESULT CDmdCaptureEngineMac::stopCapture() {
-    return DMD_S_OK;
-}
 }  // namespace opendmd
+#endif  // SRC_MAC_CDMDCAPTUREENGINEMAC_H
+

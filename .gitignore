@@ -32,6 +32,9 @@ build/cmdline/*
 build/eclipse/*
 build/xcode/*
 
+# mac backup file
+.DS_Store
+
 # Eclipse CDT project file
 .cproject
 .project

@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : CDmdV4L2Impl.cpp
+ Name        : CDmdCaptureEngineLinux.h
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.07.29
+ Date           :2015.07.18
  Copyright   :
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
@@ -32,66 +32,32 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : source file of V4L2 capture implementation on linux platform.
+ Description : header file of capture engine on linux platform.
  ============================================================================
  */
 
-#include "CDmdV4L2Impl.h"
+#ifndef SRC_LINUX_CDMDCAPTUREENGINELINUX_H
+#define SRC_LINUX_CDMDCAPTUREENGINELINUX_H
+
+#include "IDmdCaptureDevice.h"
+#include "IDmdCaptureEngine.h"
 
 namespace opendmd {
 
-DMD_S_RESULT CDmdV4L2Impl::v4l2OpenDevice(struct v4l2_device_info
-        *deviceInfo) {
-    return DMD_S_OK;
-}
+class CDmdCaptureEngineLinux : public IDmdCaptureEngine {
+public:
+    CDmdCaptureEngineLinux();
+    ~CDmdCaptureEngineLinux();
 
-DMD_S_RESULT CDmdV4L2Impl::v4l2QueryCapability(struct v4l2_device_info
-        *deviceInfo) {
-    return DMD_S_OK;
-}
+    // IDmdCaptureDevice interface;
+    DMD_RESULT initEngine();
+    DMD_RESULT startCapture();
+    DMD_RESULT stopCapture();
 
-DMD_S_RESULT CDmdV4L2Impl::v4l2QueryFormat(struct v4l2_device_info
-        *deviceInfo) {
-    return DMD_S_OK;
-}
-
-
-DMD_S_RESULT v4l2SetupFormat(struct v4l2_device_info *deviceInfo) {
-    return DMD_S_OK;
-}
-
-DMD_S_RESULT CDmdV4L2Impl::v4l2QueryFPS(struct v4l2_device_info *deviceInfo) {
-    return DMD_S_OK;
-}
-
-DMD_S_RESULT CDmdV4L2Impl::v4l2SetupFPS(struct v4l2_device_info *deviceInfo) {
-    return DMD_S_OK;
-}
-
-DMD_S_RESULT CDmdV4L2Impl::v4l2CreateRequestBuffers(struct v4l2_device_info
-        *deviceInfo) {
-    return DMD_S_OK;
-}
-
-DMD_S_RESULT CDmdV4L2Impl::v4l2mmap(struct v4l2_device_info *deviceInfo) {
-    return DMD_S_OK;
-}
-
-DMD_S_RESULT CDmdV4L2Impl::v4l2StreamON(struct v4l2_device_info *deviceInfo) {
-    return DMD_S_OK;
-}
-
-DMD_S_RESULT CDmdV4L2Impl::v4l2StreamOFF(struct v4l2_device_info *deviceInfo) {
-    return DMD_S_OK;
-}
-
-DMD_S_RESULT CDmdV4L2Impl::v4l2unmmap(struct v4l2_device_info *deviceInfo) {
-    return DMD_S_OK;
-}
-
-DMD_S_RESULT CDmdV4L2Impl::v4l2CloseDevice(struct v4l2_device_info
-        *deviceInfo) {
-    return DMD_S_OK;
-}
+private:
+    IDmdCaptureDevice *m_pCaptureDevice;
+};
 
 }  // namespace opendmd
+
+#endif  // SRC_LINUX_CDMDCAPTUREENGINELINUX_H

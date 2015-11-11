@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : CDmdCaptureEngineLinux.cpp
+ Name        : CDmdCaptureEngine.cpp
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.07.18
+ Date           :2015.11.11
  Copyright   :
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
@@ -32,32 +32,23 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : implementation file of capture engine on linux platform.
+ Description : implementation interface file of capture engine.
  ============================================================================
  */
 
-#include "CDmdCaptureEngineLinux.h"
+#include "CDmdCaptureEngine.h"
+
+#include "IDmdCaptureDevice.h"
+#include "IDmdCaptureEngine.h"
 
 namespace opendmd {
-
-CDmdCaptureEngineLinux::CDmdCaptureEngineLinux() : m_pCaptureDevice(NULL) {
-    // TODO(weizhenwei): Auto-generated constructor stub
-}
-
-CDmdCaptureEngineLinux::~CDmdCaptureEngineLinux() {
-    // TODO(weizhenwei): Auto-generated destructor stub
-    if (m_pCaptureDevice) {
-        delete m_pCaptureDevice;
-    }
-}
-
-DMD_S_RESULT CDmdCaptureEngineLinux::initEngine() {
+DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine)
+{
     return DMD_S_OK;
 }
-DMD_S_RESULT CDmdCaptureEngineLinux::startCapture() {
-    return DMD_S_OK;
-}
-DMD_S_RESULT CDmdCaptureEngineLinux::stopCapture() {
+
+DMD_S_RESULT ReleaseVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine)
+{
     return DMD_S_OK;
 }
 

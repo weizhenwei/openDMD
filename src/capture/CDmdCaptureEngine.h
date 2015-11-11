@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : CDmdCaptureEngineLinux.h
+ Name        : CDmdCaptureEngine.h
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.07.18
+ Date           :2015.11.11
  Copyright   :
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
@@ -32,32 +32,16 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : header file of capture engine on linux platform.
+ Description : interface header file of capture engine module.
  ============================================================================
  */
 
-#ifndef SRC_LINUX_CDMDCAPTUREENGINELINUX_H
-#define SRC_LINUX_CDMDCAPTUREENGINELINUX_H
-
-#include "IDmdCaptureDevice.h"
-#include "IDmdCaptureEngine.h"
+#ifndef SRC_DMDCAPTURE_CDMDCAPTUREENGINE_H
+#define SRC_DMDCAPTURE_CDMDCAPTUREENGINE_H
 
 namespace opendmd {
-
-class CDmdCaptureEngineLinux : public IDmdCaptureEngine {
-public:
-    CDmdCaptureEngineLinux();
-    ~CDmdCaptureEngineLinux();
-
-    // IDmdCaptureDevice interface;
-    DMD_S_RESULT initEngine();
-    DMD_S_RESULT startCapture();
-    DMD_S_RESULT stopCapture();
-
-private:
-    IDmdCaptureDevice *m_pCaptureDevice;
-};
-
+    DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine);
+    DMD_RESULT ReleaseVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine);
 }  // namespace opendmd
 
-#endif  // SRC_LINUX_CDMDCAPTUREENGINELINUX_H
+#endif  // SRC_DMDCAPTURE_CDMDCAPTUREENGINE_H

@@ -64,7 +64,7 @@ CDmdCaptureDeviceLinux::~CDmdCaptureDeviceLinux() {
     }
 }
 
-DMD_S_RESULT CDmdCaptureDeviceLinux::init(const char *deviceName) {
+DMD_RESULT CDmdCaptureDeviceLinux::init(const char *deviceName) {
     if (m_bCaptureOn) {
         DMD_LOG_ERROR("Capture Device " << m_strDeviceName
                 << "is already running\n");
@@ -94,7 +94,7 @@ DMD_S_RESULT CDmdCaptureDeviceLinux::init(const char *deviceName) {
     return DMD_S_OK;
 }
 
-DMD_S_RESULT CDmdCaptureDeviceLinux::setDeviceName(const char *deviceName) {
+DMD_RESULT CDmdCaptureDeviceLinux::setDeviceName(const char *deviceName) {
     if (NULL != deviceName) {
         m_strDeviceName = deviceName;
         m_bDeviceNameSet = true;
@@ -105,7 +105,7 @@ DMD_S_RESULT CDmdCaptureDeviceLinux::setDeviceName(const char *deviceName) {
         return DMD_S_FAIL;
     }
 }
-DMD_S_RESULT CDmdCaptureDeviceLinux::getDeviceName(char **deviceName) {
+DMD_RESULT CDmdCaptureDeviceLinux::getDeviceName(char **deviceName) {
     if (m_bDeviceNameSet) {
         *deviceName =(char *) m_strDeviceName.c_str();
         return DMD_S_OK;

@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : IDmdCaptureDevice.h
+ Name        : CDmdCaptureEngineLinux.cpp
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.07.06
+ Date           :2015.07.18
  Copyright   :
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
@@ -32,27 +32,33 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : base class interface of video capture device..
+ Description : implementation file of capture engine on linux platform.
  ============================================================================
  */
 
-#ifndef SRC_INCLUDE_IDMDCAPTUREDEVICE_H
-#define SRC_INCLUDE_IDMDCAPTUREDEVICE_H
-
-#include "IDmdDatatype.h"
+#include "CDmdCaptureEngineLinux.h"
 
 namespace opendmd {
-class IDmdCaptureDevice {
-public:
-    IDmdCaptureDevice() {}
-    virtual ~IDmdCaptureDevice() {}
 
-    virtual DMD_RESULT setDeviceName(const char *deviceName) = 0;
-    virtual DMD_RESULT getDeviceName(char **deviceName) = 0;
-    virtual DMD_BOOL     isDeviceNameSet() = 0;
-};
+CDmdCaptureEngineLinux::CDmdCaptureEngineLinux() : m_pCaptureDevice(NULL) {
+    // TODO(weizhenwei): Auto-generated constructor stub
+}
 
-extern const char *GetDeviceName();
+CDmdCaptureEngineLinux::~CDmdCaptureEngineLinux() {
+    // TODO(weizhenwei): Auto-generated destructor stub
+    if (m_pCaptureDevice) {
+        delete m_pCaptureDevice;
+    }
+}
+
+DMD_RESULT CDmdCaptureEngineLinux::initEngine() {
+    return DMD_S_OK;
+}
+DMD_RESULT CDmdCaptureEngineLinux::startCapture() {
+    return DMD_S_OK;
+}
+DMD_RESULT CDmdCaptureEngineLinux::stopCapture() {
+    return DMD_S_OK;
+}
+
 }  // namespace opendmd
-
-#endif  // SRC_INCLUDE_IDMDCAPTUREDEVICE_H

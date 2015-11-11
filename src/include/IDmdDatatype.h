@@ -48,7 +48,7 @@ namespace opendmd {
 typedef enum {
     DMD_S_OK = 0x0,
     DMD_S_FAIL = 0x1,
-} DMD_S_RESULT;
+} DMD_RESULT;
 
 typedef enum {
     DmdUnknown = 0,

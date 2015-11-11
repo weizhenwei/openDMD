@@ -48,9 +48,9 @@ class IDmdCaptureEngine {
     IDmdCaptureEngine() {}
     virtual ~IDmdCaptureEngine() {}
 
-    virtual DMD_S_RESULT initEngine() = 0;
-    virtual DMD_S_RESULT startCapture() = 0;
-    virtual DMD_S_RESULT stopCapture() = 0;
+    virtual DMD_RESULT initEngine() = 0;
+    virtual DMD_RESULT startCapture() = 0;
+    virtual DMD_RESULT stopCapture() = 0;
 };
 
 }  // namespace opendmd

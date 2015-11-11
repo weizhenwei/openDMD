@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : CDmdCaptureDeviceMac.mm
+ Name        : CDmdCaptureDeviceMac.h
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
  Date           :2015.07.07
  Copyright   :
@@ -32,75 +32,38 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : concrete implementation file of capture device on mac platform.
+ Description : header file of capture device on mac platform.
  ============================================================================
  */
 
-#import "CDmdCaptureDeviceMac.h"
 
-#import <AVFoundation/AVFoundation.h>
+#ifndef SRC_MAC_CDMDCAPTUREDEVICEMAC_H
+#define SRC_MAC_CDMDCAPTUREDEVICEMAC_H
 
-
-#include "utils/DmdLog.h"
+#import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
+#include <string>
+#import "IDmdCaptureDevice.h"
 
 namespace opendmd {
 
-CDmdCaptureDeviceMac::CDmdCaptureDeviceMac(): m_sDeviceName(nil), m_bDeviceNameSet(false) {}
+class CDmdCaptureDeviceMac: public IDmdCaptureDevice {
+public:
+    CDmdCaptureDeviceMac();
+    ~CDmdCaptureDeviceMac();
 
-CDmdCaptureDeviceMac::~CDmdCaptureDeviceMac() {}
+    DMD_RESULT init(const char *deviceName);
 
-DMD_S_RESULT CDmdCaptureDeviceMac::init(const char *deviceName) {
-    if (NULL != deviceName) {
-        m_sDeviceName = [NSString stringWithUTF8String:deviceName];
-        m_bDeviceNameSet = true;
-        
-        return DMD_S_FAIL;
-    } else {
-        m_sDeviceName = nil;
-        m_bDeviceNameSet = false;
-        
-        return DMD_S_OK;
-    }
-}
+    // IDmdCaptureDevice interface
+    DMD_RESULT setDeviceName(const char *deviceName);
+    DMD_RESULT getDeviceName(char **deviceName);
+    DMD_BOOL     isDeviceNameSet();
 
-DMD_S_RESULT CDmdCaptureDeviceMac::setDeviceName(const char *deviceName) {
-    if (NULL != deviceName) {
-        m_sDeviceName = [NSString stringWithUTF8String:deviceName];
-        m_bDeviceNameSet = true;
-        return DMD_S_FAIL;
-    } else {
-        m_sDeviceName = nil;
-        m_bDeviceNameSet = false;
-        return DMD_S_OK;
-    }
-}
-
-DMD_S_RESULT CDmdCaptureDeviceMac::getDeviceName(char **deviceName) {
-    if (m_bDeviceNameSet) {
-        *deviceName = (char *)[m_sDeviceName UTF8String];
-        return DMD_S_OK;
-    } else {
-        *deviceName = NULL;
-        return DMD_S_FAIL;
-    }
-}
-    
-
-DMD_BOOL CDmdCaptureDeviceMac::isDeviceNameSet() {
-    return m_bDeviceNameSet;
-}
-
-// global function definition;
-const char *GetDeviceName() {
-    AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    if (nil == device) {
-        DMD_LOG_ERROR("Could not get video device");
-        return NULL;
-    }
-
-    const char *deviceName = [[device uniqueID] UTF8String];
-    
-    return deviceName;
-}
+private:
+    NSString *m_sDeviceName;
+    DMD_BOOL m_bDeviceNameSet;
+};
 
 }  // namespace opendmd
+
+#endif  // SRC_MAC_CDMDCAPTUREDEVICEMAC_H
