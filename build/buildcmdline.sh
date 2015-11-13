@@ -15,7 +15,7 @@ BUILD_TYPE=$1
 
 cd cmdline
 cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -G "Unix Makefiles" ../..
-cd ..
+# cd ..
 
 exit 0
 

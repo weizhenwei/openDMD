@@ -39,8 +39,8 @@
 #include <stdlib.h>
 
 #include "IDmdDatatype.h"
-#include "utils/DmdLog.h"
-#include "utils/DmdCmdlineParameter.h"
+#include "DmdLog.h"
+#include "DmdCmdlineParameter.h"
 #include "main.h"
 
 using namespace opendmd;

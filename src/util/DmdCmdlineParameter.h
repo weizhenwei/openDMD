@@ -36,8 +36,8 @@
  ============================================================================
  */
 
-#ifndef SRC_UTILS_DMDCMDLINEPARAMETER_H
-#define SRC_UTILS_DMDCMDLINEPARAMETER_H
+#ifndef SRC_UTIL_DMDCMDLINEPARAMETER_H
+#define SRC_UTIL_DMDCMDLINEPARAMETER_H
 
 #include <string>
 
@@ -72,4 +72,4 @@ private:
 
 }  // namespace opendmd
 
-#endif  // SRC_UTILS_DMDCMDLINEPARAMETER_H
+#endif  // SRC_UTIL_DMDCMDLINEPARAMETER_H

@@ -36,8 +36,8 @@
  ============================================================================
  */
 
-#ifndef SRC_UTILS_DMDCONFIG_H
-#define SRC_UTILS_DMDCONFIG_H
+#ifndef SRC_UTIL_DMDCONFIG_H
+#define SRC_UTIL_DMDCONFIG_H
 
 #include "DmdMutex.h"
 
@@ -63,5 +63,5 @@ private:
 
 }  // namespace opendmd
 
-#endif  // SRC_UTILS_DMDCONFIG_H
+#endif  // SRC_UTIL_DMDCONFIG_H
 

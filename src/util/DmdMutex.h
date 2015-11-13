@@ -36,8 +36,8 @@
  ============================================================================
  */
 
-#ifndef SRC_UTILS_DMDMUTEX_H
-#define SRC_UTILS_DMDMUTEX_H
+#ifndef SRC_UTIL_DMDMUTEX_H
+#define SRC_UTIL_DMDMUTEX_H
 
 #include <pthread.h>
 
@@ -60,4 +60,4 @@ private:
 
 }  // namespace opendmd
 
-#endif  // SRC_UTILS_DMDMUTEX_H
+#endif  // SRC_UTIL_DMDMUTEX_H

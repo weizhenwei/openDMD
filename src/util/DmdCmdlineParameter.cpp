@@ -50,7 +50,7 @@
 
 #include "glog/logging.h"
 
-#include "utils/DmdLog.h"
+#include "DmdLog.h"
 
 
 namespace opendmd {

@@ -36,15 +36,15 @@
  ============================================================================
  */
 
-#ifndef SRC_UTILS_DMDLOG_H
-#define SRC_UTILS_DMDLOG_H
+#ifndef SRC_UTIL_DMDLOG_H
+#define SRC_UTIL_DMDLOG_H
 
 #include <string>
 #include <sstream>
 
 #include "glog/logging.h"
 
-#include "utils/DmdMutex.h"
+#include "DmdMutex.h"
 
 using std::string;
 using std::stringstream;
@@ -93,5 +93,5 @@ private:
 #define DMD_CHECK_NOTNULL(ptr) CHECK_NOTNULL(ptr)
 }  // namespace opendmd
 
-#endif  // SRC_UTILS_DMDLOG_H
+#endif  // SRC_UTIL_DMDLOG_H
 

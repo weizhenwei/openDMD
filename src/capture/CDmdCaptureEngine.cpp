@@ -43,10 +43,12 @@
 
 namespace opendmd {
 DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
+    ppVideoCapEngine = NULL;
     return DMD_S_OK;
 }
 
-DMD_S_RESULT ReleaseVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
+DMD_RESULT ReleaseVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
+    ppVideoCapEngine = NULL;
     return DMD_S_OK;
 }
 
