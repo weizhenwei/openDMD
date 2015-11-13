@@ -21,7 +21,7 @@ file(GLOB UNIVERSAL_FILES ./*.h ./*.cpp)
 if(LINUX_PLATFORM)
     FILE(GLOB PLATFORM_SPECIFIC_FILES ./linux/*.h ./linux/*.cpp)
 elseif(MAC_PLATFORM)    
-    file(GLOB PLATFORM_SPECIFIC_FILES ./mac/*.h ./mac/*.cpp */mac/*.m */mac/*.mm)
+    file(GLOB PLATFORM_SPECIFIC_FILES ./mac/*.h ./mac/*.cpp ./mac/*.m ./mac/*.mm)
 endif()
 
 set(ALL_FILES ${UNIVERSAL_FILES} ${PLATFORM_SPECIFIC_FILES})

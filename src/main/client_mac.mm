@@ -37,26 +37,16 @@
  */
 
 #include "DmdLog.h"
-#include "IDmdCaptureDevice.h"
-// #include "CDmdCaptureDeviceMac.h"
+#include "IDmdCaptureEngine.h"
+#include "CDmdCaptureEngine.h"
 #include "main.h"
 
 using namespace opendmd;
 
 int opendmd::client_main(int argc, char *argv[]) {
     DMD_LOG_INFO("At the beginning of client_main function.\n");
-    // const char *pDeviceName = GetDeviceName();
-    // if (!pDeviceName) {
-    //     return DMD_S_FAIL;
-    // }
-
-    // DMD_LOG_INFO("Device Name: " << pDeviceName);
-    // IDmdCaptureDevice *capDevice = new CDmdCaptureDeviceMac();
-    // capDevice->setDeviceName(pDeviceName);
-    // char *ppDeviceName = NULL;
-    // capDevice->getDeviceName(&ppDeviceName);
-    // DMD_LOG_INFO("Device Name: " << ppDeviceName);
-    // delete capDevice;
+    IDmdCaptureEngine *pCapEngine = NULL;
+    CreateVideoCaptureEngine(&pCapEngine);
 
     return DMD_S_OK;
 }
