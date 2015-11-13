@@ -6,6 +6,9 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
         set(LINUX_PLATFORM TRUE)
     endif()
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+    # for eliminating the macosx_rpath warning;
+    set(CMAKE_MACOSX_RPATH 1)
+
     if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64")
         set(MAC_PLATFORM TRUE)
     endif()

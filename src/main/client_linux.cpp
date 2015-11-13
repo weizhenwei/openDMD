@@ -36,22 +36,17 @@
  ============================================================================
  */
 
-#include "utils/DmdLog.h"
-#include "IDmdCaptureDevice.h"
-#include "CDmdCaptureDeviceLinux.h"
+#include "DmdLog.h"
+#include "IDmdCaptureEngine.h"
+#include "CDmdCaptureEngine.h"
 #include "main.h"
 
 using namespace opendmd;
 
 int opendmd::client_main(int argc, char *argv[]) {
     DMD_LOG_INFO("At the beginning of client_main function.\n");
-    const char *pDeviceName = GetDeviceName();
-    if (!pDeviceName) {
-        return DMD_S_FAIL;
-    }
-    IDmdCaptureDevice *capDevice = new CDmdCaptureDeviceLinux();
-    capDevice->setDeviceName(pDeviceName);
-    delete capDevice;
+    IDmdCaptureEngine *pVideoCapEngine = NULL;
+    CreateVideoCaptureEngine(&pVideoCapEngine);
 
     return DMD_S_OK;
 }

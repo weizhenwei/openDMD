@@ -14,19 +14,26 @@ if(NOT LINUX_PLATFORM AND NOT MAC_PLATFORM)
     message(FATAL_ERROR "Only Linux-x86_64 and Darwin-x86_64 platform supported")
 endif()
 
-include_directories(${PROJECT_SOURCE_DIR}/src/include)
-include_directories(${PROJECT_SOURCE_DIR}/src/util)
-
 file(GLOB UNIVERSAL_FILES ./*.h ./*.cpp)
 if(LINUX_PLATFORM)
     FILE(GLOB PLATFORM_SPECIFIC_FILES ./linux/*.h ./linux/*.cpp)
 elseif(MAC_PLATFORM)    
     file(GLOB PLATFORM_SPECIFIC_FILES ./mac/*.h ./mac/*.cpp ./mac/*.m ./mac/*.mm)
 endif()
-
 set(ALL_FILES ${UNIVERSAL_FILES} ${PLATFORM_SPECIFIC_FILES})
 
 # default is static library
-add_library(capture ${ALL_FILES})
+add_library(capture SHARED ${ALL_FILES})
 set_target_properties(capture PROPERTIES OUTPUT_NAME "capture")
+
+# dependent libraries
+if(LINUX_PLATFORM)
+    set(PLATFORM_LIB "")
+elseif(MAC_PLATFORM)
+    find_library(COCOA_LIB Cocoa)
+    find_library(FOUNDATION_LIB Foundation)
+    find_library(AVFOUNDATION_LIB AVFoundation)
+    set(PLATFORM_LIB ${COCOA_LIB} ${FOUNDATION_LIB} ${AVFOUNDATION_LIB})
+endif()
+target_link_libraries(capture util glog ${PLATFORM_LIB})
 

@@ -38,7 +38,7 @@
 #ifndef SRC_CAPTURE_CDMDCAPTUREENGINE_H
 #define SRC_CAPTURE_CDMDCAPTUREENGINE_H
 
-#include "IDmdDataType.h"
+#include "IDmdDatatype.h"
 #include "IDmdCaptureEngine.h"
 
 namespace opendmd {

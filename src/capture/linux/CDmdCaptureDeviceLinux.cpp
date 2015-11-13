@@ -46,7 +46,7 @@
 #include <string.h>
 #include <string>
 
-#include "utils/DmdLog.h"
+#include "DmdLog.h"
 
 namespace opendmd {
 
