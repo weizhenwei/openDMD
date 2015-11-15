@@ -62,5 +62,9 @@ DMD_RESULT CDmdCaptureEngineMac::stopCapture() {
     return DMD_S_OK;
 }
 
+DMD_RESULT CDmdCaptureEngineMac::DeliverVideoData(DmdVideoFormat *pVideoData) {
+    return DMD_S_OK;
+}
+
 }  // namespace opendmd
 

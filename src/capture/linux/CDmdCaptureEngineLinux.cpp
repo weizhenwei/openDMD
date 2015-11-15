@@ -61,4 +61,9 @@ DMD_RESULT CDmdCaptureEngineLinux::stopCapture() {
     return DMD_S_OK;
 }
 
+DMD_RESULT CDmdCaptureEngineLinux::DeliverVideoData(
+        DmdVideoFormat *pVideoData) {
+    return DMD_S_OK;
+}
+
 }  // namespace opendmd

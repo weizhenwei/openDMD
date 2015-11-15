@@ -45,15 +45,20 @@
 class IDmdCaptureEngine;
 
 namespace opendmd {
-class CDmdCaptureEngineMac : public IDmdCaptureEngine {
+class CDmdCaptureEngineMac :
+    public IDmdCaptureEngine,
+    public IDmdCaptureEngineSink {
 public:
     CDmdCaptureEngineMac();
     ~CDmdCaptureEngineMac();
 
-    // IDmdCaptureDevice interface;
+    // IDmdCaptureEngine interface;
     DMD_RESULT initEngine();
     DMD_RESULT startCapture();
     DMD_RESULT stopCapture();
+
+    // IDmdCaptureEngineSink interface;
+    DMD_RESULT DeliverVideoData(DmdVideoFormat *pVideoData);
 
 private:
     IDmdCaptureDevice *m_pCaptureDevice;

@@ -44,15 +44,20 @@
 
 namespace opendmd {
 
-class CDmdCaptureEngineLinux : public IDmdCaptureEngine {
+class CDmdCaptureEngineLinux :
+    public IDmdCaptureEngine,
+    public IDmdCaptureEngineSink {
 public:
     CDmdCaptureEngineLinux();
     ~CDmdCaptureEngineLinux();
 
-    // IDmdCaptureDevice interface;
+    // IDmdCaptureEngine interface;
     DMD_RESULT initEngine();
     DMD_RESULT startCapture();
     DMD_RESULT stopCapture();
+
+    // IDmdCaptureEngineSink interface;
+    DMD_RESULT DeliverVideoData(DmdVideoFormat *pVideoData);
 
 private:
     IDmdCaptureDevice *m_pCaptureDevice;
