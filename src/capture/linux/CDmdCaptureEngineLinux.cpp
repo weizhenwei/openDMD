@@ -51,18 +51,28 @@ CDmdCaptureEngineLinux::~CDmdCaptureEngineLinux() {
     }
 }
 
-DMD_RESULT CDmdCaptureEngineLinux::initEngine() {
+DMD_RESULT CDmdCaptureEngineLinux::Init() {
     return DMD_S_OK;
 }
-DMD_RESULT CDmdCaptureEngineLinux::startCapture() {
+
+DMD_RESULT CDmdCaptureEngineLinux::Uninit() {
     return DMD_S_OK;
 }
-DMD_RESULT CDmdCaptureEngineLinux::stopCapture() {
+
+DMD_RESULT CDmdCaptureEngineLinux::StartCapture() {
+    return DMD_S_OK;
+}
+
+DMD_BOOL CDmdCaptureEngineLinux::IsCapturing() {
+    return false;
+}
+
+DMD_RESULT CDmdCaptureEngineLinux::StopCapture() {
     return DMD_S_OK;
 }
 
 DMD_RESULT CDmdCaptureEngineLinux::DeliverVideoData(
-        DmdVideoFormat *pVideoData) {
+        DmdVideoRawData *pVideoRawData) {
     return DMD_S_OK;
 }
 
