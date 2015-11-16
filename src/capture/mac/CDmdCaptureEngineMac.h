@@ -53,12 +53,15 @@ public:
     ~CDmdCaptureEngineMac();
 
     // IDmdCaptureEngine interface;
-    DMD_RESULT initEngine();
-    DMD_RESULT startCapture();
-    DMD_RESULT stopCapture();
+    DMD_RESULT Init();
+    DMD_RESULT Uninit();
+
+    DMD_RESULT StartCapture();
+    DMD_BOOL   IsCapturing();
+    DMD_RESULT StopCapture();
 
     // IDmdCaptureEngineSink interface;
-    DMD_RESULT DeliverVideoData(DmdVideoFormat *pVideoData);
+    DMD_RESULT DeliverVideoData(DmdVideoRawData *pVideoRawData);
 
 private:
     IDmdCaptureDevice *m_pCaptureDevice;

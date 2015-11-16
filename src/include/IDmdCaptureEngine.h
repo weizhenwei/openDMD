@@ -48,25 +48,16 @@ class IDmdCaptureEngine {
     IDmdCaptureEngine() {}
     virtual ~IDmdCaptureEngine() {}
 
-    virtual DMD_RESULT initEngine() = 0;
-    virtual DMD_RESULT startCapture() = 0;
-    virtual DMD_RESULT stopCapture() = 0;
-
-#if 0
     virtual DMD_RESULT Init() = 0;
-    virtual DMD_RESULT void Uninit() = 0;
+    virtual DMD_RESULT Uninit() = 0;
 
-    virtual DMD_RESULT Start() = 0;
-    virtual bool IsRunning() = 0;
-    virtual DMD_RESULT Stop() = 0;
     virtual DMD_RESULT StartCapture() = 0;
-    virtual bool IsCapturing() = 0;
+    virtual DMD_BOOL   IsCapturing() = 0;
     virtual DMD_RESULT StopCapture() = 0;
-#endif
 };
 
 class IDmdCaptureEngineSink {
-    virtual DMD_RESULT DeliverVideoData(DmdVideoFormat *pVideoData) = 0;
+    virtual DMD_RESULT DeliverVideoData(DmdVideoRawData *pVideoRawData) = 0;
 };
 
 }  // namespace opendmd

@@ -15,12 +15,13 @@ if(NOT LINUX_PLATFORM AND NOT MAC_PLATFORM)
 endif()
 
 file(GLOB UNIVERSAL_FILES ./*.h ./*.cpp)
+file(GLOB INCLUDE_FILES ${PROJECT_SOURCE_DIR}/src/include/*.h)
 if(LINUX_PLATFORM)
     FILE(GLOB PLATFORM_SPECIFIC_FILES ./linux/*.h ./linux/*.cpp)
 elseif(MAC_PLATFORM)    
     file(GLOB PLATFORM_SPECIFIC_FILES ./mac/*.h ./mac/*.cpp ./mac/*.m ./mac/*.mm)
 endif()
-set(ALL_FILES ${UNIVERSAL_FILES} ${PLATFORM_SPECIFIC_FILES})
+set(ALL_FILES ${UNIVERSAL_FILES} ${INCLUDE_FILES} ${PLATFORM_SPECIFIC_FILES})
 
 # default is static library
 add_library(capture SHARED ${ALL_FILES})

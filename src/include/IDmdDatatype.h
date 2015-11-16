@@ -39,7 +39,7 @@
 #ifndef SRC_INCLUDE_IDMDDATATYPE_H
 #define SRC_INCLUDE_IDMDDATATYPE_H
 
-#include <stdint.h>
+#include <stdint.h>  // uint64_t series is defined in this header file;
 #include <stddef.h>  // "NULL" is defined in this header file!
 
 namespace opendmd {
@@ -69,12 +69,25 @@ typedef enum {
 } DmdVideoType;
 
 typedef struct {
-    DmdVideoType    video_type;
-    unsigned int    width;
-    unsigned int    height;
-    float           frame_rate;
-    uint64_t        time_stamp;
+    DmdVideoType    eVideoType;
+    unsigned int    iWidth;
+    unsigned int    iHeight;
+    float           fFrameRate;
+    uint64_t        ulTimestamp;
 } DmdVideoFormat;
+
+#define MAX_PLANE_COUNT 3
+#define MAX_PLANAR_NUM 4
+
+typedef struct {
+    unsigned char   *pSrcData[MAX_PLANAR_NUM];
+    size_t          ulSrcStride[MAX_PLANAR_NUM];
+    size_t          ulSrcDatalen[MAX_PLANAR_NUM];
+    DmdVideoFormat  fmtVideoFormat;
+    size_t          ulPlaneCount;
+    unsigned int    ulRotation;
+    size_t          ulDataLen;
+} DmdVideoRawData;
 
 }  // namespace opendmd
 

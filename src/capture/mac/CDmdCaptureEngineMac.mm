@@ -50,19 +50,28 @@ CDmdCaptureEngineMac::~CDmdCaptureEngineMac() {
     }
 }
 
-DMD_RESULT CDmdCaptureEngineMac::initEngine() {
+DMD_RESULT CDmdCaptureEngineMac::Init() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdCaptureEngineMac::startCapture() {
+DMD_RESULT CDmdCaptureEngineMac::Uninit() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdCaptureEngineMac::stopCapture() {
+DMD_RESULT CDmdCaptureEngineMac::StartCapture() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdCaptureEngineMac::DeliverVideoData(DmdVideoFormat *pVideoData) {
+DMD_BOOL CDmdCaptureEngineMac::IsCapturing() {
+    return false;
+}
+
+DMD_RESULT CDmdCaptureEngineMac::StopCapture() {
+    return DMD_S_OK;
+}
+
+DMD_RESULT CDmdCaptureEngineMac::DeliverVideoData(
+        DmdVideoRawData *pVideoRawData) {
     return DMD_S_OK;
 }
 
