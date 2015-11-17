@@ -41,9 +41,25 @@
 #include "IDmdCaptureDevice.h"
 #include "IDmdCaptureEngine.h"
 
+#if defined(MACOSX)
+#include "CDmdCaptureEngineMac.h"
+#elif defined(LINUX)
+#include "CDmdCaptureEngineLinux.h"
+#else
+#error "Unsupported OS"
+#endif
+
+
 namespace opendmd {
 DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
-    ppVideoCapEngine = NULL;
+#if defined(MACOSX)
+    *ppVideoCapEngine = new CDmdCaptureEngineMac();
+#elif defined(LINUX)
+    *ppVideoCapEngine = new CDmdCaptureEngineLinux();
+#else
+    *ppVideoCapEngine = NULL;
+    return DMD_S_FAIL;
+#endif
     return DMD_S_OK;
 }
 
