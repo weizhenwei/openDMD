@@ -61,7 +61,7 @@ static void capture_cleanup(void* p) {
     m_videoCaptureDevice = nil;
     m_videoCaptureInput = nil;
     m_videoCaptureDataOutput = nil;
-    memset(&m_format, sizeof(m_format), 0);
+    memset(&m_format, 0, sizeof(m_format));
     m_sink = NULL;
     m_sinkLock = [[NSRecursiveLock alloc] init];
 
@@ -83,6 +83,19 @@ static void capture_cleanup(void* p) {
 
 - (AVCaptureSession *)getAVCaptureSesion {
     return m_captureSession;
+}
+
+- (DMD_RESULT)setCapSessionFormat:(MACCaptureSessionFormat&)format {
+    m_format = format;
+    m_videoCaptureDevice = format.capDevice;
+
+    return DMD_S_OK;
+}
+
+- (DMD_RESULT)getCapSessionFormat:(MACCaptureSessionFormat&)format {
+    format = m_format;
+
+    return DMD_S_OK;
 }
 
 - (void)dealloc {
@@ -155,10 +168,10 @@ static void capture_cleanup(void* p) {
                 break;
             }
         }
-    } while(0);
+    } while (0);
 
     [m_captureSession commitConfiguration];
-    
+
     return result;
 }
 
@@ -319,7 +332,8 @@ static void capture_cleanup(void* p) {
     }
 
     CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(
-            (CMVideoFormatDescriptionRef)[m_format.capFormat formatDescription]);
+            (CMVideoFormatDescriptionRef)
+            [m_format.capFormat formatDescription]);
     videoOutputFormat.width = dimensions.width;
     videoOutputFormat.height = dimensions.height;
 
@@ -335,7 +349,7 @@ static void capture_cleanup(void* p) {
     }
 
     [m_captureSession beginConfiguration];
-    
+
     // set max frame rate
     NSArray *connections = [m_videoCaptureDataOutput connections];
     NSUInteger connectionCount = [connections count];
@@ -347,7 +361,7 @@ static void capture_cleanup(void* p) {
         }
     }
     [m_captureSession setSessionPreset: m_format.capSessionPreset];
-    
+
     NSError *error = nil;
     if ([m_videoCaptureDevice lockForConfiguration:&error]) {
         [m_videoCaptureDevice setActiveFormat:m_format.capFormat];
@@ -382,13 +396,14 @@ static void capture_cleanup(void* p) {
 - (void)captureOutput:(AVCaptureOutput *)captureOutput
     didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     fromConnection:(AVCaptureConnection *)connection {
-    if(NO == [m_captureSession isRunning]) {
+    if (NO == [m_captureSession isRunning]) {
         return;
     }
-    
-    if (m_sink ) {
+
+    if (m_sink) {
         m_sink->DeliverVideoData(sampleBuffer);
     }
 }
 
 @end
+

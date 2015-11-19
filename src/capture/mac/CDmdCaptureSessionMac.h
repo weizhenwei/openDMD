@@ -48,23 +48,20 @@ using namespace opendmd;
 // Y'CbCr 4:2:2 - yuvs: kCVPixelFormatType_422YpCbCr8_yuvs
 // Y'CbCr 4:2:2 - uyuv: kCVPixelFormatType_422YpCbCr8
 // Y'CbCr 4:2:0 - 420v: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange;
-typedef enum
-{
+typedef enum {
     MacUnknown   = 0,
     Macyuyv = kCVPixelFormatType_422YpCbCr8_yuvs,
     Macuyvy = kCVPixelFormatType_422YpCbCr8,
     MAC420v = kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange,
 } MacVideoType;
 
-typedef struct _output_format
-{
+typedef struct _output_format {
     MacVideoType    video_type;
     int             width;
     int             height;
 } MacVideoOutputFormat;
 
-typedef struct _video_format
-{
+typedef struct _video_format {
     MacVideoType    video_type;
     size_t          width;
     size_t          height;
@@ -72,8 +69,7 @@ typedef struct _video_format
     NSTimeInterval  time_stamp;
 } MacVideoSampleFormat;
 
-typedef struct _capsession_format
-{
+typedef struct _capsession_format {
     AVCaptureDevice *capDevice;
     AVCaptureDeviceFormat *capFormat;
     NSString *capSessionPreset;
@@ -112,8 +108,8 @@ class IDmdMacAVVideoCapSessionSink;
 - (DMD_RESULT)updateAVCaptureSessionPreset:(NSString *)preset;
 - (DMD_RESULT)updateAVCaptureSessionFPS:(float)fps;
 
-// - (DMD_RESULT)setCapSessionFormat:(MACCaptureSessionFormat&)format;
-// - (DMD_RESULT)getCapSessionFormat:(MACCaptureSessionFormat&)format;
+- (DMD_RESULT)setCapSessionFormat:(MACCaptureSessionFormat&)format;
+- (DMD_RESULT)getCapSessionFormat:(MACCaptureSessionFormat&)format;
 @end
 
 
@@ -121,7 +117,7 @@ class IDmdMacAVVideoCapSessionSink {
 public:
     virtual ~IDmdMacAVVideoCapSessionSink() {}
 
-    virtual long DeliverVideoData(CMSampleBufferRef sampleBuffer) = 0;
+    virtual DMD_RESULT DeliverVideoData(CMSampleBufferRef sampleBuffer) = 0;
 };
 
 #endif  // SRC_CAPTURE_MAC_CDMDCAPTURESESSIONMAC_H
