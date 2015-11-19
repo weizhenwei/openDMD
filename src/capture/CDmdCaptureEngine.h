@@ -47,3 +47,4 @@ namespace opendmd {
 }  // namespace opendmd
 
 #endif  // SRC_CAPTURE_CDMDCAPTUREENGINE_H
+
