@@ -36,7 +36,11 @@ elseif(MAC_PLATFORM)
     find_library(COCOA_LIB Cocoa)
     find_library(FOUNDATION_LIB Foundation)
     find_library(AVFOUNDATION_LIB AVFoundation)
-    set(PLATFORM_LIB ${COCOA_LIB} ${FOUNDATION_LIB} ${AVFOUNDATION_LIB})
+    find_library(COREFOUNDATION_LIB CoreFoundation)
+    find_library(COREMEDIA_LIB CoreMedia)
+    find_library(COREVIDEO_LIB CoreVideo)
+    set(PLATFORM_LIB ${COCOA_LIB} ${FOUNDATION_LIB} ${AVFOUNDATION_LIB}
+            ${COREFOUNDATION_LIB} ${COREMEDIA_LIB} ${COREVIDEO_LIB})
 endif()
 target_link_libraries(capture util glog ${PLATFORM_LIB})
 
