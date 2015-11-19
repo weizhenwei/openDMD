@@ -37,7 +37,6 @@
  */
 
 #include "DmdLog.h"
-#include "IDmdCaptureEngine.h"
 #include "CDmdCaptureEngine.h"
 #include "main.h"
 

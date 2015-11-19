@@ -71,7 +71,20 @@ DMD_RESULT CDmdCaptureEngineMac::StopCapture() {
 }
 
 DMD_RESULT CDmdCaptureEngineMac::DeliverVideoData(
-        DmdVideoRawData *pVideoRawData) {
+        CMSampleBufferRef sampleBuffer) {
+    return DMD_S_OK;
+}
+
+
+
+// public interface implementation defined at CDmdCaptureEngine.h
+DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
+    *ppVideoCapEngine = new CDmdCaptureEngineMac();
+    return DMD_S_OK;
+}
+
+DMD_RESULT ReleaseVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
+    ppVideoCapEngine = NULL;
     return DMD_S_OK;
 }
 

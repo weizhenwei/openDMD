@@ -39,15 +39,21 @@
 #ifndef SRC_CAPTURE_MAC_CDMDCAPTUREENGINEMAC_H
 #define SRC_CAPTURE_MAC_CDMDCAPTUREENGINEMAC_H
 
+#import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
+
 #import "IDmdCaptureDevice.h"
 #import "IDmdCaptureEngine.h"
+#import "CDmdCaptureDeviceMac.h"
+#import "CDmdCaptureSessionMac.h"
 
 class IDmdCaptureEngine;
+class IDmdCaptureEngineSink;
 
 namespace opendmd {
 class CDmdCaptureEngineMac :
     public IDmdCaptureEngine,
-    public IDmdCaptureEngineSink {
+    public IDmdMacAVVideoCapSessionSink {
 public:
     CDmdCaptureEngineMac();
     ~CDmdCaptureEngineMac();
@@ -60,8 +66,8 @@ public:
     DMD_BOOL   IsCapturing();
     DMD_RESULT StopCapture();
 
-    // IDmdCaptureEngineSink interface;
-    DMD_RESULT DeliverVideoData(DmdVideoRawData *pVideoRawData);
+    // IDmdMacAVVideoCapSessionSink interface;
+    DMD_RESULT DeliverVideoData(CMSampleBufferRef sampleBuffer);
 
 private:
     IDmdCaptureDevice *m_pCaptureDevice;
