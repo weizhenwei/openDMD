@@ -95,3 +95,4 @@ DMD_RESULT CDmdV4L2Impl::v4l2CloseDevice(struct v4l2_device_info
 }
 
 }  // namespace opendmd
+
