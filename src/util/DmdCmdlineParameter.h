@@ -46,7 +46,7 @@ namespace opendmd {
 class DmdCmdlineParameter {
 public:
     DmdCmdlineParameter();
-    virtual ~DmdCmdlineParameter();
+    ~DmdCmdlineParameter();
 
     static DmdCmdlineParameter* singleton();
     void parseCmdlineParameter(int argc, char *argv[]);
@@ -73,3 +73,4 @@ private:
 }  // namespace opendmd
 
 #endif  // SRC_UTIL_DMDCMDLINEPARAMETER_H
+

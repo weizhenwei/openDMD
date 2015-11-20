@@ -36,7 +36,7 @@
  ============================================================================
  */
 
-#include "utils/DmdLog.h"
+#include "DmdLog.h"
 #include "main.h"
 
 using namespace opendmd;

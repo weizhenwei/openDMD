@@ -47,7 +47,7 @@ class DmdConfig {
 public:
     DmdConfig();
     explicit DmdConfig(const char *configFile);
-    virtual ~DmdConfig();
+    ~DmdConfig();
 
     void init();
 

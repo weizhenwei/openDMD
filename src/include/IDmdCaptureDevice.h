@@ -42,6 +42,7 @@
 #include "IDmdDatatype.h"
 
 namespace opendmd {
+
 class IDmdCaptureDevice {
 public:
     IDmdCaptureDevice() {}
@@ -56,3 +57,4 @@ extern const char *GetDeviceName();
 }  // namespace opendmd
 
 #endif  // SRC_INCLUDE_IDMDCAPTUREDEVICE_H
+

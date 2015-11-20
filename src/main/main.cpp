@@ -63,6 +63,7 @@ static void parseCmdline(int argc, char *argv[]) {
         DmdCmdlineParameter::singleton()->daemonize();
     }
 }
+
 int main(int argc, char *argv[]) {
     parseCmdline(argc, argv);
 
@@ -73,3 +74,4 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+

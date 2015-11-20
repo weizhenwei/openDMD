@@ -36,18 +36,17 @@
  ============================================================================
  */
 
+#import <Cocoa/Cocoa.h>
 #import <AVFoundation/AVCaptureSession.h>
 #import <AVFoundation/AVFoundation.h>
-#import <Cocoa/Cocoa.h>
 #import <CoreVideo/CVPixelBuffer.h>
 #import <Foundation/Foundation.h>
 #import <Foundation/NSString.h>
 
 #include "DmdLog.h"
-
 #import "CDmdCaptureSessionMac.h"
 
-using namespace opendmd;
+@class CDmdAVVideoCapSession;
 
 static void capture_cleanup(void* p) {
     CDmdAVVideoCapSession* capSession = (__bridge CDmdAVVideoCapSession *)p;

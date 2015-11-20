@@ -36,7 +36,7 @@
  ============================================================================
  */
 
-#include "utils/DmdLog.h"
+#include "DmdLog.h"
 #include "main.h"
 
 using namespace opendmd;
@@ -46,3 +46,4 @@ int opendmd::server_main(int argc, char *argv[]) {
 
     return 0;
 }
+

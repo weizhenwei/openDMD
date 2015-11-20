@@ -80,6 +80,8 @@ DMD_RESULT CDmdCaptureEngineLinux::DeliverVideoData(
 // public interface implementation defined at CDmdCaptureEngine.h
 DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
     *ppVideoCapEngine = new CDmdCaptureEngineLinux();
+    (*ppVideoCapEngine)->Init();
+
     return DMD_S_OK;
 }
 

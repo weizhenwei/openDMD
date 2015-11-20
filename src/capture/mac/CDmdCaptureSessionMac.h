@@ -77,7 +77,6 @@ typedef struct _capsession_format {
 } MACCaptureSessionFormat;
 
 
-class CDmdVideoCaptureEngineMac;
 class IDmdMacAVVideoCapSessionSink;
 
 @interface CDmdAVVideoCapSession
@@ -121,3 +120,4 @@ public:
 };
 
 #endif  // SRC_CAPTURE_MAC_CDMDCAPTURESESSIONMAC_H
+

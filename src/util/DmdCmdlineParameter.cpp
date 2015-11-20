@@ -230,3 +230,4 @@ void DmdCmdlineParameter::parseCmdlineParameter(int argc, char *argv[]) {
 }
 
 }  // namespace opendmd
+

@@ -96,3 +96,4 @@ DmdLog* DmdLog::singleton() {
 }
 
 }  // namespace opendmd
+

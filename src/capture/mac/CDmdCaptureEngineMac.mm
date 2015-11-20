@@ -36,8 +36,11 @@
  ============================================================================
  */
 
-#import "CDmdCaptureEngineMac.h"
 #import <Cocoa/Cocoa.h>
+#import "CDmdCaptureEngineMac.h"
+
+#include "DmdLog.h"
+#include "DmdMutex.h"
 
 namespace opendmd {
 
@@ -79,11 +82,20 @@ DMD_RESULT CDmdCaptureEngineMac::DeliverVideoData(
 
 // public interface implementation defined at CDmdCaptureEngine.h
 DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
-    *ppVideoCapEngine = new CDmdCaptureEngineMac();
+    if (NULL == ppVideoCapEngine) {
+        return DMD_S_FAIL;
+    }
+    CDmdCaptureEngineMac *pMacVideoCapEngine = new CDmdCaptureEngineMac();
+    pMacVideoCapEngine->Init();
+
+    *ppVideoCapEngine = (IDmdCaptureEngine *)pMacVideoCapEngine;
+
     return DMD_S_OK;
 }
 
 DMD_RESULT ReleaseVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
+    (*ppVideoCapEngine)->Uninit();
+
     ppVideoCapEngine = NULL;
     return DMD_S_OK;
 }

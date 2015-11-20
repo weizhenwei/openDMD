@@ -87,3 +87,4 @@ public:
 }  // namespace opendmd
 
 #endif  // SRC_CAPTURE_LINUX_CDMDV4L2IMPL_H
+
