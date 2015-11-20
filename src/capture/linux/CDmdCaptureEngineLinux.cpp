@@ -37,6 +37,7 @@
  */
 
 #include "CDmdCaptureEngineLinux.h"
+#include "DmdLog.h"
 
 namespace opendmd {
 
@@ -47,8 +48,7 @@ CDmdCaptureEngineLinux::CDmdCaptureEngineLinux() : m_pCaptureDevice(NULL) {
 CDmdCaptureEngineLinux::~CDmdCaptureEngineLinux() {
     // TODO(weizhenwei): Auto-generated destructor stub
     if (m_pCaptureDevice) {
-        delete m_pCaptureDevice;
-    }
+        delete m_pCaptureDevice; }
 }
 
 DMD_RESULT CDmdCaptureEngineLinux::Init() {
@@ -80,6 +80,7 @@ DMD_RESULT CDmdCaptureEngineLinux::DeliverVideoData(
 // public interface implementation defined at CDmdCaptureEngine.h
 DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
     *ppVideoCapEngine = new CDmdCaptureEngineLinux();
+    DMD_CHECK_NOTNULL(*ppVideoCapEngine);
     (*ppVideoCapEngine)->Init();
 
     return DMD_S_OK;
