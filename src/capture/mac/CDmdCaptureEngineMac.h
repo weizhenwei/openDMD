@@ -70,8 +70,12 @@ public:
     DMD_RESULT DeliverVideoData(CMSampleBufferRef sampleBuffer);
 
 private:
-    IDmdCaptureDevice *m_pCaptureDevice;
+    CDmdAVVideoCapSession *m_pVideoCapSession;
+    MacCaptureSessionFormat m_capSessionFormat;
 };
+
+DMD_RESULT CVImageBuffer2VideoRawPacket(
+        CVImageBufferRef imageBuffer, DmdVideoRawData& packet);
 
 }  // namespace opendmd
 

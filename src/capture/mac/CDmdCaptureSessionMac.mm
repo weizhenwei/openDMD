@@ -84,14 +84,14 @@ static void capture_cleanup(void* p) {
     return m_captureSession;
 }
 
-- (DMD_RESULT)setCapSessionFormat:(MACCaptureSessionFormat&)format {
+- (DMD_RESULT)setCapSessionFormat:(MacCaptureSessionFormat&)format {
     m_format = format;
     m_videoCaptureDevice = format.capDevice;
 
     return DMD_S_OK;
 }
 
-- (DMD_RESULT)getCapSessionFormat:(MACCaptureSessionFormat&)format {
+- (DMD_RESULT)getCapSessionFormat:(MacCaptureSessionFormat&)format {
     format = m_format;
 
     return DMD_S_OK;
@@ -195,7 +195,7 @@ static void capture_cleanup(void* p) {
     return [m_captureSession isRunning];
 }
 
-- (DMD_RESULT)startRun:(MACCaptureSessionFormat&)format {
+- (DMD_RESULT)startRun:(MacCaptureSessionFormat&)format {
     m_format = format;
     if (nil == m_captureSession) {
         DMD_LOG_ERROR("CDmdAVVideoCapSession::startRun(),"

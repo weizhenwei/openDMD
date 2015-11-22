@@ -74,7 +74,7 @@ typedef struct _capsession_format {
     AVCaptureDeviceFormat *capFormat;
     NSString *capSessionPreset;
     float capFPS;
-} MACCaptureSessionFormat;
+} MacCaptureSessionFormat;
 
 
 class IDmdMacAVVideoCapSessionSink;
@@ -86,7 +86,7 @@ class IDmdMacAVVideoCapSessionSink;
         id m_videoCaptureInput;  // AVCaptureDeviceInput
         id m_videoCaptureDataOutput;  // AVCaptureVideoDataOutput
 
-        MACCaptureSessionFormat m_format;
+        MacCaptureSessionFormat m_format;
         IDmdMacAVVideoCapSessionSink* m_sink;
         NSRecursiveLock* m_sinkLock;
         float m_systemVersion;
@@ -98,7 +98,7 @@ class IDmdMacAVVideoCapSessionSink;
 - (void)setSink:(IDmdMacAVVideoCapSessionSink*)sink;
 
 - (DMD_BOOL)isRunning;
-- (DMD_RESULT)startRun:(MACCaptureSessionFormat&)format;
+- (DMD_RESULT)startRun:(MacCaptureSessionFormat&)format;
 - (DMD_RESULT)stopRun;
 - (void)captureCleanup;
 
@@ -107,8 +107,8 @@ class IDmdMacAVVideoCapSessionSink;
 - (DMD_RESULT)updateAVCaptureSessionPreset:(NSString *)preset;
 - (DMD_RESULT)updateAVCaptureSessionFPS:(float)fps;
 
-- (DMD_RESULT)setCapSessionFormat:(MACCaptureSessionFormat&)format;
-- (DMD_RESULT)getCapSessionFormat:(MACCaptureSessionFormat&)format;
+- (DMD_RESULT)setCapSessionFormat:(MacCaptureSessionFormat&)format;
+- (DMD_RESULT)getCapSessionFormat:(MacCaptureSessionFormat&)format;
 @end
 
 

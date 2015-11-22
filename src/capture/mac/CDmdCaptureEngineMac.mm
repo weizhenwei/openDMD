@@ -37,20 +37,28 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
+#import <AVFoundation/AVCaptureSession.h>
+#import <AVFoundation/AVFoundation.h>
+#import <Foundation/Foundation.h>
+#import <Foundation/NSString.h>
+#import <CoreVideo/CVPixelBuffer.h>
+
+#import <string.h>
 #import "CDmdCaptureEngineMac.h"
 
 #include "DmdLog.h"
 #include "DmdMutex.h"
+#include "IDmdDatatype.h"
 
 namespace opendmd {
 
-CDmdCaptureEngineMac::CDmdCaptureEngineMac() : m_pCaptureDevice(nil) {
+CDmdCaptureEngineMac::CDmdCaptureEngineMac() : m_pVideoCapSession(nil) {
+    memset(&m_capSessionFormat, 0, sizeof(m_capSessionFormat));
 }
 
 CDmdCaptureEngineMac::~CDmdCaptureEngineMac() {
-    if (m_pCaptureDevice) {
-        delete m_pCaptureDevice;
-    }
+    Uninit();
 }
 
 DMD_RESULT CDmdCaptureEngineMac::Init() {
@@ -75,6 +83,54 @@ DMD_RESULT CDmdCaptureEngineMac::StopCapture() {
 
 DMD_RESULT CDmdCaptureEngineMac::DeliverVideoData(
         CMSampleBufferRef sampleBuffer) {
+    CVImageBufferRef imageBuffer =
+    CMSampleBufferGetImageBuffer(sampleBuffer);
+    DmdVideoRawData packet;
+    memset(&packet, 0, sizeof(packet));
+    if (kCVReturnSuccess == CVPixelBufferLockBaseAddress(imageBuffer, 0)) {
+        if (DMD_S_OK == CVImageBuffer2VideoRawPacket(imageBuffer, packet)) {
+            // DeliverVideoData(&packet);
+        }
+        CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
+    }
+
+    return DMD_S_OK;
+}
+
+DMD_RESULT CVImageBuffer2VideoRawPacket(CVImageBufferRef imageBuffer,
+        DmdVideoRawData& packet) {
+    packet.ulRotation = 0;
+    OSType pixelFormat = CVPixelBufferGetPixelFormatType(imageBuffer);
+    packet.fmtVideoFormat.eVideoType = DmdI420;
+    packet.fmtVideoFormat.iWidth = CVPixelBufferGetWidth(imageBuffer);
+    packet.fmtVideoFormat.iHeight = CVPixelBufferGetHeight(imageBuffer);
+    packet.fmtVideoFormat.fFrameRate = 0;
+    packet.fmtVideoFormat.ulTimestamp = [[NSDate date] timeIntervalSince1970];
+    packet.ulPlaneCount = CVPixelBufferGetPlaneCount(imageBuffer);
+    if (kCVPixelFormatType_422YpCbCr8_yuvs == pixelFormat) {
+        packet.fmtVideoFormat.eVideoType = DmdYV12;
+        packet.pSrcData[0] =
+            (unsigned char *)CVPixelBufferGetBaseAddress(imageBuffer);
+        packet.ulDataLen = CVPixelBufferGetBytesPerRow(imageBuffer)
+            * packet.fmtVideoFormat.iHeight;
+    } else if (kCVPixelFormatType_422YpCbCr8 == pixelFormat) {
+        packet.fmtVideoFormat.eVideoType = DmdYUY2;
+        packet.pSrcData[0] =
+            (unsigned char *)CVPixelBufferGetBaseAddress(imageBuffer);
+        packet.ulDataLen = CVPixelBufferGetBytesPerRow(imageBuffer)
+            * packet.fmtVideoFormat.iHeight;
+    } else if (kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
+            == pixelFormat) { // NV12 actually;
+        for (int i = 0; i < packet.ulPlaneCount; i++) {
+            packet.pSrcData[i] = (unsigned char *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, i);
+            packet.ulSrcStride[i] = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, i);
+            packet.ulSrcDatalen[i] = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, i) * CVPixelBufferGetHeightOfPlane(imageBuffer, i);
+            packet.ulDataLen += packet.ulSrcDatalen[i];
+        }
+    } else {
+        packet.fmtVideoFormat.eVideoType = DmdUnknown;
+    }
+
     return DMD_S_OK;
 }
 
