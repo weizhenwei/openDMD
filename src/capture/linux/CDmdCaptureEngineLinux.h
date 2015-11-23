@@ -52,7 +52,7 @@ public:
     ~CDmdCaptureEngineLinux();
 
     // IDmdCaptureEngine interface;
-    DMD_RESULT Init();
+    DMD_RESULT Init(DmdCaptureVideoFormat& capVideoFormat);
     DMD_RESULT Uninit();
 
     DMD_RESULT StartCapture();
@@ -63,7 +63,7 @@ public:
     DMD_RESULT DeliverVideoData(DmdVideoRawData *pVideoRawData);
 
 private:
-    IDmdCaptureDevice *m_pCaptureDevice;
+    DmdCaptureVideoFormat m_capVideoFormat;
 };
 
 }  // namespace opendmd

@@ -52,7 +52,7 @@ typedef enum {
     MacUnknown   = 0,
     Macyuyv = kCVPixelFormatType_422YpCbCr8_yuvs,
     Macuyvy = kCVPixelFormatType_422YpCbCr8,
-    MAC420v = kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange,
+    Mac420v = kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange,
 } MacVideoType;
 
 typedef struct _output_format {

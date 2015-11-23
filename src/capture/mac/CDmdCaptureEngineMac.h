@@ -59,7 +59,7 @@ public:
     ~CDmdCaptureEngineMac();
 
     // IDmdCaptureEngine interface;
-    DMD_RESULT Init();
+    DMD_RESULT Init(DmdCaptureVideoFormat& capVideoFormat);
     DMD_RESULT Uninit();
 
     DMD_RESULT StartCapture();
@@ -71,6 +71,7 @@ public:
 
 private:
     CDmdAVVideoCapSession *m_pVideoCapSession;
+    DmdCaptureVideoFormat m_capVideoFormat;
     MacCaptureSessionFormat m_capSessionFormat;
 };
 

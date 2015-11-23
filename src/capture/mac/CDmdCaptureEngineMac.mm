@@ -54,6 +54,7 @@
 namespace opendmd {
 
 CDmdCaptureEngineMac::CDmdCaptureEngineMac() : m_pVideoCapSession(nil) {
+    memset(&m_capVideoFormat, 0, sizeof(m_capVideoFormat));
     memset(&m_capSessionFormat, 0, sizeof(m_capSessionFormat));
 }
 
@@ -61,7 +62,12 @@ CDmdCaptureEngineMac::~CDmdCaptureEngineMac() {
     Uninit();
 }
 
-DMD_RESULT CDmdCaptureEngineMac::Init() {
+DMD_RESULT CDmdCaptureEngineMac::Init(DmdCaptureVideoFormat& capVideoFormat) {
+    memcpy(&m_capVideoFormat, &capVideoFormat, sizeof(capVideoFormat));
+
+    // TODO(weizhenwei): init m_capSessionFormat;
+    m_capSessionFormat.capFPS = m_capVideoFormat.fFrameRate;
+
     return DMD_S_OK;
 }
 
@@ -142,8 +148,9 @@ DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
         return DMD_S_FAIL;
     }
     CDmdCaptureEngineMac *pMacVideoCapEngine = new CDmdCaptureEngineMac();
-    pMacVideoCapEngine->Init();
-
+    DMD_CHECK_NOTNULL(pMacVideoCapEngine);
+    DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0};
+    pMacVideoCapEngine->Init(capVideoFormat);
     *ppVideoCapEngine = (IDmdCaptureEngine *)pMacVideoCapEngine;
 
     return DMD_S_OK;

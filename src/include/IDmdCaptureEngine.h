@@ -43,12 +43,19 @@
 
 namespace opendmd {
 
+typedef struct {
+    DmdVideoType    eVideoType;
+    unsigned int    iWidth;
+    unsigned int    iHeight;
+    float           fFrameRate;
+} DmdCaptureVideoFormat;
+
 class IDmdCaptureEngine {
  public:
     IDmdCaptureEngine() {}
     virtual ~IDmdCaptureEngine() {}
 
-    virtual DMD_RESULT Init() = 0;
+    virtual DMD_RESULT Init(DmdCaptureVideoFormat& capVideoFormat) = 0;
     virtual DMD_RESULT Uninit() = 0;
 
     virtual DMD_RESULT StartCapture() = 0;

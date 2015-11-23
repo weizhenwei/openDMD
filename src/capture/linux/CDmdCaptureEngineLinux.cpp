@@ -36,22 +36,25 @@
  ============================================================================
  */
 
+#include <string.h>
+
 #include "CDmdCaptureEngineLinux.h"
 #include "DmdLog.h"
 
 namespace opendmd {
 
-CDmdCaptureEngineLinux::CDmdCaptureEngineLinux() : m_pCaptureDevice(NULL) {
-    // TODO(weizhenwei): Auto-generated constructor stub
+CDmdCaptureEngineLinux::CDmdCaptureEngineLinux() {
+    memset(&m_capVideoFormat, 0, sizeof(m_capVideoFormat));
 }
 
 CDmdCaptureEngineLinux::~CDmdCaptureEngineLinux() {
-    // TODO(weizhenwei): Auto-generated destructor stub
-    if (m_pCaptureDevice) {
-        delete m_pCaptureDevice; }
+    Uninit();
 }
 
-DMD_RESULT CDmdCaptureEngineLinux::Init() {
+DMD_RESULT CDmdCaptureEngineLinux::Init(DmdCaptureVideoFormat&
+        capVideoFormat) {
+    memcpy(&m_capVideoFormat, &capVideoFormat, sizeof(capVideoFormat));
+
     return DMD_S_OK;
 }
 
@@ -79,9 +82,16 @@ DMD_RESULT CDmdCaptureEngineLinux::DeliverVideoData(
 
 // public interface implementation defined at CDmdCaptureEngine.h
 DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
-    *ppVideoCapEngine = new CDmdCaptureEngineLinux();
-    DMD_CHECK_NOTNULL(*ppVideoCapEngine);
-    (*ppVideoCapEngine)->Init();
+    if (NULL == ppVideoCapEngine) {
+        return DMD_S_FAIL;
+    }
+
+    CDmdCaptureEngineLinux *pLinuxVideoCapEngine =
+        new CDmdCaptureEngineLinux();
+    DMD_CHECK_NOTNULL(pLinuxVideoCapEngine);
+    DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0};
+    pLinuxVideoCapEngine->Init(capVideoFormat);
+    *ppVideoCapEngine = (IDmdCaptureEngine *)pLinuxVideoCapEngine;
 
     return DMD_S_OK;
 }
