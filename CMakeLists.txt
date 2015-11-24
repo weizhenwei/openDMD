@@ -23,12 +23,10 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     add_definitions(-DLINUX)
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     add_definitions(-DMACOSX)
-    # enable gtest unittest, temprory;
-    enable_testing()
 endif()
 
 add_subdirectory(src)
-if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    add_subdirectory(unittest)
-endif()
+
+enable_testing()
+add_subdirectory(unittest)
 

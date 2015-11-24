@@ -29,7 +29,7 @@ endif()
 add_test(NAME TFoo COMMAND TFoo)
 
 add_executable(TFoo TFoo.cpp Foo.h Foo.cpp)
-target_link_libraries(TFoo gtest gtest_main)
+target_link_libraries(TFoo gtest gtest_main pthread)
 
 message(STATUS "Leaving directory ${CMAKE_CURRENT_SOURCE_DIR}")
 
