@@ -38,6 +38,7 @@
 
 #include <string.h>
 
+#include "CDmdCaptureEngine.h"
 #include "CDmdCaptureEngineLinux.h"
 #include "DmdLog.h"
 
@@ -89,8 +90,6 @@ DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
     CDmdCaptureEngineLinux *pLinuxVideoCapEngine =
         new CDmdCaptureEngineLinux();
     DMD_CHECK_NOTNULL(pLinuxVideoCapEngine);
-    DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0};
-    pLinuxVideoCapEngine->Init(capVideoFormat);
     *ppVideoCapEngine = (IDmdCaptureEngine *)pLinuxVideoCapEngine;
 
     return DMD_S_OK;

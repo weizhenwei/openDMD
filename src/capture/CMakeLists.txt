@@ -44,3 +44,5 @@ elseif(MAC_PLATFORM)
 endif()
 target_link_libraries(capture util glog ${PLATFORM_LIB})
 
+message(STATUS "Leaving directory ${CMAKE_CURRENT_SOURCE_DIR}")
+

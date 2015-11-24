@@ -40,7 +40,11 @@
 
 #include "IDmdDatatype.h"
 #include "DmdLog.h"
+
+#include "IDmdCaptureEngine.h"
+#include "CDmdCaptureEngine.h"
 #include "DmdCmdlineParameter.h"
+
 #include "main.h"
 
 using namespace opendmd;
@@ -62,6 +66,14 @@ static void parseCmdline(int argc, char *argv[]) {
     if (DmdCmdlineParameter::singleton()->isDaemonize()) {
         DmdCmdlineParameter::singleton()->daemonize();
     }
+}
+
+int opendmd::client_main(int argc, char *argv[]) {
+    DMD_LOG_INFO("At the beginning of client_main function.\n");
+    IDmdCaptureEngine *pCapEngine = NULL;
+    CreateVideoCaptureEngine(&pCapEngine);
+
+    return DMD_S_OK;
 }
 
 int main(int argc, char *argv[]) {

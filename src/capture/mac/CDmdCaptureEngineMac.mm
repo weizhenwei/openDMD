@@ -149,8 +149,6 @@ DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
     }
     CDmdCaptureEngineMac *pMacVideoCapEngine = new CDmdCaptureEngineMac();
     DMD_CHECK_NOTNULL(pMacVideoCapEngine);
-    DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0};
-    pMacVideoCapEngine->Init(capVideoFormat);
     *ppVideoCapEngine = (IDmdCaptureEngine *)pMacVideoCapEngine;
 
     return DMD_S_OK;

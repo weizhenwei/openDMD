@@ -32,20 +32,8 @@ elseif(MAC_PLATFORM)
 endif()
 
 # main source files;
-file(GLOB UNIVERSAL_FILES main/main.h main/main.cpp)
-if(LINUX_PLATFORM)
-    file(GLOB PLATFORM_SPECIFIC_FILES main/client_linux.cpp)
-    set(PLATFORM_LIB "")
-elseif(MAC_PLATFORM)
-    file(GLOB PLATFORM_SPECIFIC_FILES main/client_mac.mm)
-    find_library(COCOA_LIB Cocoa)
-    find_library(FOUNDATION_LIB Foundation)
-    find_library(AVFOUNDATION_LIB AVFoundation)
-    set(PLATFORM_LIB ${COCOA_LIB} ${FOUNDATION_LIB} ${AVFOUNDATION_LIB})
-endif()
-
-set(ALL_FILES ${UNIVERSAL_FILES} ${PLATFORM_SPECIFIC_FILES})
-add_executable(openDMD ${ALL_FILES})
+file(GLOB UNIVERSAL_FILES main/main.h main/main.cpp main/client.cpp)
+add_executable(openDMD ${UNIVERSAL_FILES})
 
 # libraries
 add_subdirectory(capture)
@@ -53,4 +41,6 @@ add_subdirectory(util)
 link_directories(${PROJECT_SOURCE_DIR}/src/capture)
 link_directories(${PROJECT_SOURCE_DIR}/src/util)
 target_link_libraries(openDMD glog capture util ${PLATFORM_LIB}) 
+
+message(STATUS "Leaving directory ${CMAKE_CURRENT_SOURCE_DIR}")
 

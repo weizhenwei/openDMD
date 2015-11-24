@@ -8,3 +8,5 @@ add_library(util SHARED ${ALL_FILES})
 set_target_properties(util PROPERTIES OUTPUT_NAME "util")
 target_link_libraries(util glog)
 
+message(STATUS "Leaving directory ${CMAKE_CURRENT_SOURCE_DIR}")
+

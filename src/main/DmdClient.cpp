@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : server.cpp
+ Name        : DmdClient.cpp
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.06.24
+ Date           :2015.11.24
  Copyright   :
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
@@ -32,18 +32,25 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : main entry of server.
+ Description : main entry of client program;
  ============================================================================
  */
 
 #include "DmdLog.h"
+#include "IDmdCaptureEngine.h"
+#include "CDmdCaptureEngine.h"
+
 #include "main.h"
 
 using namespace opendmd;
 
-int opendmd::server_main(int argc, char *argv[]) {
-    DMD_LOG_INFO("At the beginning of server_main function.\n");
+int opendmd::client_main(int argc, char *argv[]) {
+    DMD_LOG_INFO("At the beginning of client_main function.\n");
+    IDmdCaptureEngine *pVideoCapEngine = NULL;
+    CreateVideoCaptureEngine(&pVideoCapEngine);
+    DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0};
+    pVideoCapEngine->Init(capVideoFormat);
 
-    return 0;
+    return DMD_S_OK;
 }
 
