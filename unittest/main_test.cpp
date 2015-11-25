@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : foo.h
+ Name        : main_test.cpp
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.11.24
+ Date           :2015.11.25
  Copyright   :
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
@@ -32,15 +32,15 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : test header file of gtest usage.
+ Description : unit test main entry.
  ============================================================================
  */
 
-#ifndef UNITTEST_FOO_FOO_H
-#define UNITTEST_FOO_FOO_H
+#include "gtest/gtest.h"
 
-// foo test function;
-extern int add_foo(int a, int b);
+int main(int argc, char *argv[]) {
+    testing::InitGoogleTest(&argc, argv);
 
-#endif  // UNITTEST_FOO_FOO_H
+    return RUN_ALL_TESTS();
+}
 

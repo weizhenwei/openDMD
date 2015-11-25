@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : foo.h
+ Name        : CDmdCaptureEngineTest.cpp
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.11.24
+ Date           :2015.11.25
  Copyright   :
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
@@ -32,15 +32,41 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : test header file of gtest usage.
+ Description : test class of CDmdVideoCaptureEngine interface.
  ============================================================================
  */
 
-#ifndef UNITTEST_FOO_FOO_H
-#define UNITTEST_FOO_FOO_H
+#include "gtest/gtest.h"
 
-// foo test function;
-extern int add_foo(int a, int b);
+#include "IDmdDatatype.h"
+#include "IDmdCaptureEngine.h"
+#include "CDmdCaptureEngine.h"
 
-#endif  // UNITTEST_FOO_FOO_H
+using namespace opendmd;
+
+class CDmdCaptureEngineTest : public testing::Test {
+public:
+    CDmdCaptureEngineTest() {
+        pCaptureEngine = NULL;
+        CreateVideoCaptureEngine(&pCaptureEngine);
+    }
+
+    virtual ~CDmdCaptureEngineTest() {
+        if (pCaptureEngine) {
+            ReleaseVideoCaptureEngine(&pCaptureEngine);
+            pCaptureEngine = NULL;
+        }
+    }
+
+    virtual void SetUp() {}
+    virtual void TearDown() {}
+
+public:
+    IDmdCaptureEngine *pCaptureEngine;
+};
+
+TEST_F(CDmdCaptureEngineTest, Init) {
+    DmdCaptureVideoFormat format = {DmdUnknown, 0, 0, 0};
+    EXPECT_EQ(DMD_S_OK, pCaptureEngine->Init(format));
+}
 
