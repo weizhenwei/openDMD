@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : main_test.cpp
+ Name        : testFooMain.cpp
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
  Date           :2015.11.25
  Copyright   :
@@ -32,7 +32,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : unit test main entry.
+ Description : foo unittest main entry.
  ============================================================================
  */
 

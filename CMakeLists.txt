@@ -11,9 +11,6 @@ message(STATUS "CMAKE_SYSTEM_PROCESSOR is ${CMAKE_SYSTEM_PROCESSOR}")
 
 option(test "Enable unit test" OFF)
 
-# enable gtest unittest;
-# enable_testing()
-
 # set CPP flags;
 set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb -DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O2 -Wall")
@@ -25,8 +22,8 @@ elseif (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     add_definitions(-DMACOSX)
 endif()
 
-add_subdirectory(src)
-
 enable_testing()
+
+add_subdirectory(src)
 add_subdirectory(unittest)
 
