@@ -38,7 +38,7 @@
 
 #include "gtest/gtest.h"
 
-#include "Foo.h"
+#include "foo.h"
 
 int add_foo(int a, int b) {
     return a + b;
