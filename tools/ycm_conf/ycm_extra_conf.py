@@ -77,14 +77,18 @@ linux_flags = [
 '-I',
 './src/capture/linux',
 '-I',
-'./vendor/glog/linux-x86_64/include'
+'./vendor/glog/linux-x86_64/include',
+'-I',
+'./vendor/gtest/linux-x86_64/include',
 ]
 
 mac_flags = [
 '-I',
 './src/capture/mac',
 '-I',
-'./vendor/glog/mac-x86_64/include'
+'./vendor/glog/mac-x86_64/include',
+'-I',
+'./vendor/gtest/mac-x86_64/include',
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
