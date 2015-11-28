@@ -63,6 +63,13 @@ CDmdCaptureEngineMac::~CDmdCaptureEngineMac() {
 }
 
 DMD_RESULT CDmdCaptureEngineMac::Init(DmdCaptureVideoFormat& capVideoFormat) {
+    DMD_LOG_INFO("CDmdCaptureEngineMac::Init()"
+            ", capVideoFormat.eVideoType = " << capVideoFormat.eVideoType
+            << ", capVideoFormat.iWidth = " << capVideoFormat.iWidth
+            << ", capVideoFormat.iHeight = " << capVideoFormat.iHeight
+            << ", capVideoFormat.fFrameRate = " << capVideoFormat.fFrameRate
+            << ", capVideoFormat.sVideoDevice = "
+            << capVideoFormat.sVideoDevice);
     memcpy(&m_capVideoFormat, &capVideoFormat, sizeof(capVideoFormat));
 
     // TODO(weizhenwei): init m_capSessionFormat;
@@ -144,7 +151,7 @@ DMD_RESULT CVImageBuffer2VideoRawPacket(CVImageBufferRef imageBuffer,
 
 // public interface implementation defined at CDmdCaptureEngine.h
 const char *GetDeviceName() {
-    static char deviceName[256];
+    static char deviceName[uiDeviceNameLength];
 
     AVCaptureDevice *device =
         [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
@@ -154,7 +161,7 @@ const char *GetDeviceName() {
     }
 
     const char *pDeviceName = [[device uniqueID] UTF8String];
-    if (strlen(pDeviceName) > 256) {
+    if (strlen(pDeviceName) > uiDeviceNameLength) {
         DMD_LOG_ERROR("GetDeviceName, video device name length > 256");
         return NULL;
     }

@@ -41,6 +41,8 @@
 
 #include "IDmdDatatype.h"
 
+const unsigned int uiDeviceNameLength = 256;
+
 namespace opendmd {
 
 typedef struct {
@@ -48,6 +50,7 @@ typedef struct {
     unsigned int    iWidth;
     unsigned int    iHeight;
     float           fFrameRate;
+    char            sVideoDevice[uiDeviceNameLength];
 } DmdCaptureVideoFormat;
 
 class IDmdCaptureEngine {

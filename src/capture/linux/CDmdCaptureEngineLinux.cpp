@@ -56,6 +56,13 @@ CDmdCaptureEngineLinux::~CDmdCaptureEngineLinux() {
 
 DMD_RESULT CDmdCaptureEngineLinux::Init(DmdCaptureVideoFormat&
         capVideoFormat) {
+    DMD_LOG_INFO("CDmdCaptureEngineMac::Init()"
+            ", capVideoFormat.eVideoType = " << capVideoFormat.eVideoType
+            << ", capVideoFormat.iWidth = " << capVideoFormat.iWidth
+            << ", capVideoFormat.iHeight = " << capVideoFormat.iHeight
+            << ", capVideoFormat.fFrameRate = " << capVideoFormat.fFrameRate
+            << ", capVideoFormat.sVideoDevice = "
+            << capVideoFormat.sVideoDevice);
     memcpy(&m_capVideoFormat, &capVideoFormat, sizeof(capVideoFormat));
 
     return DMD_S_OK;

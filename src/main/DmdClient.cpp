@@ -36,6 +36,8 @@
  ============================================================================
  */
 
+#include <string.h>
+
 #include "DmdLog.h"
 #include "IDmdCaptureEngine.h"
 #include "CDmdCaptureEngine.h"
@@ -46,13 +48,19 @@ using namespace opendmd;
 
 int opendmd::client_main(int argc, char *argv[]) {
     DMD_LOG_INFO("At the beginning of client_main function.\n");
-    IDmdCaptureEngine *pVideoCapEngine = NULL;
-    CreateVideoCaptureEngine(&pVideoCapEngine);
-    DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0};
-    pVideoCapEngine->Init(capVideoFormat);
 
+    DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
+    capVideoFormat.eVideoType = DmdI420;
+    capVideoFormat.iWidth = 1280;
+    capVideoFormat.iHeight = 720;
+    capVideoFormat.fFrameRate = 30;
     char *pDeviceName = GetDeviceName();
     DMD_LOG_INFO("Get video device name = " << pDeviceName);
+    strncpy(capVideoFormat.sVideoDevice, pDeviceName, strlen(pDeviceName));
+
+    IDmdCaptureEngine *pVideoCapEngine = NULL;
+    CreateVideoCaptureEngine(&pVideoCapEngine);
+    pVideoCapEngine->Init(capVideoFormat);
 
     return DMD_S_OK;
 }
