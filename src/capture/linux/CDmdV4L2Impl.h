@@ -40,7 +40,6 @@
 #define SRC_CAPTURE_LINUX_CDMDV4L2IMPL_H
 
 #include "IDmdDatatype.h"
-#include "CDmdCaptureDeviceLinux.h"
 
 namespace opendmd {
 
