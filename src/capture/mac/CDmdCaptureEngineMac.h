@@ -42,9 +42,7 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
-#import "IDmdCaptureDevice.h"
 #import "IDmdCaptureEngine.h"
-#import "CDmdCaptureDeviceMac.h"
 #import "CDmdCaptureSessionMac.h"
 
 class IDmdCaptureEngine;

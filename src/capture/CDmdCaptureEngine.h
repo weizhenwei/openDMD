@@ -42,6 +42,7 @@
 #include "IDmdCaptureEngine.h"
 
 namespace opendmd {
+    char *GetDeviceName();
     DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine);
     DMD_RESULT ReleaseVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine);
 }  // namespace opendmd

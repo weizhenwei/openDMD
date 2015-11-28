@@ -68,14 +68,6 @@ static void parseCmdline(int argc, char *argv[]) {
     }
 }
 
-int opendmd::client_main(int argc, char *argv[]) {
-    DMD_LOG_INFO("At the beginning of client_main function.\n");
-    IDmdCaptureEngine *pCapEngine = NULL;
-    CreateVideoCaptureEngine(&pCapEngine);
-
-    return DMD_S_OK;
-}
-
 int main(int argc, char *argv[]) {
     parseCmdline(argc, argv);
 

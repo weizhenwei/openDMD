@@ -36,6 +36,8 @@
  ============================================================================
  */
 
+#include <fcntl.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "CDmdCaptureEngine.h"
@@ -82,6 +84,22 @@ DMD_RESULT CDmdCaptureEngineLinux::DeliverVideoData(
 
 
 // public interface implementation defined at CDmdCaptureEngine.h
+// global function definition;
+char *GetDeviceName() {
+    static char deviceName[256];
+    const char *devicePath = "/dev/video0";
+    int fd = -1;
+    if ((fd = open(devicePath, O_RDWR)) == -1) {
+        DMD_LOG_ERROR("Video device " << devicePath << " is not available:"
+                << strerror(errno));
+        return NULL;
+    } else {
+        close(fd);
+        strncpy(deviceName, devicePath, strlen(devicePath));
+        return deviceName;
+    }
+}
+
 DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
     if (NULL == ppVideoCapEngine) {
         return DMD_S_FAIL;

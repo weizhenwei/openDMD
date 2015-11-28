@@ -143,6 +143,27 @@ DMD_RESULT CVImageBuffer2VideoRawPacket(CVImageBufferRef imageBuffer,
 
 
 // public interface implementation defined at CDmdCaptureEngine.h
+const char *GetDeviceName() {
+    static char deviceName[256];
+
+    AVCaptureDevice *device =
+        [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    if (nil == device) {
+        DMD_LOG_ERROR("GetDeviceName(), could not get video device");
+        return NULL;
+    }
+
+    const char *pDeviceName = [[device uniqueID] UTF8String];
+    if (strlen(pDeviceName) > 256) {
+        DMD_LOG_ERROR("GetDeviceName, video device name length > 256");
+        return NULL;
+    }
+
+    strncpy(deviceName, pDeviceName, strlen(pDeviceName));
+
+    return deviceName;
+}
+
 DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
     if (NULL == ppVideoCapEngine) {
         return DMD_S_FAIL;

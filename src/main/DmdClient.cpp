@@ -51,6 +51,9 @@ int opendmd::client_main(int argc, char *argv[]) {
     DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0};
     pVideoCapEngine->Init(capVideoFormat);
 
+    char *pDeviceName = GetDeviceName();
+    DMD_LOG_INFO("Get video device name = " << pDeviceName);
+
     return DMD_S_OK;
 }
 
