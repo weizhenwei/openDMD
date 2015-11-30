@@ -31,6 +31,8 @@
 import os
 import platform
 import ycm_core
+import subprocess
+import re
 
 # These are the compilation flags that will be used in case there's no
 # compilation database set (by default, one is not set).
@@ -58,37 +60,41 @@ flags = [
 # language that the files to be compiled are written in. This is mostly
 # relevant for c++ headers.
 # For a C project, you would set this to 'c' instead of 'c++'.
-'-x',
-'c++',
+# '-x',
+# 'c++',
 
 # openDMD include path;
 '-I',
-'./src/include',
+'src/include',
 '-I',
-'./src/util',
+'src/util',
 '-I',
-'./src/capture',
+'src/capture',
 '-I',
-'./src/main',
+'src/main',
 ]
 
 # platform specific include path;
 linux_flags = [
+'-x',
+'c++',
 '-I',
-'./src/capture/linux',
+'src/capture/linux',
 '-I',
-'./vendor/glog/linux-x86_64/include',
+'vendor/glog/linux-x86_64/include',
 '-I',
-'./vendor/gtest/linux-x86_64/include',
+'vendor/gtest/linux-x86_64/include',
 ]
 
 mac_flags = [
+'-x',
+'objective-c',
 '-I',
-'./src/capture/mac',
+'src/capture/mac',
 '-I',
-'./vendor/glog/mac-x86_64/include',
+'vendor/glog/mac-x86_64/include',
 '-I',
-'./vendor/gtest/mac-x86_64/include',
+'vendor/gtest/mac-x86_64/include',
 ]
 
 # Set this to the absolute path to the folder (NOT the file!) containing the
@@ -110,8 +116,34 @@ else:
 
 SOURCE_EXTENSIONS = [ '.cpp', '.cxx', '.cc', '.c', '.m', '.mm', ".h" ]
 
+def LoadSystemIncludes( filetype ):
+    regex = re.compile(ur'(?:\#include \<...\> search starts here\:)(?P<list>.*?)(?:End of search list)', re.DOTALL)
+    process = subprocess.Popen(['clang', '-v', '-E', '-x', filetype, '-'], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process_out, process_err = process.communicate('')
+    output = process_out + process_err
+    includes = []
+    for p in re.search(regex, output).group('list').split('\n'):
+        p = p.strip()
+        if len(p) > 0 and p.find('(framework directory)') < 0:
+            includes.append('-isystem')
+            includes.append(p)
+    return includes
+
+
 def DirectoryOfThisScript():
   return os.path.dirname( os.path.abspath( __file__ ) )
+
+def PlatformSpecificFlags():
+  languageflags = []
+  projectflags = []
+  if (platform.system() == "Linux"):
+      languageflags = LoadSystemIncludes('c++')
+      projectflags = linux_flags
+  elif (platform.system() == "Darwin"):
+      languageflags = LoadSystemIncludes('objective-c')
+      projectflags = mac_flags
+
+  return languageflags + projectflags
 
 
 def MakeRelativePathsInFlagsAbsolute( flags, working_directory ):
@@ -121,13 +153,7 @@ def MakeRelativePathsInFlagsAbsolute( flags, working_directory ):
   make_next_absolute = False
   path_flags = [ '-isystem', '-I', '-iquote', '--sysroot=' ]
 
-  allflags = [];
-  # add by wzw, add platform specific include;
-  if (platform.system() == "Linux"):
-      allflags = flags + linux_flags;
-  elif (platform.system() == "Darwin"):
-      allflags = flags + mac_flags;
-
+  allflags = flags + PlatformSpecificFlags()
   for flag in allflags:
     new_flag = flag
 
@@ -201,3 +227,4 @@ def FlagsForFile( filename, **kwargs ):
     'flags': final_flags,
     'do_cache': True
   }
+
