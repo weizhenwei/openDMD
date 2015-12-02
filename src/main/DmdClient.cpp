@@ -61,6 +61,8 @@ int opendmd::client_main(int argc, char *argv[]) {
     IDmdCaptureEngine *pVideoCapEngine = NULL;
     CreateVideoCaptureEngine(&pVideoCapEngine);
     pVideoCapEngine->Init(capVideoFormat);
+    pVideoCapEngine->StartCapture();
+    pVideoCapEngine->StopCapture();
 
     return DMD_S_OK;
 }

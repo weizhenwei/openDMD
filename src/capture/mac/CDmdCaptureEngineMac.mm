@@ -217,18 +217,36 @@ DMD_RESULT CDmdCaptureEngineMac::Init(DmdCaptureVideoFormat& capVideoFormat) {
 }
 
 DMD_RESULT CDmdCaptureEngineMac::Uninit() {
+    StopCapture();
+    [m_pVideoCapSession setSink:NULL];
+    [m_pVideoCapSession release];
+    m_pVideoCapSession = NULL;
+
     return DMD_S_OK;
 }
 
 DMD_RESULT CDmdCaptureEngineMac::StartCapture() {
+    if (YES == [m_pVideoCapSession isRunning]) {
+        DMD_LOG_ERROR("CDmdCaptureEngineMac::StartCapture(), "
+                      << "CDmdAVVideoCapSession is already running.");
+        return DMD_S_FAIL;
+    }
+
+    if ([m_pVideoCapSession startRun:m_capSessionFormat] != DMD_S_OK) {
+        DMD_LOG_ERROR("CDmdCaptureEngineMac::StartCapture(), "
+                      << "AVCaptureSession start failed!");
+        return DMD_S_FAIL;
+    }
+
     return DMD_S_OK;
 }
 
 DMD_BOOL CDmdCaptureEngineMac::IsCapturing() {
-    return false;
+    return [m_pVideoCapSession isRunning];
 }
 
 DMD_RESULT CDmdCaptureEngineMac::StopCapture() {
+    return [m_pVideoCapSession stopRun];
     return DMD_S_OK;
 }
 
