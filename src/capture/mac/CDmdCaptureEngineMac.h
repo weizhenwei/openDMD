@@ -64,10 +64,18 @@ public:
     DMD_BOOL   IsCapturing();
     DMD_RESULT StopCapture();
 
+
     // IDmdMacAVVideoCapSessionSink interface;
     DMD_RESULT DeliverVideoData(CMSampleBufferRef sampleBuffer);
 
 private:
+    // setup AVCapSession paramters;
+    DMD_RESULT setupAVCaptureDevice();
+    DMD_RESULT setupAVCaptureDeviceFormat();
+    DMD_RESULT setupAVCaptureSessionPreset();
+    DMD_RESULT setupAVCaptureSessionFPS();
+    DMD_RESULT setupAVCaptureSession();
+
     CDmdAVVideoCapSession *m_pVideoCapSession;
     DmdCaptureVideoFormat m_capVideoFormat;
     MacCaptureSessionFormat m_capSessionFormat;

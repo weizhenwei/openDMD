@@ -62,6 +62,129 @@ CDmdCaptureEngineMac::~CDmdCaptureEngineMac() {
     Uninit();
 }
 
+
+// setup AVCapSession paramters;
+DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureDevice() {
+    DMD_CHECK_NOTNULL(m_capVideoFormat.sVideoDevice);
+    NSString *capDeviceID = [NSString stringWithUTF8String:
+        m_capVideoFormat.sVideoDevice];
+    m_capSessionFormat.capDevice =
+        [AVCaptureDevice deviceWithUniqueID:capDeviceID];
+    if (m_capSessionFormat.capDevice == nil) {
+        DMD_LOG_FATAL("CDmdCaptureEngineMac::setupAVCaptureDevice(), "
+                << "failed to create AVCaptureDevice.");
+        return DMD_S_FAIL;
+    }
+
+    return DMD_S_OK;
+}
+
+DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureDeviceFormat() { 
+    bool bDefault = false;
+    AVCaptureDeviceFormat *defaultFormat = nil;
+    NSString *defaultStrFormat = @"Y'CbCr 4:2:0 - 420v, 1280 x 720";
+    for ( AVCaptureDeviceFormat *format
+            in [m_capSessionFormat.capDevice formats] ) {
+        NSString *formatName =
+            (NSString *)CMFormatDescriptionGetExtension(
+                    [format formatDescription],
+                    kCMFormatDescriptionExtension_FormatName);
+        CMVideoDimensions dimensions = CMVideoFormatDescriptionGetDimensions(
+                (CMVideoFormatDescriptionRef)[format formatDescription]);
+        NSString *videoformat = [NSString stringWithFormat:@"%@, %d x %d",
+                                 formatName, dimensions.width,
+                                 dimensions.height];
+        if (!bDefault && [videoformat isEqualToString:defaultStrFormat]) {
+            bDefault = true;
+            defaultFormat = format;
+        }
+    }
+
+    // set default video format;
+    if (bDefault) {
+        m_capSessionFormat.capFormat = defaultFormat;
+    }
+
+    return DMD_S_OK;
+}
+
+DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureSessionPreset() {
+    NSArray *arrayPresets = [NSArray arrayWithObjects:
+                             AVCaptureSessionPresetLow,
+                             AVCaptureSessionPresetMedium,
+                             AVCaptureSessionPresetHigh,
+                             AVCaptureSessionPreset320x240,
+                             AVCaptureSessionPreset352x288,
+                             AVCaptureSessionPreset640x480,
+                             AVCaptureSessionPreset960x540,
+                             AVCaptureSessionPreset1280x720,
+                             AVCaptureSessionPresetPhoto,
+                             nil];
+    for (NSString *sessionPreset in arrayPresets) {
+        if ([m_capSessionFormat.capDevice
+                supportsAVCaptureSessionPreset:sessionPreset]) {
+            m_capSessionFormat.capSessionPreset = sessionPreset;
+        }
+    }
+    if (m_capSessionFormat.capSessionPreset == nil) {
+        DMD_LOG_FATAL("CDmdCaptureEngineMac::setupAVCaptureSessionPreset(), "
+                      "no supported session preset available!");
+        return DMD_S_FAIL;
+    }
+
+    return DMD_S_OK;
+}
+
+DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureSessionFPS() {
+    float fMinFPS = 0, fMaxFPS = 0.0f;
+    NSArray *ranges = [m_capSessionFormat.capFormat
+        videoSupportedFrameRateRanges];
+    if (ranges == nil || [ranges count] <= 0) {
+        DMD_LOG_FATAL("CDmdCaptureEngineMac::setupAVCaptureSessionFPS(), "
+                      << "m_capSessionFormat.capFormat "
+                      << "has no effective AVFrameRageRanges.");
+        return DMD_S_FAIL;
+    }
+
+    AVFrameRateRange *firstRange = [ranges firstObject];
+    fMinFPS = [firstRange minFrameRate];
+    fMaxFPS = [firstRange maxFrameRate];
+    for (int i = 1; i < [ranges count]; i++) {
+        AVFrameRateRange *range = [ranges objectAtIndex:i];
+        if (fMaxFPS < [range maxFrameRate]) {
+            fMaxFPS = [range maxFrameRate];
+        }
+        if (fMinFPS > [range minFrameRate]) {
+            fMinFPS = [range minFrameRate];
+        }
+    }
+
+    m_capSessionFormat.capFPS = fMaxFPS;
+
+    return DMD_S_OK;
+}
+
+DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureSession() {
+    DMD_RESULT ret =setupAVCaptureDevice();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+    ret = setupAVCaptureDeviceFormat();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+    ret = setupAVCaptureSessionPreset();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+    ret = setupAVCaptureSessionFPS();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+    
+    return ret;
+}
+
 DMD_RESULT CDmdCaptureEngineMac::Init(DmdCaptureVideoFormat& capVideoFormat) {
     DMD_LOG_INFO("CDmdCaptureEngineMac::Init()"
             ", capVideoFormat.eVideoType = " << capVideoFormat.eVideoType
@@ -72,8 +195,23 @@ DMD_RESULT CDmdCaptureEngineMac::Init(DmdCaptureVideoFormat& capVideoFormat) {
             << capVideoFormat.sVideoDevice);
     memcpy(&m_capVideoFormat, &capVideoFormat, sizeof(capVideoFormat));
 
-    // TODO(weizhenwei): init m_capSessionFormat;
-    m_capSessionFormat.capFPS = m_capVideoFormat.fFrameRate;
+    DMD_RESULT ret = DMD_S_OK;
+    ret = setupAVCaptureSession();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+
+    if (nil == m_pVideoCapSession) {
+        m_pVideoCapSession = [[CDmdAVVideoCapSession alloc] init];
+    }
+    if (nil == m_pVideoCapSession) {
+        DMD_LOG_ERROR("CDmdCaptureEngineMac::init(), "
+                << "couldn't init CDmdAVVideoCapSession.");
+        return DMD_S_FAIL;
+    }
+
+    [m_pVideoCapSession setSink:this];
+    [m_pVideoCapSession setCapSessionFormat:m_capSessionFormat];
 
     return DMD_S_OK;
 }
@@ -135,9 +273,16 @@ DMD_RESULT CVImageBuffer2VideoRawPacket(CVImageBufferRef imageBuffer,
     } else if (kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
             == pixelFormat) { // NV12 actually;
         for (int i = 0; i < packet.ulPlaneCount; i++) {
-            packet.pSrcData[i] = (unsigned char *)CVPixelBufferGetBaseAddressOfPlane(imageBuffer, i);
-            packet.ulSrcStride[i] = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, i);
-            packet.ulSrcDatalen[i] = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, i) * CVPixelBufferGetHeightOfPlane(imageBuffer, i);
+            unsigned char *pPlane = nil;
+            pPlane = (unsigned char *)
+                CVPixelBufferGetBaseAddressOfPlane(imageBuffer, i);
+            packet.pSrcData[i] = pPlane;
+            size_t bytesPerRow = 0;
+            bytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, i);
+            packet.ulSrcStride[i] = bytesPerRow;
+            size_t height = 0;
+            height = CVPixelBufferGetHeightOfPlane(imageBuffer, i);
+            packet.ulSrcDatalen[i] = bytesPerRow * height;
             packet.ulDataLen += packet.ulSrcDatalen[i];
         }
     } else {

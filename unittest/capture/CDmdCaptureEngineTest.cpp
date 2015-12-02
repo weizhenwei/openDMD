@@ -38,6 +38,8 @@
 
 #include "gtest/gtest.h"
 
+#include <string.h>
+
 #include "IDmdDatatype.h"
 #include "IDmdCaptureEngine.h"
 #include "CDmdCaptureEngine.h"
@@ -66,7 +68,14 @@ public:
 };
 
 TEST_F(CDmdCaptureEngineTest, Init) {
-    DmdCaptureVideoFormat format = {DmdUnknown, 0, 0, 0};
-    EXPECT_EQ(DMD_S_OK, pCaptureEngine->Init(format));
+    DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
+    capVideoFormat.eVideoType = DmdI420;
+    capVideoFormat.iWidth = 1280;
+    capVideoFormat.iHeight = 720;
+    capVideoFormat.fFrameRate = 30;
+    char *pDeviceName = GetDeviceName();
+    strncpy(capVideoFormat.sVideoDevice, pDeviceName, strlen(pDeviceName));
+
+    EXPECT_EQ(DMD_S_OK, pCaptureEngine->Init(capVideoFormat));
 }
 
