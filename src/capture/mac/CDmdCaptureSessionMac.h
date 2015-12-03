@@ -81,9 +81,9 @@ class IDmdMacAVVideoCapSessionSink;
 
 @interface CDmdAVVideoCapSession
     : NSObject<AVCaptureVideoDataOutputSampleBufferDelegate> {
-        id m_captureSession;  // AVCaptureSession
-        id m_videoCaptureDevice;  // AVCaptureDevice
-        id m_videoCaptureInput;  // AVCaptureDeviceInput
+        id m_captureSession;          // AVCaptureSession
+        id m_videoCaptureDevice;      // AVCaptureDevice
+        id m_videoCaptureInput;       // AVCaptureDeviceInput
         id m_videoCaptureDataOutput;  // AVCaptureVideoDataOutput
 
         MacCaptureSessionFormat m_format;

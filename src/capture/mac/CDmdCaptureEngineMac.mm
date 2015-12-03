@@ -205,7 +205,7 @@ DMD_RESULT CDmdCaptureEngineMac::Init(DmdCaptureVideoFormat& capVideoFormat) {
         m_pVideoCapSession = [[CDmdAVVideoCapSession alloc] init];
     }
     if (nil == m_pVideoCapSession) {
-        DMD_LOG_ERROR("CDmdCaptureEngineMac::init(), "
+        DMD_LOG_FATAL("CDmdCaptureEngineMac::init(), "
                 << "couldn't init CDmdAVVideoCapSession.");
         return DMD_S_FAIL;
     }
