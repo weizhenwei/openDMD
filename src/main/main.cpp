@@ -73,9 +73,6 @@ int main(int argc, char *argv[]) {
 
     client_main(argc, argv);
 
-    // to test daemonize;
-    // while (1);
-
     return 0;
 }
 

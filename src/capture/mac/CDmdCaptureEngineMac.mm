@@ -347,6 +347,7 @@ DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
 
 DMD_RESULT ReleaseVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
     (*ppVideoCapEngine)->Uninit();
+    delete (*ppVideoCapEngine);
 
     ppVideoCapEngine = NULL;
     return DMD_S_OK;
