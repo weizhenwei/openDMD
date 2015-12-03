@@ -79,8 +79,45 @@ DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureDevice() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureDeviceFormat() { 
+DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureDeviceFormat() {
+    DmdVideoType eVideoType = m_capVideoFormat.eVideoType;
+    if (eVideoType != DmdI420 && eVideoType != DmdYUYV
+        && eVideoType != DmdUYVY) {
+        DMD_LOG_FATAL("CDmdCaptureEngineMac::setupAVCaptureDeviceFormat(), "
+                      << "Unsupported capture video type on Mac platform.");
+        return DMD_S_FAIL;
+    }
+
+    NSString *strPrefix = nil;
+    if (eVideoType == DmdI420) {
+        strPrefix = @"Y'CbCr 4:2:0 - 420v, ";
+    } else if (eVideoType == DmdYUYV) {
+        strPrefix = @"Y'CbCr 4:2:2 - yuvs, ";
+    } else if (eVideoType == DmdUYVY) {
+        strPrefix = @"Y'CbCr 4:2:2 - uyvy, ";
+    }
+
+    NSString *strSuffix = [NSString stringWithFormat:@"%d x %d",
+                           m_capVideoFormat.iWidth,
+                           m_capVideoFormat.iHeight];
+    if (![strSuffix isEqualToString:@"1280 x 720"]
+        && ![strSuffix isEqualToString:@"640 x 480"]
+        && ![strSuffix isEqualToString:@"320 x 240"]) {
+        DMD_LOG_FATAL("CDmdCaptureEngineMac::setupAVCaptureDeviceFormat(), "
+                      << "Unsupported capture video resolution "
+                      << [strSuffix cStringUsingEncoding:NSUTF8StringEncoding]
+                      << " on Mac platform.");
+        return DMD_S_FAIL;
+    }
+
+    NSString *strCaptureFormat = [strPrefix stringByAppendingString:strSuffix];
+    DMD_LOG_INFO("CDmdCaptureEngineMac::setupAVCaptureDeviceFormat(), "
+                 << "get AVCaptureDeviceFormat:"
+                 << [strCaptureFormat cStringUsingEncoding:NSUTF8StringEncoding]);
+
     bool bDefault = false;
+    bool bSupport = false;
+    AVCaptureDeviceFormat *supportFormat = nil;
     AVCaptureDeviceFormat *defaultFormat = nil;
     NSString *defaultStrFormat = @"Y'CbCr 4:2:0 - 420v, 1280 x 720";
     for ( AVCaptureDeviceFormat *format
@@ -94,15 +131,28 @@ DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureDeviceFormat() {
         NSString *videoformat = [NSString stringWithFormat:@"%@, %d x %d",
                                  formatName, dimensions.width,
                                  dimensions.height];
+        if ([videoformat isEqualToString:strCaptureFormat]) {
+            bSupport = true;
+            supportFormat = format;
+            break;
+        }
+
         if (!bDefault && [videoformat isEqualToString:defaultStrFormat]) {
             bDefault = true;
             defaultFormat = format;
         }
     }
 
-    // set default video format;
-    if (bDefault) {
+    // set video format;
+    if (bSupport) {
+        m_capSessionFormat.capFormat = supportFormat;
+    } else if (bDefault) {
         m_capSessionFormat.capFormat = defaultFormat;
+    } else {
+        m_capSessionFormat.capFormat = nil;
+        DMD_LOG_FATAL("CDmdCaptureEngineMac::setupAVCaptureDeviceFormat(), "
+                      << "Unsupported AVCaptureDeviceFormat on Mac platform.");
+        return DMD_S_FAIL;
     }
 
     return DMD_S_OK;
@@ -277,19 +327,20 @@ DMD_RESULT CVImageBuffer2VideoRawPacket(CVImageBufferRef imageBuffer,
     packet.fmtVideoFormat.ulTimestamp = [[NSDate date] timeIntervalSince1970];
     packet.ulPlaneCount = CVPixelBufferGetPlaneCount(imageBuffer);
     if (kCVPixelFormatType_422YpCbCr8_yuvs == pixelFormat) {
-        packet.fmtVideoFormat.eVideoType = DmdYV12;
+        packet.fmtVideoFormat.eVideoType = DmdYUYV;
         packet.pSrcData[0] =
             (unsigned char *)CVPixelBufferGetBaseAddress(imageBuffer);
         packet.ulDataLen = CVPixelBufferGetBytesPerRow(imageBuffer)
             * packet.fmtVideoFormat.iHeight;
     } else if (kCVPixelFormatType_422YpCbCr8 == pixelFormat) {
-        packet.fmtVideoFormat.eVideoType = DmdYUY2;
+        packet.fmtVideoFormat.eVideoType = DmdUYVY;
         packet.pSrcData[0] =
             (unsigned char *)CVPixelBufferGetBaseAddress(imageBuffer);
         packet.ulDataLen = CVPixelBufferGetBytesPerRow(imageBuffer)
             * packet.fmtVideoFormat.iHeight;
     } else if (kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
             == pixelFormat) { // NV12 actually;
+        packet.fmtVideoFormat.eVideoType = DmdI420;
         for (int i = 0; i < packet.ulPlaneCount; i++) {
             unsigned char *pPlane = nil;
             pPlane = (unsigned char *)

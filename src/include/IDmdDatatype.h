@@ -55,11 +55,9 @@ typedef enum {
     DmdUnknown = 0,
 
     // yuv color space;
-    DmdI420,
-    DmdYV12,
-    DmdNV12,
-    DmdNV21,
-    DmdYUY2,
+    DmdI420,    // Y'CbCr 4:2:0 - 420v, NV12 actually;
+    DmdYUYV,    // Y'CbCr 4:2:2 - yuvs;
+    DmdUYVY,    // Y'CbCr 4:2:2 - uyvy;
 
     // rgb color space;
     DmdRGB24,
