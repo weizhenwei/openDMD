@@ -112,8 +112,8 @@ DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureDeviceFormat() {
 
     NSString *strCaptureFormat = [strPrefix stringByAppendingString:strSuffix];
     DMD_LOG_INFO("CDmdCaptureEngineMac::setupAVCaptureDeviceFormat(), "
-                 << "get AVCaptureDeviceFormat:"
-                 << [strCaptureFormat cStringUsingEncoding:NSUTF8StringEncoding]);
+            << "get AVCaptureDeviceFormat:"
+            << [strCaptureFormat cStringUsingEncoding:NSUTF8StringEncoding]);
 
     bool bDefault = false;
     bool bSupport = false;
@@ -151,7 +151,7 @@ DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureDeviceFormat() {
     } else {
         m_capSessionFormat.capFormat = nil;
         DMD_LOG_FATAL("CDmdCaptureEngineMac::setupAVCaptureDeviceFormat(), "
-                      << "Unsupported AVCaptureDeviceFormat on Mac platform.");
+                << "Unsupported AVCaptureDeviceFormat on Mac platform.");
         return DMD_S_FAIL;
     }
 
@@ -159,6 +159,7 @@ DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureDeviceFormat() {
 }
 
 DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureSessionPreset() {
+    /*
     NSArray *arrayPresets = [NSArray arrayWithObjects:
                              AVCaptureSessionPresetLow,
                              AVCaptureSessionPresetMedium,
@@ -170,15 +171,33 @@ DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureSessionPreset() {
                              AVCaptureSessionPreset1280x720,
                              AVCaptureSessionPresetPhoto,
                              nil];
-    for (NSString *sessionPreset in arrayPresets) {
-        if ([m_capSessionFormat.capDevice
-                supportsAVCaptureSessionPreset:sessionPreset]) {
-            m_capSessionFormat.capSessionPreset = sessionPreset;
-        }
-    }
-    if (m_capSessionFormat.capSessionPreset == nil) {
+     */
+    NSString *strResolution = [NSString stringWithFormat:@"%dx%d",
+                           m_capVideoFormat.iWidth,
+                           m_capVideoFormat.iHeight];
+    if (![strResolution isEqualToString:@"1280x720"]
+        && ![strResolution isEqualToString:@"640x480"]
+        && ![strResolution isEqualToString:@"320x240"]) {
         DMD_LOG_FATAL("CDmdCaptureEngineMac::setupAVCaptureSessionPreset(), "
-                      "no supported session preset available!");
+                << "Unsupported capture video resolution "
+                << [strResolution cStringUsingEncoding:NSUTF8StringEncoding]
+                << " on Mac platform.");
+        return DMD_S_FAIL;
+    }
+
+    NSString *strPrefix = @"AVCaptureSessionPreset";
+    NSString *strPreset = [strPrefix stringByAppendingString:strResolution];
+    if ([m_capSessionFormat.capDevice
+            supportsAVCaptureSessionPreset:strPreset]) {
+        m_capSessionFormat.capSessionPreset = strPreset;
+        DMD_LOG_INFO("CDmdCaptureEngineMac::setupAVCaptureSessionPreset(), "
+                << "set AVCaptureSessionPreset to "
+                << [strPreset cStringUsingEncoding:NSUTF8StringEncoding]);
+    } else {
+        m_capSessionFormat.capSessionPreset = nil;
+        DMD_LOG_FATAL("CDmdCaptureEngineMac::setupAVCaptureSessionPreset(), "
+                << "unsupported AVCaptureSessionPreset to "
+                << [strPreset cStringUsingEncoding:NSUTF8StringEncoding]);
         return DMD_S_FAIL;
     }
 
