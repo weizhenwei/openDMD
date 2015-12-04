@@ -38,6 +38,9 @@
 
 #include <string.h>
 
+#include <map>
+#include <utility>  // for std::pair;
+
 #include "gtest/gtest.h"
 
 #include "IDmdDatatype.h"
@@ -45,6 +48,8 @@
 #include "CDmdCaptureEngine.h"
 
 using namespace opendmd;
+using std::map;
+using std::pair;
 
 class CDmdCaptureEngineTest : public testing::Test {
 public:
@@ -69,13 +74,46 @@ public:
 
 TEST_F(CDmdCaptureEngineTest, Init) {
     DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
+    char *pDeviceName = GetDeviceName();
+
+    DmdVideoType arrVideoTypes[3] = {
+        DmdI420, DmdYUYV, DmdUYVY,
+    };
+    map<int, int> mapResolutions;
+    pair<int, int> elem = pair<int, int>(1280, 720);
+    mapResolutions.insert(elem);
+    elem = pair<int, int>(640, 480);
+    mapResolutions.insert(elem);
+    elem = pair<int, int>(320, 240);
+    mapResolutions.insert(elem);
+
+    for (map<int, int>::iterator iter = mapResolutions.begin();
+         iter != mapResolutions.end(); iter++) {
+        memset(&capVideoFormat, 0, sizeof(capVideoFormat));
+        capVideoFormat.iWidth = iter->first;
+        capVideoFormat.iHeight = iter->second;
+        capVideoFormat.fFrameRate = 30;
+        char *pName = GetDeviceName();
+        EXPECT_STRCASEEQ(pDeviceName, pName);
+        strncpy(capVideoFormat.sVideoDevice, pDeviceName, strlen(pDeviceName));
+        for (DmdVideoType eVideoType : arrVideoTypes) {
+            capVideoFormat.eVideoType = eVideoType;
+            EXPECT_EQ(DMD_S_OK, pCaptureEngine->Init(capVideoFormat));
+            EXPECT_EQ(DMD_S_OK, pCaptureEngine->Uninit());
+        }
+    }
+}
+
+TEST_F(CDmdCaptureEngineTest, StartCapture) {
+    DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
     capVideoFormat.eVideoType = DmdI420;
     capVideoFormat.iWidth = 1280;
     capVideoFormat.iHeight = 720;
     capVideoFormat.fFrameRate = 30;
     char *pDeviceName = GetDeviceName();
     strncpy(capVideoFormat.sVideoDevice, pDeviceName, strlen(pDeviceName));
-
     EXPECT_EQ(DMD_S_OK, pCaptureEngine->Init(capVideoFormat));
+    EXPECT_EQ(DMD_S_OK, pCaptureEngine->StartCapture());
+    EXPECT_EQ(DMD_S_OK, pCaptureEngine->StopCapture());
+    EXPECT_EQ(DMD_S_OK, pCaptureEngine->Uninit());
 }
-

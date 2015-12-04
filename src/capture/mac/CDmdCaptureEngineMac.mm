@@ -120,8 +120,8 @@ DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureDeviceFormat() {
     AVCaptureDeviceFormat *supportFormat = nil;
     AVCaptureDeviceFormat *defaultFormat = nil;
     NSString *defaultStrFormat = @"Y'CbCr 4:2:0 - 420v, 1280 x 720";
-    for ( AVCaptureDeviceFormat *format
-            in [m_capSessionFormat.capDevice formats] ) {
+    for (AVCaptureDeviceFormat *format in
+            [m_capSessionFormat.capDevice formats]) {
         NSString *formatName =
             (NSString *)CMFormatDescriptionGetExtension(
                     [format formatDescription],
@@ -250,7 +250,7 @@ DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureSession() {
     if (ret != DMD_S_OK) {
         return ret;
     }
-    
+
     return ret;
 }
 
@@ -288,8 +288,14 @@ DMD_RESULT CDmdCaptureEngineMac::Init(DmdCaptureVideoFormat& capVideoFormat) {
 DMD_RESULT CDmdCaptureEngineMac::Uninit() {
     StopCapture();
     [m_pVideoCapSession setSink:NULL];
+
     [m_pVideoCapSession release];
     m_pVideoCapSession = NULL;
+
+    // [m_capSessionFormat.capDevice release];
+    // m_capSessionFormat.capDevice = nil;
+    memset(&m_capVideoFormat, 0, sizeof(m_capVideoFormat));
+    memset(&m_capSessionFormat, 0, sizeof(m_capSessionFormat));
 
     return DMD_S_OK;
 }
@@ -316,7 +322,6 @@ DMD_BOOL CDmdCaptureEngineMac::IsCapturing() {
 
 DMD_RESULT CDmdCaptureEngineMac::StopCapture() {
     return [m_pVideoCapSession stopRun];
-    return DMD_S_OK;
 }
 
 DMD_RESULT CDmdCaptureEngineMac::DeliverVideoData(
@@ -358,7 +363,7 @@ DMD_RESULT CVImageBuffer2VideoRawPacket(CVImageBufferRef imageBuffer,
         packet.ulDataLen = CVPixelBufferGetBytesPerRow(imageBuffer)
             * packet.fmtVideoFormat.iHeight;
     } else if (kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
-            == pixelFormat) { // NV12 actually;
+            == pixelFormat) {  // NV12 actually;
         packet.fmtVideoFormat.eVideoType = DmdI420;
         for (int i = 0; i < packet.ulPlaneCount; i++) {
             unsigned char *pPlane = nil;
@@ -385,23 +390,28 @@ DMD_RESULT CVImageBuffer2VideoRawPacket(CVImageBufferRef imageBuffer,
 // public interface implementation defined at CDmdCaptureEngine.h
 const char *GetDeviceName() {
     static char deviceName[uiDeviceNameLength];
+    static bool bGotDevice = false;
+    if (bGotDevice) {
+        return deviceName;
+    } else {
+        AVCaptureDevice *device =
+            [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+        if (nil == device) {
+            DMD_LOG_ERROR("GetDeviceName(), could not get video device");
+            return NULL;
+        }
 
-    AVCaptureDevice *device =
-        [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    if (nil == device) {
-        DMD_LOG_ERROR("GetDeviceName(), could not get video device");
-        return NULL;
+        const char *pDeviceName = [[device uniqueID] UTF8String];
+        if (strlen(pDeviceName) > uiDeviceNameLength) {
+            DMD_LOG_ERROR("GetDeviceName, video device name length > 256");
+            return NULL;
+        }
+
+        strncpy(deviceName, pDeviceName, strlen(pDeviceName));
+        bGotDevice = true;
+
+        return deviceName;
     }
-
-    const char *pDeviceName = [[device uniqueID] UTF8String];
-    if (strlen(pDeviceName) > uiDeviceNameLength) {
-        DMD_LOG_ERROR("GetDeviceName, video device name length > 256");
-        return NULL;
-    }
-
-    strncpy(deviceName, pDeviceName, strlen(pDeviceName));
-
-    return deviceName;
 }
 
 DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {

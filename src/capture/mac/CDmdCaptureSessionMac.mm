@@ -57,7 +57,7 @@ static void capture_cleanup(void* p) {
 
 - (id)init {
     m_captureSession = nil;
-    m_videoCaptureDevice = nil;
+    // m_videoCaptureDevice = nil;
     m_videoCaptureInput = nil;
     m_videoCaptureDataOutput = nil;
     memset(&m_format, 0, sizeof(m_format));
@@ -80,13 +80,25 @@ static void capture_cleanup(void* p) {
     return self;
 }
 
+- (void)dealloc {
+    m_sink = NULL;
+    [m_sinkLock release];
+    m_sinkLock = NULL;
+
+    [m_captureSession release];
+    m_captureSession = nil;
+
+    [super dealloc];
+}
+
+
 - (AVCaptureSession *)getAVCaptureSesion {
     return m_captureSession;
 }
 
 - (DMD_RESULT)setCapSessionFormat:(MacCaptureSessionFormat&)format {
     m_format = format;
-    m_videoCaptureDevice = format.capDevice;
+    // m_videoCaptureDevice = format.capDevice;
 
     return DMD_S_OK;
 }
@@ -95,22 +107,6 @@ static void capture_cleanup(void* p) {
     format = m_format;
 
     return DMD_S_OK;
-}
-
-- (void)dealloc {
-    m_sink = NULL;
-    [m_sinkLock release];
-    m_sinkLock = NULL;
-
-    [m_captureSession removeInput:m_videoCaptureInput];
-    [m_captureSession removeOutput:m_videoCaptureDataOutput];
-
-    [m_videoCaptureInput release];
-    [m_videoCaptureDataOutput release];
-    [m_videoCaptureDevice release];
-    [m_captureSession release];
-
-    [super dealloc];
 }
 
 - (void)setSink:(IDmdMacAVVideoCapSessionSink*)sink {
@@ -134,6 +130,7 @@ static void capture_cleanup(void* p) {
         if (nil != m_videoCaptureInput) {
             [m_captureSession removeInput:m_videoCaptureInput];
             [m_videoCaptureInput release];
+            m_videoCaptureInput = nil;
         }
 
         m_videoCaptureInput =
@@ -184,7 +181,7 @@ static void capture_cleanup(void* p) {
     [m_captureSession removeOutput:m_videoCaptureDataOutput];
     [m_videoCaptureDataOutput setSampleBufferDelegate:NULL queue:NULL];
     [m_videoCaptureDataOutput release];
-    m_videoCaptureDataOutput = NULL;
+    m_videoCaptureDataOutput = nil;
 
     [m_captureSession commitConfiguration];
 
@@ -254,9 +251,9 @@ static void capture_cleanup(void* p) {
 
     [m_captureSession commitConfiguration];
     NSError *error = nil;
-    if ([m_videoCaptureDevice lockForConfiguration:&error]) {
-        [m_videoCaptureDevice setActiveFormat:m_format.capFormat];
-        [m_videoCaptureDevice unlockForConfiguration];
+    if ([m_format.capDevice lockForConfiguration:&error]) {
+        [m_format.capDevice setActiveFormat:m_format.capFormat];
+        [m_format.capDevice unlockForConfiguration];
     } else {
         NSString *errorString = [[NSString alloc] initWithFormat:@"%@", error];
         DMD_LOG_ERROR("CDmdAVVideoCapSession::updateAVCaptureDeviceFormat(): "
@@ -362,9 +359,9 @@ static void capture_cleanup(void* p) {
     [m_captureSession setSessionPreset: m_format.capSessionPreset];
 
     NSError *error = nil;
-    if ([m_videoCaptureDevice lockForConfiguration:&error]) {
-        [m_videoCaptureDevice setActiveFormat:m_format.capFormat];
-        [m_videoCaptureDevice unlockForConfiguration];
+    if ([m_format.capDevice lockForConfiguration:&error]) {
+        [m_format.capDevice setActiveFormat:m_format.capFormat];
+        [m_format.capDevice unlockForConfiguration];
     } else {
         NSString *errorString = [[NSString alloc] initWithFormat:@"%@", error];
         DMD_LOG_ERROR("CDmdAVVideoCapSession::updateVideoFormat():"
