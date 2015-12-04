@@ -287,10 +287,10 @@ DMD_RESULT CDmdCaptureEngineMac::Init(DmdCaptureVideoFormat& capVideoFormat) {
 
 DMD_RESULT CDmdCaptureEngineMac::Uninit() {
     StopCapture();
-    [m_pVideoCapSession setSink:NULL];
+    [m_pVideoCapSession setSink:nil];
 
     [m_pVideoCapSession release];
-    m_pVideoCapSession = NULL;
+    m_pVideoCapSession = nil;
 
     // [m_capSessionFormat.capDevice release];
     // m_capSessionFormat.capDevice = nil;
