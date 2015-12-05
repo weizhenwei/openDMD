@@ -37,6 +37,8 @@
  */
 
 #include <string.h>
+#include <map>
+#include <utility>
 
 #include "DmdLog.h"
 #include "IDmdCaptureEngine.h"
@@ -45,6 +47,44 @@
 #include "main.h"
 
 using namespace opendmd;
+using std::map;
+using std::pair;
+
+static void CDmdCaptureEngineTest_Init() {
+    IDmdCaptureEngine *pVideoCapEngine = NULL;
+    CreateVideoCaptureEngine(&pVideoCapEngine);
+
+    DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
+    char *pDeviceName = GetDeviceName();
+
+    DmdVideoType arrVideoTypes[3] = {
+        DmdI420, DmdYUYV, DmdUYVY,
+    };
+    map<int, int> mapResolutions;
+    pair<int, int> elem = pair<int, int>(1280, 720);
+    mapResolutions.insert(elem);
+    elem = pair<int, int>(640, 480);
+    mapResolutions.insert(elem);
+    elem = pair<int, int>(320, 240);
+    mapResolutions.insert(elem);
+
+    for (map<int, int>::iterator iter = mapResolutions.begin();
+         iter != mapResolutions.end(); iter++) {
+        memset(&capVideoFormat, 0, sizeof(capVideoFormat));
+        capVideoFormat.iWidth = iter->first;
+        capVideoFormat.iHeight = iter->second;
+        capVideoFormat.fFrameRate = 30;
+        strncpy(capVideoFormat.sVideoDevice, pDeviceName, strlen(pDeviceName));
+        for (DmdVideoType eVideoType : arrVideoTypes) {
+            capVideoFormat.eVideoType = eVideoType;
+            pVideoCapEngine->Init(capVideoFormat);
+            pVideoCapEngine->Uninit();
+        }
+    }
+
+    ReleaseVideoCaptureEngine(&pVideoCapEngine);
+    pVideoCapEngine = NULL;
+}
 
 int opendmd::client_main(int argc, char *argv[]) {
     DMD_LOG_INFO("At the beginning of client_main function.\n");
@@ -66,6 +106,8 @@ int opendmd::client_main(int argc, char *argv[]) {
     pVideoCapEngine->StopCapture();
     ReleaseVideoCaptureEngine(&pVideoCapEngine);
     pVideoCapEngine = NULL;
+
+    CDmdCaptureEngineTest_Init();
 
     return DMD_S_OK;
 }

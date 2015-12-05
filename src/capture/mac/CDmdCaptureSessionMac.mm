@@ -57,7 +57,6 @@ static void capture_cleanup(void* p) {
 
 - (id)init {
     m_captureSession = nil;
-    // m_videoCaptureDevice = nil;
     m_videoCaptureInput = nil;
     m_videoCaptureDataOutput = nil;
     memset(&m_format, 0, sizeof(m_format));
@@ -82,11 +81,8 @@ static void capture_cleanup(void* p) {
 
 - (void)dealloc {
     m_sink = nil;
-    [m_sinkLock release];
-    m_sinkLock = nil;
-
-    [m_captureSession release];
-    m_captureSession = nil;
+    DMDRelease(m_sinkLock);
+    DMDRelease(m_captureSession);
 
     [super dealloc];
 }
@@ -98,7 +94,6 @@ static void capture_cleanup(void* p) {
 
 - (DMD_RESULT)setCapSessionFormat:(MacCaptureSessionFormat&)format {
     m_format = format;
-    // m_videoCaptureDevice = format.capDevice;
 
     return DMD_S_OK;
 }
@@ -129,8 +124,7 @@ static void capture_cleanup(void* p) {
 
         if (nil != m_videoCaptureInput) {
             [m_captureSession removeInput:m_videoCaptureInput];
-            [m_videoCaptureInput release];
-            m_videoCaptureInput = nil;
+            DMDRelease(m_videoCaptureInput);
         }
 
         m_videoCaptureInput =
@@ -175,13 +169,10 @@ static void capture_cleanup(void* p) {
     [m_captureSession beginConfiguration];
 
     [m_captureSession removeInput:m_videoCaptureInput];
-    [m_videoCaptureInput release];
-    m_videoCaptureInput = nil;
-
+    DMDRelease(m_videoCaptureInput);
     [m_captureSession removeOutput:m_videoCaptureDataOutput];
     [m_videoCaptureDataOutput setSampleBufferDelegate:nil queue:nil];
-    [m_videoCaptureDataOutput release];
-    m_videoCaptureDataOutput = nil;
+    DMDRelease(m_videoCaptureDataOutput);
 
     [m_captureSession commitConfiguration];
 

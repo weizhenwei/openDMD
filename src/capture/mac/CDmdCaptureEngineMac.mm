@@ -45,7 +45,9 @@
 #import <CoreVideo/CVPixelBuffer.h>
 
 #import <string.h>
+
 #import "CDmdCaptureEngineMac.h"
+#import "CDmdCaptureSessionMac.h"
 
 #include "DmdLog.h"
 #include "DmdMutex.h"
@@ -59,7 +61,6 @@ CDmdCaptureEngineMac::CDmdCaptureEngineMac() : m_pVideoCapSession(nil) {
 }
 
 CDmdCaptureEngineMac::~CDmdCaptureEngineMac() {
-    Uninit();
 }
 
 
@@ -286,16 +287,13 @@ DMD_RESULT CDmdCaptureEngineMac::Init(DmdCaptureVideoFormat& capVideoFormat) {
 }
 
 DMD_RESULT CDmdCaptureEngineMac::Uninit() {
-    StopCapture();
-    [m_pVideoCapSession setSink:nil];
-
-    [m_pVideoCapSession release];
-    m_pVideoCapSession = nil;
-
-    // [m_capSessionFormat.capDevice release];
-    // m_capSessionFormat.capDevice = nil;
     memset(&m_capVideoFormat, 0, sizeof(m_capVideoFormat));
     memset(&m_capSessionFormat, 0, sizeof(m_capSessionFormat));
+
+    [m_pVideoCapSession setSink:nil];
+    [m_pVideoCapSession setCapSessionFormat:m_capSessionFormat];
+    DMDRelease(m_pVideoCapSession);
+    DMDRelease(m_capSessionFormat.capDevice);
 
     return DMD_S_OK;
 }
@@ -426,10 +424,9 @@ DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
 }
 
 DMD_RESULT ReleaseVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
-    (*ppVideoCapEngine)->Uninit();
     delete (*ppVideoCapEngine);
+    *ppVideoCapEngine = NULL;
 
-    ppVideoCapEngine = NULL;
     return DMD_S_OK;
 }
 

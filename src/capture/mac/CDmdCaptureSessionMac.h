@@ -45,6 +45,13 @@
 
 using namespace opendmd;
 
+#define DMDRelease(x)  \
+do {                   \
+    [x release];       \
+    x = nil;           \
+} while (0)
+
+
 // Y'CbCr 4:2:2 - yuvs: kCVPixelFormatType_422YpCbCr8_yuvs
 // Y'CbCr 4:2:2 - uyuv: kCVPixelFormatType_422YpCbCr8
 // Y'CbCr 4:2:0 - 420v: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange;
