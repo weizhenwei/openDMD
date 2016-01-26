@@ -45,3 +45,6 @@ cscope.files
 cscope.out
 tags
 
+# ycm python bytecode
+.ycm_extra_conf.pyc
+
