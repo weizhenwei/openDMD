@@ -39,48 +39,59 @@
 #ifndef SRC_CAPTURE_LINUX_CDMDV4L2IMPL_H
 #define SRC_CAPTURE_LINUX_CDMDV4L2IMPL_H
 
+#include <linux/videodev2.h>
+
+#include "IDmdCaptureEngine.h"
 #include "IDmdDatatype.h"
 
 namespace opendmd {
 
-/*
-struct v4l2_device_info {
-    int video_device_fd;                                 // video device fd;
-    const char * video_device_path;                      // video device path;
-    struct v4l2_capability cap;                   // video device capabilities;
-    struct v4l2_input input;                       // video input;
-    struct v4l2_fmtdesc fmtdesc;            // video format enumeration;
-    struct v4l2_format format;                // video stream data format;
-    struct v4l2_requestbuffers reqbuffers;   // mmap buffers;
-    struct v4l2_buffer buffer;                             // video buffer;
+struct mmap_buffer {
+    void *start;
+    unsigned int length;
+};
 
-    int reqbuffer_count;                                      // req.count;
+typedef struct _v4l2_capture_param {
+    int video_device_fd;                          // video device fd;
+    char video_device_path[maxDeviceNameLength];  // video device path;
+    struct v4l2_capability cap;                   // video device capabilities;
+    struct v4l2_input input;                      // video input;
+    struct v4l2_fmtdesc fmtdesc;                  // video format enumeration;
+    struct v4l2_format format;                    // video stream data format;
+    struct v4l2_requestbuffers reqbuffers;        // mmap buffers;
+    struct v4l2_buffer buffer;                    // video buffer;
+
+    int reqbuffer_count;                          // req.count;
     struct mmap_buffer *buffers;                  // mmap buffers;
 
-    int width;                               // picture width;
-    int height;                              // picture height;
-};
-*/
+    int width;                                    // picture width;
+    int height;                                   // picture height;
+} v4l2_capture_param;
+
 
 class CDmdV4L2Impl {
 public:
-    CDmdV4L2Impl() {}
-    ~CDmdV4L2Impl() {}
+    CDmdV4L2Impl();
+    ~CDmdV4L2Impl();
 
-    static DMD_RESULT v4l2OpenDevice(struct v4l2_device_info *deviceInfo);
-    static DMD_RESULT v4l2QueryCapability(struct v4l2_device_info
-            *deviceInfo);
-    static DMD_RESULT v4l2QueryFormat(struct v4l2_device_info *deviceInfo);
-    static DMD_RESULT v4l2SetupFormat(struct v4l2_device_info *deviceInfo);
-    static DMD_RESULT v4l2QueryFPS(struct v4l2_device_info *deviceInfo);
-    static DMD_RESULT v4l2SetupFPS(struct v4l2_device_info *deviceInfo);
-    static DMD_RESULT v4l2CreateRequestBuffers(struct v4l2_device_info
-            *deviceInfo);
-    static DMD_RESULT v4l2mmap(struct v4l2_device_info *deviceInfo);
-    static DMD_RESULT v4l2StreamON(struct v4l2_device_info *deviceInfo);
-    static DMD_RESULT v4l2StreamOFF(struct v4l2_device_info *deviceInfo);
-    static DMD_RESULT v4l2unmmap(struct v4l2_device_info *deviceInfo);
-    static DMD_RESULT v4l2CloseDevice(struct v4l2_device_info *deviceInfo);
+    DMD_RESULT Init(const v4l2_capture_param &capParam);
+    DMD_RESULT Uninit();
+
+    DMD_RESULT v4l2OpenDevice(struct v4l2_device_info *deviceInfo);
+    DMD_RESULT v4l2QueryCapability(struct v4l2_device_info *deviceInfo);
+    DMD_RESULT v4l2QueryFormat(struct v4l2_device_info *deviceInfo);
+    DMD_RESULT v4l2SetupFormat(struct v4l2_device_info *deviceInfo);
+    DMD_RESULT v4l2QueryFPS(struct v4l2_device_info *deviceInfo);
+    DMD_RESULT v4l2SetupFPS(struct v4l2_device_info *deviceInfo);
+    DMD_RESULT v4l2CreateRequestBuffers(struct v4l2_device_info *deviceInfo);
+    DMD_RESULT v4l2mmap(struct v4l2_device_info *deviceInfo);
+    DMD_RESULT v4l2StreamON(struct v4l2_device_info *deviceInfo);
+    DMD_RESULT v4l2StreamOFF(struct v4l2_device_info *deviceInfo);
+    DMD_RESULT v4l2unmmap(struct v4l2_device_info *deviceInfo);
+    DMD_RESULT v4l2CloseDevice(struct v4l2_device_info *deviceInfo);
+
+private:
+     v4l2_capture_param m_v4l2Param;
 };
 
 }  // namespace opendmd
