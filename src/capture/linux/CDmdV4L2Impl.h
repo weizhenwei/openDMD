@@ -91,6 +91,8 @@ public:
     DMD_RESULT v4l2CloseDevice(struct v4l2_device_info *deviceInfo);
 
 private:
+    int _v4l2IOCTL(int fd, int request, void *arg);
+
      v4l2_capture_param m_v4l2Param;
 };
 

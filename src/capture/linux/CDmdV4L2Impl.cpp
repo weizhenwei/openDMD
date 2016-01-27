@@ -37,6 +37,8 @@
  */
 
 #include <string.h>
+#include <errno.h>
+#include <sys/ioctl.h>
 
 #include "CDmdV4L2Impl.h"
 
@@ -47,6 +49,15 @@ CDmdV4L2Impl::CDmdV4L2Impl() {
 }
 
 CDmdV4L2Impl::~CDmdV4L2Impl() {
+}
+
+int CDmdV4L2Impl::_v4l2IOCTL(int fd, int request, void *arg) {
+    int r;
+    do {
+        r = ioctl(fd, request, arg);
+    } while (-1 == r && EINTR == errno);
+
+    return r;
 }
 
 DMD_RESULT CDmdV4L2Impl::Init(const v4l2_capture_param &capParam) {
