@@ -36,9 +36,41 @@
  ============================================================================
  */
 
+#include <string.h>
+#include <errno.h>
+#include <sys/ioctl.h>
+
 #include "CDmdV4L2Impl.h"
 
 namespace opendmd {
+
+CDmdV4L2Impl::CDmdV4L2Impl() {
+    memset(&m_v4l2Param, 0, sizeof(m_v4l2Param));
+}
+
+CDmdV4L2Impl::~CDmdV4L2Impl() {
+}
+
+int CDmdV4L2Impl::_v4l2IOCTL(int fd, int request, void *arg) {
+    int r;
+    do {
+        r = ioctl(fd, request, arg);
+    } while (-1 == r && EINTR == errno);
+
+    return r;
+}
+
+DMD_RESULT CDmdV4L2Impl::Init(const v4l2_capture_param &capParam) {
+    memcpy(&m_v4l2Param, &capParam, sizeof(capParam));
+
+    return DMD_S_OK;
+}
+
+DMD_RESULT CDmdV4L2Impl::Uninit() {
+    memset(&m_v4l2Param, 0, sizeof(m_v4l2Param));
+
+    return DMD_S_OK;
+}
 
 DMD_RESULT CDmdV4L2Impl::v4l2OpenDevice(struct v4l2_device_info
         *deviceInfo) {

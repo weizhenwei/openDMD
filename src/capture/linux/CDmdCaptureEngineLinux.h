@@ -41,6 +41,7 @@
 
 #include "IDmdCaptureEngine.h"
 #include "CDmdCaptureEngine.h"
+#include "CDmdV4L2Impl.h"
 
 namespace opendmd {
 
@@ -52,7 +53,7 @@ public:
     ~CDmdCaptureEngineLinux();
 
     // IDmdCaptureEngine interface;
-    DMD_RESULT Init(DmdCaptureVideoFormat& capVideoFormat);
+    DMD_RESULT Init(const DmdCaptureVideoFormat &capVideoFormat);
     DMD_RESULT Uninit();
 
     DMD_RESULT StartCapture();
@@ -64,6 +65,7 @@ public:
 
 private:
     DmdCaptureVideoFormat m_capVideoFormat;
+    CDmdV4L2Impl *m_pV4L2Impl;
 };
 
 }  // namespace opendmd

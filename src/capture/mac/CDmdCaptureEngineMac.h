@@ -57,7 +57,7 @@ public:
     ~CDmdCaptureEngineMac();
 
     // IDmdCaptureEngine interface;
-    DMD_RESULT Init(DmdCaptureVideoFormat& capVideoFormat);
+    DMD_RESULT Init(const DmdCaptureVideoFormat &capVideoFormat);
     DMD_RESULT Uninit();
 
     DMD_RESULT StartCapture();

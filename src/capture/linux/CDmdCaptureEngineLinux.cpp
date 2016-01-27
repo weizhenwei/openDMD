@@ -44,18 +44,23 @@
 #include "CDmdCaptureEngineLinux.h"
 #include "DmdLog.h"
 
+#include "CDmdV4L2Impl.h"
+
 namespace opendmd {
 
-CDmdCaptureEngineLinux::CDmdCaptureEngineLinux() {
+CDmdCaptureEngineLinux::CDmdCaptureEngineLinux() : m_pV4L2Impl(NULL) {
     memset(&m_capVideoFormat, 0, sizeof(m_capVideoFormat));
 }
 
 CDmdCaptureEngineLinux::~CDmdCaptureEngineLinux() {
-    Uninit();
+    if (m_pV4L2Impl) {
+        delete m_pV4L2Impl;
+        m_pV4L2Impl = NULL;
+    }
 }
 
-DMD_RESULT CDmdCaptureEngineLinux::Init(DmdCaptureVideoFormat&
-        capVideoFormat) {
+DMD_RESULT CDmdCaptureEngineLinux::Init(const DmdCaptureVideoFormat
+        &capVideoFormat) {
     DMD_LOG_INFO("CDmdCaptureEngineLinux::Init()"
             ", capVideoFormat.eVideoType = " << capVideoFormat.eVideoType
             << ", capVideoFormat.iWidth = " << capVideoFormat.iWidth
@@ -65,10 +70,21 @@ DMD_RESULT CDmdCaptureEngineLinux::Init(DmdCaptureVideoFormat&
             << capVideoFormat.sVideoDevice);
     memcpy(&m_capVideoFormat, &capVideoFormat, sizeof(capVideoFormat));
 
+    m_pV4L2Impl = new CDmdV4L2Impl();
+    v4l2_capture_param capParam;
+    memset(&capParam, 0, sizeof(capParam));
+    memcpy(capParam.video_device_path, m_capVideoFormat.sVideoDevice,
+            sizeof(m_capVideoFormat.sVideoDevice));
+    m_pV4L2Impl->Init(capParam);
+
     return DMD_S_OK;
 }
 
 DMD_RESULT CDmdCaptureEngineLinux::Uninit() {
+    if (m_pV4L2Impl) {
+        m_pV4L2Impl->Uninit();
+    }
+
     return DMD_S_OK;
 }
 
