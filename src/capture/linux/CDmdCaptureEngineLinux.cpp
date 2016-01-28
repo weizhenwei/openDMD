@@ -71,11 +71,11 @@ DMD_RESULT CDmdCaptureEngineLinux::Init(const DmdCaptureVideoFormat
     memcpy(&m_capVideoFormat, &capVideoFormat, sizeof(capVideoFormat));
 
     m_pV4L2Impl = new CDmdV4L2Impl();
-    v4l2_capture_param capParam;
-    memset(&capParam, 0, sizeof(capParam));
-    memcpy(capParam.video_device_path, m_capVideoFormat.sVideoDevice,
-            sizeof(m_capVideoFormat.sVideoDevice));
-    m_pV4L2Impl->Init(capParam);
+    if (!m_pV4L2Impl) {
+        DMD_LOG_INFO("CDmdCaptureEngineLinux::Init(), create CDmdV4L2Impl failed");
+        return DMD_S_FAIL;
+    }
+    m_pV4L2Impl->Init(m_capVideoFormat);
 
     return DMD_S_OK;
 }

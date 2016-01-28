@@ -60,9 +60,8 @@ int CDmdV4L2Impl::_v4l2IOCTL(int fd, int request, void *arg) {
     return r;
 }
 
-DMD_RESULT CDmdV4L2Impl::Init(const v4l2_capture_param &capParam) {
-    memcpy(&m_v4l2Param, &capParam, sizeof(capParam));
-
+DMD_RESULT CDmdV4L2Impl::Init(const DmdCaptureVideoFormat &videoFormat) {
+    memcpy(&m_v4l2Param.videoFormat, &videoFormat, sizeof(videoFormat));
     return DMD_S_OK;
 }
 

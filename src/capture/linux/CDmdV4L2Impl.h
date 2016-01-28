@@ -52,8 +52,9 @@ struct mmap_buffer {
 };
 
 typedef struct _v4l2_capture_param {
+    DmdCaptureVideoFormat videoFormat;
+
     int video_device_fd;                          // video device fd;
-    char video_device_path[maxDeviceNameLength];  // video device path;
     struct v4l2_capability cap;                   // video device capabilities;
     struct v4l2_input input;                      // video input;
     struct v4l2_fmtdesc fmtdesc;                  // video format enumeration;
@@ -63,9 +64,6 @@ typedef struct _v4l2_capture_param {
 
     int reqbuffer_count;                          // req.count;
     struct mmap_buffer *buffers;                  // mmap buffers;
-
-    int width;                                    // picture width;
-    int height;                                   // picture height;
 } v4l2_capture_param;
 
 
@@ -74,7 +72,7 @@ public:
     CDmdV4L2Impl();
     ~CDmdV4L2Impl();
 
-    DMD_RESULT Init(const v4l2_capture_param &capParam);
+    DMD_RESULT Init(const DmdCaptureVideoFormat &videoFormat);
     DMD_RESULT Uninit();
 
     DMD_RESULT v4l2OpenDevice(struct v4l2_device_info *deviceInfo);
