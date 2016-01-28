@@ -107,8 +107,6 @@ int opendmd::client_main(int argc, char *argv[]) {
     ReleaseVideoCaptureEngine(&pVideoCapEngine);
     pVideoCapEngine = NULL;
 
-    CDmdCaptureEngineTest_Init();
-
     return DMD_S_OK;
 }
 
