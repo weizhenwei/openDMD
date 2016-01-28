@@ -66,7 +66,6 @@ typedef struct _v4l2_capture_param {
     struct mmap_buffer *buffers;                  // mmap buffers;
 } v4l2_capture_param;
 
-
 class CDmdV4L2Impl {
 public:
     CDmdV4L2Impl();
@@ -75,18 +74,18 @@ public:
     DMD_RESULT Init(const DmdCaptureVideoFormat &videoFormat);
     DMD_RESULT Uninit();
 
-    DMD_RESULT v4l2OpenDevice(struct v4l2_device_info *deviceInfo);
-    DMD_RESULT v4l2QueryCapability(struct v4l2_device_info *deviceInfo);
-    DMD_RESULT v4l2QueryFormat(struct v4l2_device_info *deviceInfo);
-    DMD_RESULT v4l2SetupFormat(struct v4l2_device_info *deviceInfo);
-    DMD_RESULT v4l2QueryFPS(struct v4l2_device_info *deviceInfo);
-    DMD_RESULT v4l2SetupFPS(struct v4l2_device_info *deviceInfo);
-    DMD_RESULT v4l2CreateRequestBuffers(struct v4l2_device_info *deviceInfo);
-    DMD_RESULT v4l2mmap(struct v4l2_device_info *deviceInfo);
-    DMD_RESULT v4l2StreamON(struct v4l2_device_info *deviceInfo);
-    DMD_RESULT v4l2StreamOFF(struct v4l2_device_info *deviceInfo);
-    DMD_RESULT v4l2unmmap(struct v4l2_device_info *deviceInfo);
-    DMD_RESULT v4l2CloseDevice(struct v4l2_device_info *deviceInfo);
+    DMD_RESULT v4l2OpenDevice();
+    DMD_RESULT v4l2QueryCapability();
+    DMD_RESULT v4l2QueryFormat();
+    DMD_RESULT v4l2SetupFormat();
+    DMD_RESULT v4l2QueryFPS();
+    DMD_RESULT v4l2SetupFPS();
+    DMD_RESULT v4l2CreateRequestBuffers();
+    DMD_RESULT v4l2mmap();
+    DMD_RESULT v4l2StreamON();
+    DMD_RESULT v4l2StreamOFF();
+    DMD_RESULT v4l2unmmap();
+    DMD_RESULT v4l2CloseDevice();
 
 private:
     int _v4l2IOCTL(int fd, int request, void *arg);

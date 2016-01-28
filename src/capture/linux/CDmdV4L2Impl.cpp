@@ -71,57 +71,52 @@ DMD_RESULT CDmdV4L2Impl::Uninit() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2OpenDevice(struct v4l2_device_info
-        *deviceInfo) {
+DMD_RESULT CDmdV4L2Impl::v4l2OpenDevice() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2QueryCapability(struct v4l2_device_info
-        *deviceInfo) {
+DMD_RESULT CDmdV4L2Impl::v4l2QueryCapability() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2QueryFormat(struct v4l2_device_info
-        *deviceInfo) {
+DMD_RESULT CDmdV4L2Impl::v4l2QueryFormat() {
     return DMD_S_OK;
 }
 
 
-DMD_RESULT v4l2SetupFormat(struct v4l2_device_info *deviceInfo) {
+DMD_RESULT v4l2SetupFormat() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2QueryFPS(struct v4l2_device_info *deviceInfo) {
+DMD_RESULT CDmdV4L2Impl::v4l2QueryFPS() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2SetupFPS(struct v4l2_device_info *deviceInfo) {
+DMD_RESULT CDmdV4L2Impl::v4l2SetupFPS() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2CreateRequestBuffers(struct v4l2_device_info
-        *deviceInfo) {
+DMD_RESULT CDmdV4L2Impl::v4l2CreateRequestBuffers() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2mmap(struct v4l2_device_info *deviceInfo) {
+DMD_RESULT CDmdV4L2Impl::v4l2mmap() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2StreamON(struct v4l2_device_info *deviceInfo) {
+DMD_RESULT CDmdV4L2Impl::v4l2StreamON() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2StreamOFF(struct v4l2_device_info *deviceInfo) {
+DMD_RESULT CDmdV4L2Impl::v4l2StreamOFF() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2unmmap(struct v4l2_device_info *deviceInfo) {
+DMD_RESULT CDmdV4L2Impl::v4l2unmmap() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2CloseDevice(struct v4l2_device_info
-        *deviceInfo) {
+DMD_RESULT CDmdV4L2Impl::v4l2CloseDevice() {
     return DMD_S_OK;
 }
 
