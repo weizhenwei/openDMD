@@ -71,52 +71,52 @@ DMD_RESULT CDmdV4L2Impl::Uninit() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2OpenDevice() {
+DMD_RESULT CDmdV4L2Impl::_v4l2OpenDevice() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2QueryCapability() {
+DMD_RESULT CDmdV4L2Impl::_v4l2QueryCapability() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2QueryFormat() {
+DMD_RESULT CDmdV4L2Impl::_v4l2QueryFormat() {
     return DMD_S_OK;
 }
 
 
-DMD_RESULT v4l2SetupFormat() {
+DMD_RESULT CDmdV4L2Impl::_v4l2SetupFormat() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2QueryFPS() {
+DMD_RESULT CDmdV4L2Impl::_v4l2QueryFPS() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2SetupFPS() {
+DMD_RESULT CDmdV4L2Impl::_v4l2SetupFPS() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2CreateRequestBuffers() {
+DMD_RESULT CDmdV4L2Impl::_v4l2CreateRequestBuffers() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2mmap() {
+DMD_RESULT CDmdV4L2Impl::_v4l2mmap() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2StreamON() {
+DMD_RESULT CDmdV4L2Impl::_v4l2StreamON() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2StreamOFF() {
+DMD_RESULT CDmdV4L2Impl::_v4l2StreamOFF() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2unmmap() {
+DMD_RESULT CDmdV4L2Impl::_v4l2unmmap() {
     return DMD_S_OK;
 }
 
-DMD_RESULT CDmdV4L2Impl::v4l2CloseDevice() {
+DMD_RESULT CDmdV4L2Impl::_v4l2CloseDevice() {
     return DMD_S_OK;
 }
 

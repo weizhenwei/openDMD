@@ -74,20 +74,20 @@ public:
     DMD_RESULT Init(const DmdCaptureVideoFormat &videoFormat);
     DMD_RESULT Uninit();
 
-    DMD_RESULT v4l2OpenDevice();
-    DMD_RESULT v4l2QueryCapability();
-    DMD_RESULT v4l2QueryFormat();
-    DMD_RESULT v4l2SetupFormat();
-    DMD_RESULT v4l2QueryFPS();
-    DMD_RESULT v4l2SetupFPS();
-    DMD_RESULT v4l2CreateRequestBuffers();
-    DMD_RESULT v4l2mmap();
-    DMD_RESULT v4l2StreamON();
-    DMD_RESULT v4l2StreamOFF();
-    DMD_RESULT v4l2unmmap();
-    DMD_RESULT v4l2CloseDevice();
-
 private:
+    DMD_RESULT _v4l2OpenDevice();
+    DMD_RESULT _v4l2QueryCapability();
+    DMD_RESULT _v4l2QueryFormat();
+    DMD_RESULT _v4l2SetupFormat();
+    DMD_RESULT _v4l2QueryFPS();
+    DMD_RESULT _v4l2SetupFPS();
+    DMD_RESULT _v4l2CreateRequestBuffers();
+    DMD_RESULT _v4l2mmap();
+    DMD_RESULT _v4l2StreamON();
+    DMD_RESULT _v4l2StreamOFF();
+    DMD_RESULT _v4l2unmmap();
+    DMD_RESULT _v4l2CloseDevice();
+
     int _v4l2IOCTL(int fd, int request, void *arg);
 
      v4l2_capture_param m_v4l2Param;

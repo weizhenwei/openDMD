@@ -3,7 +3,9 @@
 # exit when command return value != 0.
 set -e
 
-#./tools/format_check.sh;
+# echo "Checking code format"
+# ./tools/format_check.sh;
+
 echo "Root workspace directory: `pwd`"
 
 cd build
