@@ -1,0 +1,28 @@
+openDMD architecture design
+
+1. overall architecture
+   openDMD uses C/S architecture. The client is responsible for video capturing 
+   data, preprocessing, encoding, packing and sending to Server. Meanwhile, the
+   server is responsible for video package receiving, decoding and storing;
+   motion detecting and reporting.
+
+2. modules
+   on client side:
+   1) video capture: capture video data on Linux/Mac platform;
+   2) preprocessing: crop/colorspaceconvert operations before encode data;
+   3) video encoding: encode video data into NALs.
+   4) NAL packing: pack video NALs to rtp package.
+   4) RTP Sending: send rtp package to openDMD server. 
+
+   on server side:
+   1) RTP Receiving: receive video rtp package and decode to NALs.
+   2) Decoding: decode video NALs to video frame.
+   3) Motion detection: Detect video frame to see if motion happened.
+   4) Event report: Report events to event database.
+
+   other utils:
+   1) There should be a webUI or app to monitor on the whole system status.
+
+3. Other ideas
+   TO BE CONTINUED.
+
