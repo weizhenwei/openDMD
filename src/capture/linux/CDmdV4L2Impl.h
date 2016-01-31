@@ -74,6 +74,10 @@ public:
     DMD_RESULT Init(const DmdCaptureVideoFormat &videoFormat);
     DMD_RESULT Uninit();
 
+    // start/stop capture;
+    DMD_RESULT StartCapture();
+    DMD_RESULT StopCapture();
+
 private:
     DMD_RESULT _v4l2OpenDevice();
     DMD_RESULT _v4l2QueryCapability();

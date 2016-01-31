@@ -71,6 +71,15 @@ DMD_RESULT CDmdV4L2Impl::Uninit() {
     return DMD_S_OK;
 }
 
+DMD_RESULT CDmdV4L2Impl::StartCapture() {
+    return DMD_S_OK;
+}
+
+DMD_RESULT CDmdV4L2Impl::StopCapture() {
+    return DMD_S_OK;
+}
+
+
 DMD_RESULT CDmdV4L2Impl::_v4l2OpenDevice() {
     return DMD_S_OK;
 }

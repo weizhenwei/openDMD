@@ -48,7 +48,8 @@
 
 namespace opendmd {
 
-CDmdCaptureEngineLinux::CDmdCaptureEngineLinux() : m_pV4L2Impl(NULL) {
+CDmdCaptureEngineLinux::CDmdCaptureEngineLinux() : m_pV4L2Impl(NULL),
+        m_bStartCapture(false) {
     memset(&m_capVideoFormat, 0, sizeof(m_capVideoFormat));
 }
 
@@ -76,7 +77,8 @@ DMD_RESULT CDmdCaptureEngineLinux::Init(const DmdCaptureVideoFormat
     }
     m_pV4L2Impl = new CDmdV4L2Impl();
     if (!m_pV4L2Impl) {
-        DMD_LOG_INFO("CDmdCaptureEngineLinux::Init(), create CDmdV4L2Impl failed");
+        DMD_LOG_INFO("CDmdCaptureEngineLinux::Init(), "
+                << "create m_pV4L2Impl failed");
         return DMD_S_FAIL;
     }
     m_pV4L2Impl->Init(m_capVideoFormat);
@@ -93,15 +95,33 @@ DMD_RESULT CDmdCaptureEngineLinux::Uninit() {
 }
 
 DMD_RESULT CDmdCaptureEngineLinux::StartCapture() {
-    return DMD_S_OK;
+    if (!m_pV4L2Impl) {
+        DMD_LOG_INFO("CDmdCaptureEngineLinux::StartCapture(), "
+                << "m_pV4L2Impl == NULL");
+        return DMD_S_FAIL;
+    }
+
+    DMD_RESULT result = m_pV4L2Impl->StartCapture();
+    m_bStartCapture = result == DMD_S_OK ? true : false;
+
+    return result;
 }
 
 DMD_BOOL CDmdCaptureEngineLinux::IsCapturing() {
-    return false;
+    return m_bStartCapture;
 }
 
 DMD_RESULT CDmdCaptureEngineLinux::StopCapture() {
-    return DMD_S_OK;
+    if (!m_pV4L2Impl) {
+        DMD_LOG_INFO("CDmdCaptureEngineLinux::StopCapture(), "
+                << "m_pV4L2Impl == NULL");
+        return DMD_S_FAIL;
+    }
+
+    DMD_RESULT result = m_pV4L2Impl->StopCapture();
+    m_bStartCapture = false;
+
+    return result;
 }
 
 DMD_RESULT CDmdCaptureEngineLinux::DeliverVideoData(
@@ -141,7 +161,8 @@ DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
     CDmdCaptureEngineLinux *pLinuxVideoCapEngine =
         new CDmdCaptureEngineLinux();
     DMD_CHECK_NOTNULL(pLinuxVideoCapEngine);
-    *ppVideoCapEngine = (IDmdCaptureEngine *)pLinuxVideoCapEngine;
+    *ppVideoCapEngine =
+        reinterpret_cast<IDmdCaptureEngine *>(pLinuxVideoCapEngine);
 
     return DMD_S_OK;
 }
