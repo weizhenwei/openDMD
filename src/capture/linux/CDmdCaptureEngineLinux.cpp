@@ -115,6 +115,12 @@ DMD_RESULT CDmdCaptureEngineLinux::DeliverVideoData(
 char *GetDeviceName() {
     static char deviceName[256];
     const char *devicePath = "/dev/video0";
+    if (access(devicePath, F_OK) == -1) {
+        DMD_LOG_ERROR("Video device " << devicePath << " did not exist:"
+                << strerror(errno));
+        return NULL;
+    }
+
     int fd = -1;
     if ((fd = open(devicePath, O_RDWR)) == -1) {
         DMD_LOG_ERROR("Video device " << devicePath << " is not available:"

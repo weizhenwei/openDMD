@@ -56,6 +56,11 @@ static void CDmdCaptureEngineTest_Init() {
 
     DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
     char *pDeviceName = GetDeviceName();
+    if (pDeviceName == NULL) {
+        ReleaseVideoCaptureEngine(&pVideoCapEngine);
+        pVideoCapEngine = NULL;
+        return;
+    }
 
     DmdVideoType arrVideoTypes[3] = {
         DmdI420, DmdYUYV, DmdUYVY,
@@ -94,7 +99,11 @@ int opendmd::client_main(int argc, char *argv[]) {
     capVideoFormat.iWidth = 1280;
     capVideoFormat.iHeight = 720;
     capVideoFormat.fFrameRate = 30;
+
     char *pDeviceName = GetDeviceName();
+    if (pDeviceName == NULL) {
+        return DMD_S_FAIL;
+    }
     DMD_LOG_INFO("Get video device name = " << pDeviceName);
     strncpy(capVideoFormat.sVideoDevice, pDeviceName, strlen(pDeviceName));
 
