@@ -75,6 +75,9 @@ public:
 TEST_F(CDmdCaptureEngineTest, Init) {
     DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
     char *pDeviceName = GetDeviceName();
+    if (pDeviceName == NULL) {
+        return;
+    }
 
     DmdVideoType arrVideoTypes[3] = {
         DmdI420, DmdYUYV, DmdUYVY,
@@ -94,6 +97,9 @@ TEST_F(CDmdCaptureEngineTest, Init) {
         capVideoFormat.iHeight = iter->second;
         capVideoFormat.fFrameRate = 30;
         char *pName = GetDeviceName();
+        if (pName == NULL) {
+            return;
+        }
         EXPECT_STRCASEEQ(pDeviceName, pName);
         strncpy(capVideoFormat.sVideoDevice, pDeviceName, strlen(pDeviceName));
         for (DmdVideoType eVideoType : arrVideoTypes) {
@@ -111,6 +117,9 @@ TEST_F(CDmdCaptureEngineTest, StartCapture) {
     capVideoFormat.iHeight = 720;
     capVideoFormat.fFrameRate = 30;
     char *pDeviceName = GetDeviceName();
+    if (pDeviceName == NULL) {
+        return;
+    }
     strncpy(capVideoFormat.sVideoDevice, pDeviceName, strlen(pDeviceName));
     EXPECT_EQ(DMD_S_OK, pCaptureEngine->Init(capVideoFormat));
     EXPECT_EQ(DMD_S_OK, pCaptureEngine->StartCapture());
