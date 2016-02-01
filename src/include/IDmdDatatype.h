@@ -66,6 +66,23 @@ typedef enum {
     DmdBGRA32,
 } DmdVideoType;
 
+static const char *dmdVideoType[] = {
+    "DmdUnknown",
+
+    // yuv color space;
+    "DmdI420",    // Y'CbCr 4:2:0 - 420v, NV12 actually;
+    "DmdYUYV",    // Y'CbCr 4:2:2 - yuvs;
+    "DmdUYVY",    // Y'CbCr 4:2:2 - uyvy;
+
+    // rgb color space;
+    "DmdRGB24",
+    "DmdBGR24",
+    "DmdRGBA32",
+    "DmdBGRA32",
+};
+#define DMDVIDEOTYPE(type) dmdVideoType[type]
+
+
 typedef struct {
     DmdVideoType    eVideoType;
     unsigned int    iWidth;

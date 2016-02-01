@@ -255,9 +255,11 @@ DMD_RESULT CDmdCaptureEngineMac::setupAVCaptureSession() {
     return ret;
 }
 
-DMD_RESULT CDmdCaptureEngineMac::Init(const DmdCaptureVideoFormat &capVideoFormat) {
+DMD_RESULT
+CDmdCaptureEngineMac::Init(const DmdCaptureVideoFormat &capVideoFormat) {
     DMD_LOG_INFO("CDmdCaptureEngineMac::Init()"
-            ", capVideoFormat.eVideoType = " << capVideoFormat.eVideoType
+            << ", capVideoFormat.eVideoType = "
+            << DMDVIDEOTYPE(capVideoFormat.eVideoType)
             << ", capVideoFormat.iWidth = " << capVideoFormat.iWidth
             << ", capVideoFormat.iHeight = " << capVideoFormat.iHeight
             << ", capVideoFormat.fFrameRate = " << capVideoFormat.fFrameRate

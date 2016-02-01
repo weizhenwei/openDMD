@@ -62,7 +62,8 @@ CDmdCaptureEngineLinux::~CDmdCaptureEngineLinux() {
 DMD_RESULT CDmdCaptureEngineLinux::Init(const DmdCaptureVideoFormat
         &capVideoFormat) {
     DMD_LOG_INFO("CDmdCaptureEngineLinux::Init()"
-            ", capVideoFormat.eVideoType = " << capVideoFormat.eVideoType
+            << ", capVideoFormat.eVideoType = "
+            << DMDVIDEOTYPE(capVideoFormat.eVideoType)
             << ", capVideoFormat.iWidth = " << capVideoFormat.iWidth
             << ", capVideoFormat.iHeight = " << capVideoFormat.iHeight
             << ", capVideoFormat.fFrameRate = " << capVideoFormat.fFrameRate
@@ -72,7 +73,8 @@ DMD_RESULT CDmdCaptureEngineLinux::Init(const DmdCaptureVideoFormat
 
     m_pV4L2Impl = new CDmdV4L2Impl();
     if (!m_pV4L2Impl) {
-        DMD_LOG_INFO("CDmdCaptureEngineLinux::Init(), create CDmdV4L2Impl failed");
+        DMD_LOG_INFO("CDmdCaptureEngineLinux::Init(), "
+                << "create CDmdV4L2Impl failed");
         return DMD_S_FAIL;
     }
     m_pV4L2Impl->Init(m_capVideoFormat);
