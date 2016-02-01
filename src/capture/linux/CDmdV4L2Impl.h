@@ -51,6 +51,8 @@ struct mmap_buffer {
     unsigned int length;
 };
 
+#define MMAP_REQCOUNT 5
+
 typedef struct _v4l2_capture_param {
     DmdCaptureVideoFormat videoFormat;
 
@@ -59,11 +61,11 @@ typedef struct _v4l2_capture_param {
     struct v4l2_input input;                      // video input;
     struct v4l2_fmtdesc fmtdesc;                  // video format enumeration;
     struct v4l2_format format;                    // video stream data format;
-    struct v4l2_requestbuffers reqbuffers;        // mmap buffers;
-    struct v4l2_buffer buffer;                    // video buffer;
+    // struct v4l2_requestbuffers reqbuffers;        // mmap buffers;
+    // struct v4l2_buffer buffer;                    // video buffer;
 
-    int reqbuffer_count;                          // req.count;
-    struct mmap_buffer *buffers;                  // mmap buffers;
+    int mmap_reqcount;                            // mmap reqcount;
+    struct mmap_buffer *mmap_reqbuffers;          // mmap buffers;
 } v4l2_capture_param;
 
 class CDmdV4L2Impl {

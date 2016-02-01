@@ -36,9 +36,12 @@
  ============================================================================
  */
 
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <sys/ioctl.h>
+
+#include "DmdLog.h"
 
 #include "CDmdV4L2Impl.h"
 
@@ -62,10 +65,23 @@ int CDmdV4L2Impl::_v4l2IOCTL(int fd, int request, void *arg) {
 
 DMD_RESULT CDmdV4L2Impl::Init(const DmdCaptureVideoFormat &videoFormat) {
     memcpy(&m_v4l2Param.videoFormat, &videoFormat, sizeof(videoFormat));
+    m_v4l2Param.mmap_reqcount = MMAP_REQCOUNT;
+    m_v4l2Param.mmap_reqbuffers = (struct mmap_buffer *)
+        malloc(m_v4l2Param.mmap_reqcount * sizeof(struct mmap_buffer));
+    if (m_v4l2Param.mmap_reqbuffers == NULL) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::Init(), "
+                << "malloc m_v4l2Param.mmap_reqbuffers failed.");
+        return DMD_S_FAIL;
+    }
+
     return DMD_S_OK;
 }
 
 DMD_RESULT CDmdV4L2Impl::Uninit() {
+    if (m_v4l2Param.mmap_reqbuffers) {
+        free(m_v4l2Param.mmap_reqbuffers);
+        m_v4l2Param.mmap_reqbuffers = NULL;
+    }
     memset(&m_v4l2Param, 0, sizeof(m_v4l2Param));
 
     return DMD_S_OK;

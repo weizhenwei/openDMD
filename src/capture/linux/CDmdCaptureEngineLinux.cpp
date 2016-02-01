@@ -78,7 +78,7 @@ DMD_RESULT CDmdCaptureEngineLinux::Init(const DmdCaptureVideoFormat
     }
     m_pV4L2Impl = new CDmdV4L2Impl();
     if (!m_pV4L2Impl) {
-        DMD_LOG_INFO("CDmdCaptureEngineLinux::Init(), "
+        DMD_LOG_ERROR("CDmdCaptureEngineLinux::Init(), "
                 << "create m_pV4L2Impl failed");
         return DMD_S_FAIL;
     }
@@ -97,7 +97,7 @@ DMD_RESULT CDmdCaptureEngineLinux::Uninit() {
 
 DMD_RESULT CDmdCaptureEngineLinux::StartCapture() {
     if (!m_pV4L2Impl) {
-        DMD_LOG_INFO("CDmdCaptureEngineLinux::StartCapture(), "
+        DMD_LOG_ERROR("CDmdCaptureEngineLinux::StartCapture(), "
                 << "m_pV4L2Impl == NULL");
         return DMD_S_FAIL;
     }
@@ -114,7 +114,7 @@ DMD_BOOL CDmdCaptureEngineLinux::IsCapturing() {
 
 DMD_RESULT CDmdCaptureEngineLinux::StopCapture() {
     if (!m_pV4L2Impl) {
-        DMD_LOG_INFO("CDmdCaptureEngineLinux::StopCapture(), "
+        DMD_LOG_ERROR("CDmdCaptureEngineLinux::StopCapture(), "
                 << "m_pV4L2Impl == NULL");
         return DMD_S_FAIL;
     }
