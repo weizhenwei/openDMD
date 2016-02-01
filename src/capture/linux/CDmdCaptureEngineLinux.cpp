@@ -169,7 +169,14 @@ DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
 }
 
 DMD_RESULT ReleaseVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
-    ppVideoCapEngine = NULL;
+    if ((ppVideoCapEngine == NULL) || (*ppVideoCapEngine == NULL)) {
+        DMD_LOG_ERROR("ReleaseVideoCaptureEngine(), invalid videoCapEngine.");
+        return DMD_S_FAIL;
+    }
+
+    delete (*ppVideoCapEngine);
+    pVideoCapEngine = NULL;
+
     return DMD_S_OK;
 }
 
