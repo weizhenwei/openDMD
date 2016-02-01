@@ -175,7 +175,7 @@ DMD_RESULT ReleaseVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
     }
 
     delete (*ppVideoCapEngine);
-    pVideoCapEngine = NULL;
+    *ppVideoCapEngine = NULL;
 
     return DMD_S_OK;
 }
