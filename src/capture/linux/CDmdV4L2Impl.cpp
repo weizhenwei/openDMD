@@ -93,6 +93,11 @@ DMD_RESULT CDmdV4L2Impl::Uninit() {
 DMD_RESULT CDmdV4L2Impl::StartCapture() {
     DMD_RESULT ret = DMD_S_OK;
     ret = _v4l2OpenCaptureDevice();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+
+    ret =  _v4l2QueryCapability();
 
     return ret;
 }
@@ -136,8 +141,59 @@ DMD_RESULT CDmdV4L2Impl::_v4l2CloseCaptureDevice() {
     return ret;
 }
 
+/*
+ * DRIVER CAPABILITIES
+ *
+ * struct v4l2_capability {
+ *     __u8    driver[16];    // i.e. "bttv"
+ *     __u8    card[32];      // i.e. "Hauppauge WinTV"
+ *     __u8    bus_info[32];  // "PCI:" + pci_name(pci_dev)
+ *     __u32   version;       // should use KERNEL_VERSION()
+ *     __u32   capabilities;  // Device capabilities,
+ *                            // for more details, see linux/videodev2.h
+ *     __u32   reserved[4];
+ * };
+ *
+ * query video device's capability
+ */
 DMD_RESULT CDmdV4L2Impl::_v4l2QueryCapability() {
-    return DMD_S_OK;
+    DMD_RESULT ret = DMD_S_OK;
+
+    // get the device capability.
+    struct v4l2_capability capture = m_v4l2Param.cap;
+    if (ioctl(m_v4l2Param.video_device_fd, VIDIOC_QUERYCAP, &capture)  == -1) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryCapability(), "
+                << "query video capture device capability error:"
+                << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    DMD_LOG_INFO("Video Capture Device Capability information summary:"
+            << "driver:" << capture.driver << ", "
+            << "bus_info:" << capture.bus_info << ", "
+            << "version:" << capture.version << ", "
+            << "capabilities: " << capture.capabilities << ", ");
+
+    if (capture.capabilities & V4L2_CAP_VIDEO_CAPTURE) {
+        DMD_LOG_INFO("Capture capability is supported");
+    } else {
+        DMD_LOG_INFO("Capture capability is not supported");
+    }
+
+    if (capture.capabilities & V4L2_CAP_VIDEO_OUTPUT) {
+        DMD_LOG_INFO("Output capability is supported");
+    } else {
+        DMD_LOG_INFO("Output capability is not supported");
+    }
+
+    if (capture.capabilities & V4L2_CAP_STREAMING) {
+        DMD_LOG_INFO("Streaming capability is supported");
+    } else {
+        DMD_LOG_INFO("Streaming capability is not supported");
+    }
+
+    return ret;
 }
 
 DMD_RESULT CDmdV4L2Impl::_v4l2QueryFormat() {
