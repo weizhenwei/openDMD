@@ -56,7 +56,7 @@ static void CDmdCaptureEngineTest_Init() {
 
     DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
     char *pDeviceName = GetDeviceName();
-    if (pDeviceName == NULL) {
+    if (NULL == pDeviceName) {
         ReleaseVideoCaptureEngine(&pVideoCapEngine);
         pVideoCapEngine = NULL;
         return;
@@ -101,7 +101,7 @@ int opendmd::client_main(int argc, char *argv[]) {
     capVideoFormat.fFrameRate = 30.0f;
 
     char *pDeviceName = GetDeviceName();
-    if (pDeviceName == NULL) {
+    if (NULL == pDeviceName) {
         return DMD_S_FAIL;
     }
     DMD_LOG_INFO("Get video device name = " << pDeviceName);

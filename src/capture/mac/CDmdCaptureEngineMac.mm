@@ -424,7 +424,7 @@ DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
 }
 
 DMD_RESULT ReleaseVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
-    if ((ppVideoCapEngine == NULL) || (*ppVideoCapEngine == NULL)) {
+    if ((NULL == ppVideoCapEngine) || (NULL == *ppVideoCapEngine)) {
         DMD_LOG_ERROR("ReleaseVideoCaptureEngine(), invalid videoCapEngine.");
         return DMD_S_FAIL;
     }

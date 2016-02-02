@@ -75,7 +75,7 @@ public:
 TEST_F(CDmdCaptureEngineTest, Init) {
     DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
     char *pDeviceName = GetDeviceName();
-    if (pDeviceName == NULL) {
+    if (NULL == pDeviceName) {
         return;
     }
 
@@ -97,7 +97,7 @@ TEST_F(CDmdCaptureEngineTest, Init) {
         capVideoFormat.iHeight = iter->second;
         capVideoFormat.fFrameRate = 30;
         char *pName = GetDeviceName();
-        if (pName == NULL) {
+        if (NULL == pName) {
             return;
         }
         EXPECT_STRCASEEQ(pDeviceName, pName);
@@ -117,7 +117,7 @@ TEST_F(CDmdCaptureEngineTest, StartCapture) {
     capVideoFormat.iHeight = 720;
     capVideoFormat.fFrameRate = 30;
     char *pDeviceName = GetDeviceName();
-    if (pDeviceName == NULL) {
+    if (NULL == pDeviceName) {
         return;
     }
     strncpy(capVideoFormat.sVideoDevice, pDeviceName, strlen(pDeviceName));

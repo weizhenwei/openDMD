@@ -64,8 +64,8 @@ private:
     bool m_bShowVersion;
     bool m_bDaemonize;
     std::string *m_sProgramName;
-    std::string *m_sPid_file;
-    std::string *m_sCfg_file;
+    std::string *m_sPidFile;
+    std::string *m_sCfgFile;
 
     static DmdCmdlineParameter *s_pCmdlineParameter;
 };

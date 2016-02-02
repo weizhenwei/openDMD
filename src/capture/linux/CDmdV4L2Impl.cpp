@@ -68,7 +68,7 @@ DMD_RESULT CDmdV4L2Impl::Init(const DmdCaptureVideoFormat &videoFormat) {
     m_v4l2Param.mmap_reqcount = MMAP_REQCOUNT;
     m_v4l2Param.mmap_reqbuffers = (struct mmap_buffer *)
         malloc(m_v4l2Param.mmap_reqcount * sizeof(struct mmap_buffer));
-    if (m_v4l2Param.mmap_reqbuffers == NULL) {
+    if (NULL == m_v4l2Param.mmap_reqbuffers) {
         DMD_LOG_ERROR("CDmdV4L2Impl::Init(), "
                 << "malloc m_v4l2Param.mmap_reqbuffers failed.");
         return DMD_S_FAIL;

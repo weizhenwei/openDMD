@@ -60,8 +60,8 @@ DmdCmdlineParameter *DmdCmdlineParameter::s_pCmdlineParameter
 
 DmdCmdlineParameter::DmdCmdlineParameter() : m_bValidParameter(true),
         m_bShowHelp(false), m_bShowVersion(false), m_bDaemonize(false),
-        m_sProgramName(new std::string("openDMD")), m_sPid_file(NULL),
-        m_sCfg_file(NULL) {
+        m_sProgramName(new std::string("openDMD")), m_sPidFile(NULL),
+        m_sCfgFile(NULL) {
 }
 
 DmdCmdlineParameter::~DmdCmdlineParameter() {
@@ -69,13 +69,13 @@ DmdCmdlineParameter::~DmdCmdlineParameter() {
         delete m_sProgramName;
         m_sProgramName = NULL;
     }
-    if (m_sPid_file) {
-        delete m_sPid_file;
-        m_sPid_file = NULL;
+    if (m_sPidFile) {
+        delete m_sPidFile;
+        m_sPidFile = NULL;
     }
-    if (m_sCfg_file) {
-        delete m_sCfg_file;
-        m_sCfg_file = NULL;
+    if (m_sCfgFile) {
+        delete m_sCfgFile;
+        m_sCfgFile = NULL;
     }
 }
 
@@ -217,10 +217,10 @@ void DmdCmdlineParameter::parseCmdlineParameter(int argc, char *argv[]) {
                 m_bDaemonize = true;
                 break;
             case 'p':
-                m_sPid_file = new std::string(optarg);
+                m_sPidFile = new std::string(optarg);
                 break;
             case 'f':
-                m_sCfg_file = new std::string(optarg);
+                m_sCfgFile = new std::string(optarg);
                 break;
             default:
                 m_bValidParameter = false;
