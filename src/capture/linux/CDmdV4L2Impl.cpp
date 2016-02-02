@@ -40,6 +40,9 @@
 #include <string.h>
 #include <errno.h>
 #include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 #include "DmdLog.h"
 
@@ -88,16 +91,49 @@ DMD_RESULT CDmdV4L2Impl::Uninit() {
 }
 
 DMD_RESULT CDmdV4L2Impl::StartCapture() {
-    return DMD_S_OK;
+    DMD_RESULT ret = DMD_S_OK;
+    ret = _v4l2OpenCaptureDevice();
+
+    return ret;
 }
 
 DMD_RESULT CDmdV4L2Impl::StopCapture() {
-    return DMD_S_OK;
+    DMD_RESULT ret = DMD_S_OK;
+    ret = _v4l2CloseCaptureDevice();
+
+    return ret;
 }
 
 
-DMD_RESULT CDmdV4L2Impl::_v4l2OpenDevice() {
-    return DMD_S_OK;
+DMD_RESULT CDmdV4L2Impl::_v4l2OpenCaptureDevice() {
+    int fd = -1;
+    DMD_RESULT ret = DMD_S_OK;
+    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2OpenCaptureDevice(), "
+            << "open video capture device:"
+            << m_v4l2Param.videoFormat.sVideoDevice);
+    if ((fd = open(m_v4l2Param.videoFormat.sVideoDevice, O_RDWR)) == -1) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2OpenCaptureDevice(), "
+                << "open video capture device error:" << strerror(errno));
+        ret = DMD_S_FAIL;
+    }
+
+    m_v4l2Param.video_device_fd = fd;
+    return ret;
+}
+
+DMD_RESULT CDmdV4L2Impl::_v4l2CloseCaptureDevice() {
+    DMD_RESULT ret = DMD_S_OK;
+    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2CloseCaptureDevice(), "
+            << "close video capture device:"
+            << m_v4l2Param.videoFormat.sVideoDevice);
+    if (close(m_v4l2Param.video_device_fd) == -1) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2CloseCaptureDevice(), "
+                << "close video capture device error:" << strerror(errno));
+        ret = DMD_S_FAIL;
+    }
+
+    m_v4l2Param.video_device_fd = -1;
+    return ret;
 }
 
 DMD_RESULT CDmdV4L2Impl::_v4l2QueryCapability() {
@@ -138,10 +174,6 @@ DMD_RESULT CDmdV4L2Impl::_v4l2StreamOFF() {
 }
 
 DMD_RESULT CDmdV4L2Impl::_v4l2unmmap() {
-    return DMD_S_OK;
-}
-
-DMD_RESULT CDmdV4L2Impl::_v4l2CloseDevice() {
     return DMD_S_OK;
 }
 

@@ -81,7 +81,8 @@ public:
     DMD_RESULT StopCapture();
 
 private:
-    DMD_RESULT _v4l2OpenDevice();
+    DMD_RESULT _v4l2OpenCaptureDevice();
+    DMD_RESULT _v4l2CloseCaptureDevice();
     DMD_RESULT _v4l2QueryCapability();
     DMD_RESULT _v4l2QueryFormat();
     DMD_RESULT _v4l2SetupFormat();
@@ -92,7 +93,6 @@ private:
     DMD_RESULT _v4l2StreamON();
     DMD_RESULT _v4l2StreamOFF();
     DMD_RESULT _v4l2unmmap();
-    DMD_RESULT _v4l2CloseDevice();
 
     int _v4l2IOCTL(int fd, int request, void *arg);
 
