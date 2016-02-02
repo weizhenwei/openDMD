@@ -56,8 +56,10 @@ typedef enum {
 
     // yuv color space;
     DmdI420,    // Y'CbCr 4:2:0 - 420v, NV12 actually;
-    DmdYUYV,    // Y'CbCr 4:2:2 - yuvs;
-    DmdUYVY,    // Y'CbCr 4:2:2 - uyvy;
+    DmdYUYV,    // Y'CbCr 4:2:2 - yuvs packed;
+    DmdUYVY,    // Y'CbCr 4:2:2 - uyvy packed;
+    DmdNV12,    // Y'CbCr 4:2:0 - nv12 planar;
+    DmdNV21,    // Y'CbCr 4:2:0 - nv21 planar;
 
     // rgb color space;
     DmdRGB24,
@@ -73,6 +75,8 @@ static const char *dmdVideoType[] = {
     "DmdI420",    // Y'CbCr 4:2:0 - 420v, NV12 actually;
     "DmdYUYV",    // Y'CbCr 4:2:2 - yuvs;
     "DmdUYVY",    // Y'CbCr 4:2:2 - uyvy;
+    "DmdNV12",    // Y'CbCr 4:2:0 - nv12 planar;
+    "DmdNV21",    // Y'CbCr 4:2:0 - nv21 planar;
 
     // rgb color space;
     "DmdRGB24",

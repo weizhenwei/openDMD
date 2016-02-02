@@ -344,7 +344,7 @@ DMD_RESULT CVImageBuffer2VideoRawPacket(CVImageBufferRef imageBuffer,
         DmdVideoRawData& packet) {
     packet.ulRotation = 0;
     OSType pixelFormat = CVPixelBufferGetPixelFormatType(imageBuffer);
-    packet.fmtVideoFormat.eVideoType = DmdI420;
+    packet.fmtVideoFormat.eVideoType = DmdUnknown;
     packet.fmtVideoFormat.iWidth = CVPixelBufferGetWidth(imageBuffer);
     packet.fmtVideoFormat.iHeight = CVPixelBufferGetHeight(imageBuffer);
     packet.fmtVideoFormat.fFrameRate = 0;
@@ -364,7 +364,7 @@ DMD_RESULT CVImageBuffer2VideoRawPacket(CVImageBufferRef imageBuffer,
             * packet.fmtVideoFormat.iHeight;
     } else if (kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
             == pixelFormat) {  // NV12 actually;
-        packet.fmtVideoFormat.eVideoType = DmdI420;
+        packet.fmtVideoFormat.eVideoType = DmdNV12;
         for (int i = 0; i < packet.ulPlaneCount; i++) {
             unsigned char *pPlane = nil;
             pPlane = (unsigned char *)
@@ -378,8 +378,6 @@ DMD_RESULT CVImageBuffer2VideoRawPacket(CVImageBufferRef imageBuffer,
             packet.ulSrcDatalen[i] = bytesPerRow * height;
             packet.ulDataLen += packet.ulSrcDatalen[i];
         }
-    } else {
-        packet.fmtVideoFormat.eVideoType = DmdUnknown;
     }
 
     return DMD_S_OK;
@@ -420,7 +418,7 @@ DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
     }
     CDmdCaptureEngineMac *pMacVideoCapEngine = new CDmdCaptureEngineMac();
     DMD_CHECK_NOTNULL(pMacVideoCapEngine);
-    *ppVideoCapEngine = (IDmdCaptureEngine *)pMacVideoCapEngine;
+    *ppVideoCapEngine = pMacVideoCapEngine;
 
     return DMD_S_OK;
 }

@@ -162,8 +162,7 @@ DMD_RESULT CreateVideoCaptureEngine(IDmdCaptureEngine **ppVideoCapEngine) {
     CDmdCaptureEngineLinux *pLinuxVideoCapEngine =
         new CDmdCaptureEngineLinux();
     DMD_CHECK_NOTNULL(pLinuxVideoCapEngine);
-    *ppVideoCapEngine =
-        reinterpret_cast<IDmdCaptureEngine *>(pLinuxVideoCapEngine);
+    *ppVideoCapEngine = pLinuxVideoCapEngine;
 
     return DMD_S_OK;
 }

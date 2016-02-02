@@ -98,7 +98,7 @@ int opendmd::client_main(int argc, char *argv[]) {
     capVideoFormat.eVideoType = DmdI420;
     capVideoFormat.iWidth = 1280;
     capVideoFormat.iHeight = 720;
-    capVideoFormat.fFrameRate = 30;
+    capVideoFormat.fFrameRate = 30.0f;
 
     char *pDeviceName = GetDeviceName();
     if (pDeviceName == NULL) {
@@ -119,4 +119,3 @@ int opendmd::client_main(int argc, char *argv[]) {
 
     return DMD_S_OK;
 }
-
