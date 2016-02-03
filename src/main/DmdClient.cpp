@@ -92,7 +92,7 @@ static void CDmdCaptureEngineTest_Init() {
 }
 
 int opendmd::client_main(int argc, char *argv[]) {
-    DMD_LOG_INFO("At the beginning of client_main function.\n");
+    DMD_LOG_INFO("At the beginning of client_main function");
 
     DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
     capVideoFormat.eVideoType = DmdI420;

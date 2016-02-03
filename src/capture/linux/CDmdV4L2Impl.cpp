@@ -176,8 +176,8 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryCapability() {
     DMD_RESULT ret = DMD_S_OK;
 
     // get the device capability.
-    struct v4l2_capability capture = m_v4l2Param.cap;
-    if (ioctl(m_v4l2Param.video_device_fd, VIDIOC_QUERYCAP, &capture)  == -1) {
+    if (-1 == _v4l2IOCTL(m_v4l2Param.video_device_fd, VIDIOC_QUERYCAP,
+                &m_v4l2Param.cap)) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryCapability(), "
                 << "query video capture device capability error:"
                 << strerror(errno));
@@ -185,32 +185,32 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryCapability() {
         return ret;
     }
 
-    DMD_LOG_INFO("Video Capture Device Capability information summary:"
+    struct v4l2_capability capture = m_v4l2Param.cap;
+    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryCapability(), capability summary:"
             << "driver:" << capture.driver << ", "
             << "bus_info:" << capture.bus_info << ", "
-            << "version:" << capture.version << ", "
-            << "capabilities: " << capture.capabilities << ", ");
+            << "version:" << capture.version);
 
     if (capture.capabilities & V4L2_CAP_VIDEO_CAPTURE) {
-        DMD_LOG_INFO("Capture capability is supported");
+        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryCapability(), "
+                << "Video capture capability is supported");
     } else {
-        DMD_LOG_INFO("Capture capability is not supported");
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryCapability(), "
+                << "Video capture capability is not supported");
+        ret = DMD_S_FAIL;
     }
-
-    if (capture.capabilities & V4L2_CAP_VIDEO_OUTPUT) {
-        DMD_LOG_INFO("Output capability is supported");
-    } else {
-        DMD_LOG_INFO("Output capability is not supported");
-    }
-
     if (capture.capabilities & V4L2_CAP_STREAMING) {
-        DMD_LOG_INFO("Streaming capability is supported");
+        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryCapability(), "
+                << "Streaming capability is supported");
     } else {
-        DMD_LOG_INFO("Streaming capability is not supported");
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryCapability(), "
+                << "Streaming capability is not supported");
+        ret = DMD_S_FAIL;
     }
 
     return ret;
 }
+
 
 /*
  *    VIDEO   INPUTS
@@ -234,8 +234,8 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryInputFormat() {
     int fd = m_v4l2Param.video_device_fd;
 
     // first, get current video input index;
-    bzero(&m_v4l2Param.input, sizeof(struct v4l2_input));
-    if (ioctl(fd, VIDIOC_G_INPUT, &m_v4l2Param.input.index) == -1) {
+    m_v4l2Param.input.index = 0;
+    if (-1 == _v4l2IOCTL(fd, VIDIOC_G_INPUT, &m_v4l2Param.input.index)) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryInputFormat(), "
                 << "call ioctl VIDIOC_G_INPUT error:" << strerror(errno));
         ret = DMD_S_FAIL;
@@ -243,14 +243,14 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryInputFormat() {
     }
 
     // then Query current video input's info;
-    if (ioctl(fd, VIDIOC_ENUMINPUT, &m_v4l2Param.input) == -1) {
-        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2SetupInputFormat(), "
+    if (-1 == _v4l2IOCTL(fd, VIDIOC_ENUMINPUT, &m_v4l2Param.input)) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryInputFormat(), "
                 << "call ioctl VIDIOC_ENUMINPUT error:" << strerror(errno));
         ret = DMD_S_FAIL;
         return ret;
     }
 
-    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2SetupInputFormat(), "
+    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryInputFormat(), "
             << "input name:" << m_v4l2Param.input.name << ", "
             << "input index:" << m_v4l2Param.input.index << ", "
             << "input type:" << m_v4l2Param.input.type);
@@ -263,7 +263,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupInputFormat() {
     int fd = m_v4l2Param.video_device_fd;
     int index = 0;  // the input index to be set;
 
-    if (ioctl(fd, VIDIOC_S_INPUT, &index) == -1) {
+    if (-1 == ioctl(fd, VIDIOC_S_INPUT, &index)) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2SetupInputFormat(), "
                 << "call ioctl VIDIOC_S_INPUT error:" << strerror(errno));
         ret = DMD_S_FAIL;
