@@ -44,6 +44,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 #include "DmdLog.h"
 
@@ -127,18 +128,37 @@ DMD_RESULT CDmdV4L2Impl::StopCapture() {
 
 
 DMD_RESULT CDmdV4L2Impl::_v4l2OpenCaptureDevice() {
-    int fd = -1;
     DMD_RESULT ret = DMD_S_OK;
+    int fd = -1;
+    struct stat st;
+    char *devPath = m_v4l2Param.videoFormat.sVideoDevice;
+    if (-1 == stat(devPath, &st)) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2OpenCaptureDevice(), "
+            << "could not identify " << devPath
+            << ":" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    if (!S_ISCHR(st.st_mode)) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2OpenCaptureDevice(), "
+            << "file " << devPath << "is not a char device"
+            << ":" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
     DMD_LOG_INFO("CDmdV4L2Impl::_v4l2OpenCaptureDevice(), "
             << "open video capture device:"
             << m_v4l2Param.videoFormat.sVideoDevice);
-    if ((fd = open(m_v4l2Param.videoFormat.sVideoDevice, O_RDWR)) == -1) {
+
+    if (-1 == (fd = open(devPath, O_RDWR))) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2OpenCaptureDevice(), "
                 << "open video capture device error:" << strerror(errno));
         ret = DMD_S_FAIL;
     }
-
     m_v4l2Param.video_device_fd = fd;
+
     return ret;
 }
 
