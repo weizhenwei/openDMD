@@ -38,6 +38,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <errno.h>
 #include <sys/ioctl.h>
 #include <sys/types.h>
@@ -98,6 +99,21 @@ DMD_RESULT CDmdV4L2Impl::StartCapture() {
     }
 
     ret =  _v4l2QueryCapability();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+
+    ret =  _v4l2QueryInputFormat();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+
+    /*
+    ret =  _v4l2SetupInputFormat();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+    */
 
     return ret;
 }
@@ -196,13 +212,65 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryCapability() {
     return ret;
 }
 
-DMD_RESULT CDmdV4L2Impl::_v4l2QueryFormat() {
-    return DMD_S_OK;
+/*
+ *    VIDEO   INPUTS
+ *
+ * struct v4l2_input {
+ *     __u32         index;     //  Which input
+ *     __u8          name[32];  //  Label
+ *     __u32         type;      //  Type of input
+ *     __u32         audioset;  //  Associated audios (bitfield)
+ *     __u32         tuner;     //  Associated tuner
+ *     v4l2_std_id   std;
+ *     __u32         status;
+ *     __u32         capabilities;
+ *     __u32         reserved[3];
+ * }
+ *
+ * query current video input format
+ */
+DMD_RESULT CDmdV4L2Impl::_v4l2QueryInputFormat() {
+    DMD_RESULT ret = DMD_S_OK;
+    int fd = m_v4l2Param.video_device_fd;
+
+    // first, get current video input index;
+    bzero(&m_v4l2Param.input, sizeof(struct v4l2_input));
+    if (ioctl(fd, VIDIOC_G_INPUT, &m_v4l2Param.input.index) == -1) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryInputFormat(), "
+                << "call ioctl VIDIOC_G_INPUT error:" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    // then Query current video input's info;
+    if (ioctl(fd, VIDIOC_ENUMINPUT, &m_v4l2Param.input) == -1) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2SetupInputFormat(), "
+                << "call ioctl VIDIOC_ENUMINPUT error:" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2SetupInputFormat(), "
+            << "input name:" << m_v4l2Param.input.name << ", "
+            << "input index:" << m_v4l2Param.input.index << ", "
+            << "input type:" << m_v4l2Param.input.type);
+
+    return ret;
 }
 
+DMD_RESULT CDmdV4L2Impl::_v4l2SetupInputFormat() {
+    DMD_RESULT ret = DMD_S_OK;
+    int fd = m_v4l2Param.video_device_fd;
+    int index = 0;  // the input index to be set;
 
-DMD_RESULT CDmdV4L2Impl::_v4l2SetupFormat() {
-    return DMD_S_OK;
+    if (ioctl(fd, VIDIOC_S_INPUT, &index) == -1) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2SetupInputFormat(), "
+                << "call ioctl VIDIOC_S_INPUT error:" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    return ret;
 }
 
 DMD_RESULT CDmdV4L2Impl::_v4l2QueryFPS() {

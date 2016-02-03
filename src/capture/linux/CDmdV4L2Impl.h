@@ -84,8 +84,8 @@ private:
     DMD_RESULT _v4l2OpenCaptureDevice();
     DMD_RESULT _v4l2CloseCaptureDevice();
     DMD_RESULT _v4l2QueryCapability();
-    DMD_RESULT _v4l2QueryFormat();
-    DMD_RESULT _v4l2SetupFormat();
+    DMD_RESULT _v4l2QueryInputFormat();
+    DMD_RESULT _v4l2SetupInputFormat();
     DMD_RESULT _v4l2QueryFPS();
     DMD_RESULT _v4l2SetupFPS();
     DMD_RESULT _v4l2CreateRequestBuffers();
