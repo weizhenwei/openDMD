@@ -41,8 +41,12 @@
 
 #include <linux/videodev2.h>
 
+#include <string>
+
 #include "IDmdCaptureEngine.h"
 #include "IDmdDatatype.h"
+
+using std::string;
 
 namespace opendmd {
 
@@ -83,7 +87,11 @@ public:
 private:
     DMD_RESULT _v4l2OpenCaptureDevice();
     DMD_RESULT _v4l2CloseCaptureDevice();
+
     DMD_RESULT _v4l2QueryCapability();
+    string _v4l2CapabilityToString(uint32_t capability);
+    bool _v4l2CheckVideoCaptureCapability(uint32_t capability);
+
     DMD_RESULT _v4l2QueryInputFormat();
     DMD_RESULT _v4l2SetupInputFormat();
     DMD_RESULT _v4l2QueryFPS();

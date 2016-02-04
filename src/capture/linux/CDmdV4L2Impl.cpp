@@ -36,6 +36,7 @@
  ============================================================================
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
@@ -46,9 +47,16 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <sstream>
+#include <string>
+
 #include "DmdLog.h"
 
 #include "CDmdV4L2Impl.h"
+
+using std::ostringstream;
+using std::string;
+
 
 namespace opendmd {
 
@@ -99,8 +107,14 @@ DMD_RESULT CDmdV4L2Impl::StartCapture() {
         return ret;
     }
 
-    ret =  _v4l2QueryCapability();
+    ret = _v4l2QueryCapability();
     if (ret != DMD_S_OK) {
+        return ret;
+    }
+    bool bSupportCaptureVideo =
+        _v4l2CheckVideoCaptureCapability(m_v4l2Param.cap.capabilities);
+    if (!bSupportCaptureVideo) {
+        ret = DMD_S_FAIL;
         return ret;
     }
 
@@ -192,6 +206,79 @@ DMD_RESULT CDmdV4L2Impl::_v4l2CloseCaptureDevice() {
  *
  * query video device's capability
  */
+string CDmdV4L2Impl::_v4l2CapabilityToString(uint32_t capability) {
+    ostringstream os;
+    string strCap;
+
+    char s[4096] = "";
+    if (V4L2_CAP_VIDEO_CAPTURE & capability)
+        os << "capture ";
+    if (V4L2_CAP_VIDEO_CAPTURE_MPLANE & capability)
+        os << "capture_mplane ";
+    if (V4L2_CAP_VIDEO_OUTPUT & capability)
+        os << "output ";
+    if (V4L2_CAP_VIDEO_OUTPUT_MPLANE & capability)
+        os << "output_mplane ";
+    if (V4L2_CAP_VIDEO_M2M & capability)
+        os << "m2m ";
+    if (V4L2_CAP_VIDEO_M2M_MPLANE & capability)
+        os << "m2m_mplane ";
+    if (V4L2_CAP_VIDEO_OVERLAY & capability)
+        os << "overlay ";
+    if (V4L2_CAP_VBI_CAPTURE & capability)
+        os << "vbi_capture ";
+    if (V4L2_CAP_VBI_OUTPUT & capability)
+        os << "vbi_output ";
+    if (V4L2_CAP_SLICED_VBI_CAPTURE & capability)
+        os << "sliced_vbi_capture ";
+    if (V4L2_CAP_SLICED_VBI_OUTPUT & capability)
+        os << "sliced_vbi_output ";
+    if (V4L2_CAP_RDS_CAPTURE & capability)
+        os << "rds_capture ";
+    if (V4L2_CAP_RDS_OUTPUT & capability)
+        os << "rds_output ";
+    if (V4L2_CAP_TUNER & capability)
+        os << "tuner ";
+    if (V4L2_CAP_HW_FREQ_SEEK & capability)
+        os << "hw_freq_seek ";
+    if (V4L2_CAP_MODULATOR & capability)
+        os << "modulator ";
+    if (V4L2_CAP_AUDIO & capability)
+        os << "audio ";
+    if (V4L2_CAP_RADIO & capability)
+        os << "radio ";
+    if (V4L2_CAP_READWRITE & capability)
+        os << "readwrite ";
+    if (V4L2_CAP_ASYNCIO & capability)
+        os << "asyncio ";
+    if (V4L2_CAP_STREAMING & capability)
+        os << "streaming ";
+    if (V4L2_CAP_DEVICE_CAPS & capability)
+        os << "device_caps ";
+
+    strCap = os.str();
+
+    return strCap;
+}
+
+bool CDmdV4L2Impl::_v4l2CheckVideoCaptureCapability(uint32_t capability) {
+    bool bSupportVideoCapture = true;
+
+    if ((capability & V4L2_CAP_VIDEO_CAPTURE) == 0) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2CheckVideoCaptureCapability(), "
+                << "Video capture capability is not supported");
+        bSupportVideoCapture = false;
+    }
+
+    if ((capability & V4L2_CAP_STREAMING) == 0) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2CheckVideoCaptureCapability(), "
+                << "Streaming capability is not supported");
+        bSupportVideoCapture = false;
+    }
+
+    return bSupportVideoCapture;
+}
+
 DMD_RESULT CDmdV4L2Impl::_v4l2QueryCapability() {
     DMD_RESULT ret = DMD_S_OK;
 
@@ -209,24 +296,9 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryCapability() {
     DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryCapability(), capability summary:"
             << "driver:" << capture.driver << ", "
             << "bus_info:" << capture.bus_info << ", "
-            << "version:" << capture.version);
-
-    if (capture.capabilities & V4L2_CAP_VIDEO_CAPTURE) {
-        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryCapability(), "
-                << "Video capture capability is supported");
-    } else {
-        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryCapability(), "
-                << "Video capture capability is not supported");
-        ret = DMD_S_FAIL;
-    }
-    if (capture.capabilities & V4L2_CAP_STREAMING) {
-        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryCapability(), "
-                << "Streaming capability is supported");
-    } else {
-        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryCapability(), "
-                << "Streaming capability is not supported");
-        ret = DMD_S_FAIL;
-    }
+            << "version:" << capture.version << ", "
+            << "capabilities: "
+            << _v4l2CapabilityToString(capture.capabilities));
 
     return ret;
 }
