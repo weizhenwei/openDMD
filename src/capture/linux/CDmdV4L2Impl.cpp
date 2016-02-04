@@ -130,6 +130,11 @@ DMD_RESULT CDmdV4L2Impl::StartCapture() {
     }
     */
 
+    ret =  _v4l2Queryfmtdesc();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+
     return ret;
 }
 
@@ -355,7 +360,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupInputFormat() {
     int fd = m_v4l2Param.video_device_fd;
     int index = 0;  // the input index to be set;
 
-    if (-1 == ioctl(fd, VIDIOC_S_INPUT, &index)) {
+    if (-1 == _v4l2IOCTL(fd, VIDIOC_S_INPUT, &index)) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2SetupInputFormat(), "
                 << "call ioctl VIDIOC_S_INPUT error:" << strerror(errno));
         ret = DMD_S_FAIL;
@@ -363,6 +368,108 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupInputFormat() {
     }
 
     return ret;
+}
+
+
+/*
+ *    FORMAT   ENUMERATION
+ *
+ * struct v4l2_fmtdesc {
+ *     __u32               index;             // Format number      
+ *     enum v4l2_buf_type  type;              // buffer type        
+ *     __u32               flags;
+ *     __u8                description[32];   // Description string 
+ *     __u32               pixelformat;       // Format fourcc      
+ *     __u32               reserved[4];
+ * };
+ *
+ * traverse video stream format, query video format this video device support.
+ */
+string CDmdV4L2Impl::_v4l2BUFTypeToString(uint32_t type) {
+    /*
+     * enum v4l2_buf_type {
+     *     V4L2_BUF_TYPE_VIDEO_CAPTURE        = 1,
+     *     V4L2_BUF_TYPE_VIDEO_OUTPUT         = 2,
+     *     V4L2_BUF_TYPE_VIDEO_OVERLAY        = 3,
+     *     V4L2_BUF_TYPE_VBI_CAPTURE          = 4,
+     *     V4L2_BUF_TYPE_VBI_OUTPUT           = 5,
+     *     V4L2_BUF_TYPE_SLICED_VBI_CAPTURE   = 6,
+     *     V4L2_BUF_TYPE_SLICED_VBI_OUTPUT    = 7,
+     *     V4L2_BUF_TYPE_VIDEO_OUTPUT_OVERLAY = 8,
+     *     V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE = 9,
+     *     V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE  = 10,
+     *     V4L2_BUF_TYPE_PRIVATE              = 0x80,
+     * };
+    */
+
+    switch (type) {
+        case V4L2_BUF_TYPE_VIDEO_CAPTURE:
+            return "video_capture";
+        case V4L2_BUF_TYPE_VIDEO_OUTPUT:
+            return "video_output";
+        case V4L2_BUF_TYPE_VIDEO_OVERLAY:
+            return "video_overlay";
+        case V4L2_BUF_TYPE_VBI_CAPTURE:
+            return "vbi_capture";
+        case V4L2_BUF_TYPE_VBI_OUTPUT:
+            return "vbi_output";
+        case V4L2_BUF_TYPE_SLICED_VBI_CAPTURE:
+            return "sliced_vbi_capture";
+        case V4L2_BUF_TYPE_SLICED_VBI_OUTPUT:
+            return "sliced_vbi_output";
+        case V4L2_BUF_TYPE_VIDEO_OUTPUT_OVERLAY:
+            return "video_output_overlay";
+        case V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE:
+            return "video_capture_mplane";
+        case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
+            return "video_output_mplane";
+        case V4L2_BUF_TYPE_PRIVATE:
+            return "private";
+        default:
+            return "Unknown Buffer Type";
+    }
+
+    return "Unknown Buffer Type";
+}
+
+DMD_RESULT CDmdV4L2Impl::_v4l2Queryfmtdesc() {
+    DMD_RESULT ret = DMD_S_OK;
+    int i = 0, ok = 0;
+    int fd = m_v4l2Param.video_device_fd;
+    enum v4l2_buf_type targetType = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    memset(&m_v4l2Param.fmtdesc, 0, sizeof(m_v4l2Param.fmtdesc));
+    for (i = 0; ok == 0; i++) {
+        m_v4l2Param.fmtdesc.index = i;
+        m_v4l2Param.fmtdesc.type = targetType;
+        ok = _v4l2IOCTL(fd, VIDIOC_ENUM_FMT, &m_v4l2Param.fmtdesc);
+        if ((ok = _v4l2IOCTL(fd, VIDIOC_ENUM_FMT, &m_v4l2Param.fmtdesc)) < 0) {
+            ok = errno;
+            break;
+        }
+
+        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2Queryfmtdesc(), "
+                << "index:" << m_v4l2Param.fmtdesc.index << ", "
+                << "type:"
+                << _v4l2BUFTypeToString(m_v4l2Param.fmtdesc.type) << ", "
+                << "flags:" << m_v4l2Param.fmtdesc.flags << ", "
+                << "description:" << m_v4l2Param.fmtdesc.description << ", "
+                << "pixelformat:0x" << (m_v4l2Param.fmtdesc.pixelformat & 0xff)
+                << ((m_v4l2Param.fmtdesc.pixelformat >> 8) & 0xff)
+                << ((m_v4l2Param.fmtdesc.pixelformat >> 16) & 0xff)
+                << ((m_v4l2Param.fmtdesc.pixelformat >> 24) & 0xff));
+    }  // for
+
+    if (i < 0 && ok != -EINVAL) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2Queryfmtdesc(), "
+                << "call ioctl VIDIOC_ENUM_FMT error:" << strerror(errno));
+        ret = DMD_S_FAIL;
+    }
+
+    return ret;
+}
+
+DMD_RESULT _v4l2Setupfmtdesc() {
+    return DMD_S_OK;
 }
 
 DMD_RESULT CDmdV4L2Impl::_v4l2QueryFPS() {

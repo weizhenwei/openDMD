@@ -94,6 +94,11 @@ private:
 
     DMD_RESULT _v4l2QueryInputFormat();
     DMD_RESULT _v4l2SetupInputFormat();
+
+    DMD_RESULT _v4l2Queryfmtdesc();
+    string _v4l2BUFTypeToString(uint32_t type);
+    DMD_RESULT _v4l2Setupfmtdesc();
+
     DMD_RESULT _v4l2QueryFPS();
     DMD_RESULT _v4l2SetupFPS();
     DMD_RESULT _v4l2CreateRequestBuffers();
