@@ -122,13 +122,10 @@ DMD_RESULT CDmdV4L2Impl::StartCapture() {
     if (ret != DMD_S_OK) {
         return ret;
     }
-
-    /*
     ret =  _v4l2SetupInputFormat();
     if (ret != DMD_S_OK) {
         return ret;
     }
-    */
 
     ret =  _v4l2Queryfmtdesc();
     if (ret != DMD_S_OK) {
@@ -328,29 +325,28 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryCapability() {
  */
 DMD_RESULT CDmdV4L2Impl::_v4l2QueryInputFormat() {
     DMD_RESULT ret = DMD_S_OK;
+    int i = 0, ok = 0;
     int fd = m_v4l2Param.video_device_fd;
+    for (i = 0; ok == 0; i++) {
+        m_v4l2Param.input.index = i;
+        if ((ok = _v4l2IOCTL(fd, VIDIOC_ENUMINPUT, &m_v4l2Param.input.index))
+                    < 0) {
+            ok = errno;
+            break;
+        }
 
-    // first, get current video input index;
-    m_v4l2Param.input.index = 0;
-    if (-1 == _v4l2IOCTL(fd, VIDIOC_G_INPUT, &m_v4l2Param.input.index)) {
-        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryInputFormat(), "
-                << "call ioctl VIDIOC_G_INPUT error:" << strerror(errno));
-        ret = DMD_S_FAIL;
-        return ret;
-    }
+        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryInputFormat(), "
+                << "input name:" << m_v4l2Param.input.name << ", "
+                << "input index:" << m_v4l2Param.input.index << ", "
+                << "input type:" << m_v4l2Param.input.type);
+    }  // for
 
-    // then Query current video input's info;
-    if (-1 == _v4l2IOCTL(fd, VIDIOC_ENUMINPUT, &m_v4l2Param.input)) {
+    if (i < 0 && ok != -EINVAL) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryInputFormat(), "
                 << "call ioctl VIDIOC_ENUMINPUT error:" << strerror(errno));
         ret = DMD_S_FAIL;
         return ret;
     }
-
-    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryInputFormat(), "
-            << "input name:" << m_v4l2Param.input.name << ", "
-            << "input index:" << m_v4l2Param.input.index << ", "
-            << "input type:" << m_v4l2Param.input.type);
 
     return ret;
 }
@@ -441,7 +437,6 @@ DMD_RESULT CDmdV4L2Impl::_v4l2Queryfmtdesc() {
     for (i = 0; ok == 0; i++) {
         m_v4l2Param.fmtdesc.index = i;
         m_v4l2Param.fmtdesc.type = targetType;
-        ok = _v4l2IOCTL(fd, VIDIOC_ENUM_FMT, &m_v4l2Param.fmtdesc);
         if ((ok = _v4l2IOCTL(fd, VIDIOC_ENUM_FMT, &m_v4l2Param.fmtdesc)) < 0) {
             ok = errno;
             break;
