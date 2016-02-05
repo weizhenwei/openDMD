@@ -132,6 +132,11 @@ DMD_RESULT CDmdV4L2Impl::StartCapture() {
         return ret;
     }
 
+    ret =  _v4l2SetupFormat();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+
     return ret;
 }
 
@@ -212,7 +217,6 @@ string CDmdV4L2Impl::_v4l2CapabilityToString(uint32_t capability) {
     ostringstream os;
     string strCap;
 
-    char s[4096] = "";
     if (V4L2_CAP_VIDEO_CAPTURE & capability)
         os << "capture ";
     if (V4L2_CAP_VIDEO_CAPTURE_MPLANE & capability)
@@ -379,7 +383,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupInputFormat() {
  *     __u32               reserved[4];
  * };
  *
- * traverse video stream format, query video format this video device support.
+ * traverse video frame format, query frame format this video device support.
  */
 string CDmdV4L2Impl::_v4l2BUFTypeToString(uint32_t type) {
     /*
@@ -463,8 +467,81 @@ DMD_RESULT CDmdV4L2Impl::_v4l2Queryfmtdesc() {
     return ret;
 }
 
-DMD_RESULT _v4l2Setupfmtdesc() {
-    return DMD_S_OK;
+
+/*
+ * struct v4l2_format {
+ *     enum v4l2_buf_type type;
+ *     union {
+ *       struct v4l2_pix_format pix;           // VIDEO_CAPTURE
+ *       struct v4l2_pix_format_mplane pix_mp; // VIDEO_CAPTURE_MPLANE
+ *       struct v4l2_window win;               // VIDEO_OVERLAY
+ *       struct v4l2_vbi_format vbi;           // VBI_CAPTURE
+ *       struct v4l2_sliced_vbi_format sliced; // SLICED_VBI_CAPTURE
+ *       __u8 raw_data[200];                   // user-defined
+ *     } fmt;
+ * };
+ *
+ * VIDEO IMAGE FORMAT
+ * struct v4l2_pix_format {
+ *     __u32    width;
+ *     __u32    height;
+ *     __u32    pixelformat;
+ *     __u32    field;         // enum v4l2_field
+ *     __u32    bytesperline;  // for padding, zero if unused
+ *     __u32    sizeimage;
+ *     __u32    colorspace;    // enum v4l2_colorspace
+ *     __u32    priv;          // private data, depends on pixelformat
+ * };
+ *
+ * set video stream data format
+ */
+DMD_RESULT CDmdV4L2Impl::_v4l2QueryFormat() {
+    DMD_RESULT ret = DMD_S_OK;
+    int fd = m_v4l2Param.video_device_fd;
+    // bzero(&m_v4l2Param.fmt, sizeof(struct v4l2_format));
+    m_v4l2Param.fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+
+    if (-1 == (_v4l2IOCTL(fd, VIDIOC_G_FMT, &m_v4l2Param.fmt))) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryFormat(), "
+                << "call ioctl VIDIOC_G_FMT error:" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    struct v4l2_format fmt = m_v4l2Param.fmt;
+    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryFormat(), "
+            << "current video data format: "
+            << "type:" << _v4l2BUFTypeToString(fmt.type) << ", "
+            << "width = " << fmt.fmt.pix.width << ", "
+            << "height = " << fmt.fmt.pix.height << ", "
+            << "pixelformat = " << fmt.fmt.pix.pixelformat << ", "
+            << "field = " << fmt.fmt.pix.field << ", "
+            << "bytesperline = " << fmt.fmt.pix.bytesperline << ", "
+            << "sizeimage = " << fmt.fmt.pix.sizeimage << ", "
+            << "colorspace = " << fmt.fmt.pix.colorspace);
+
+    return ret;
+}
+
+DMD_RESULT CDmdV4L2Impl::_v4l2SetupFormat() {
+    DMD_RESULT ret = DMD_S_OK;
+    int fd = m_v4l2Param.video_device_fd;
+    m_v4l2Param.fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    m_v4l2Param.fmt.fmt.pix.width = m_v4l2Param.videoFormat.iWidth;
+    m_v4l2Param.fmt.fmt.pix.height = m_v4l2Param.videoFormat.iHeight;
+    m_v4l2Param.fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
+    // m_v4l2Param.fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_RGB32;
+    m_v4l2Param.fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
+
+    if (-1 == (_v4l2IOCTL(fd, VIDIOC_S_FMT, &m_v4l2Param.fmt))) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2SetupFormat(), "
+                << "call ioctl VIDIOC_S_FMT error:" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    _v4l2QueryFormat();
+    return ret;
 }
 
 DMD_RESULT CDmdV4L2Impl::_v4l2QueryFPS() {
