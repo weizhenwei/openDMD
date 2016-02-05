@@ -41,22 +41,15 @@
 #include <string.h>
 #include <strings.h>
 #include <errno.h>
-#include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <sstream>
-#include <string>
-
 #include "DmdLog.h"
 
+#include "CDmdV4L2Utils.h"
 #include "CDmdV4L2Impl.h"
-
-using std::ostringstream;
-using std::string;
-
 
 namespace opendmd {
 
@@ -65,15 +58,6 @@ CDmdV4L2Impl::CDmdV4L2Impl() {
 }
 
 CDmdV4L2Impl::~CDmdV4L2Impl() {
-}
-
-int CDmdV4L2Impl::_v4l2IOCTL(int fd, int request, void *arg) {
-    int r;
-    do {
-        r = ioctl(fd, request, arg);
-    } while (-1 == r && EINTR == errno);
-
-    return r;
 }
 
 DMD_RESULT CDmdV4L2Impl::Init(const DmdCaptureVideoFormat &videoFormat) {
@@ -213,60 +197,6 @@ DMD_RESULT CDmdV4L2Impl::_v4l2CloseCaptureDevice() {
  *
  * query video device's capability
  */
-string CDmdV4L2Impl::_v4l2CapabilityToString(uint32_t capability) {
-    ostringstream os;
-    string strCap;
-
-    if (V4L2_CAP_VIDEO_CAPTURE & capability)
-        os << "capture ";
-    if (V4L2_CAP_VIDEO_CAPTURE_MPLANE & capability)
-        os << "capture_mplane ";
-    if (V4L2_CAP_VIDEO_OUTPUT & capability)
-        os << "output ";
-    if (V4L2_CAP_VIDEO_OUTPUT_MPLANE & capability)
-        os << "output_mplane ";
-    if (V4L2_CAP_VIDEO_M2M & capability)
-        os << "m2m ";
-    if (V4L2_CAP_VIDEO_M2M_MPLANE & capability)
-        os << "m2m_mplane ";
-    if (V4L2_CAP_VIDEO_OVERLAY & capability)
-        os << "overlay ";
-    if (V4L2_CAP_VBI_CAPTURE & capability)
-        os << "vbi_capture ";
-    if (V4L2_CAP_VBI_OUTPUT & capability)
-        os << "vbi_output ";
-    if (V4L2_CAP_SLICED_VBI_CAPTURE & capability)
-        os << "sliced_vbi_capture ";
-    if (V4L2_CAP_SLICED_VBI_OUTPUT & capability)
-        os << "sliced_vbi_output ";
-    if (V4L2_CAP_RDS_CAPTURE & capability)
-        os << "rds_capture ";
-    if (V4L2_CAP_RDS_OUTPUT & capability)
-        os << "rds_output ";
-    if (V4L2_CAP_TUNER & capability)
-        os << "tuner ";
-    if (V4L2_CAP_HW_FREQ_SEEK & capability)
-        os << "hw_freq_seek ";
-    if (V4L2_CAP_MODULATOR & capability)
-        os << "modulator ";
-    if (V4L2_CAP_AUDIO & capability)
-        os << "audio ";
-    if (V4L2_CAP_RADIO & capability)
-        os << "radio ";
-    if (V4L2_CAP_READWRITE & capability)
-        os << "readwrite ";
-    if (V4L2_CAP_ASYNCIO & capability)
-        os << "asyncio ";
-    if (V4L2_CAP_STREAMING & capability)
-        os << "streaming ";
-    if (V4L2_CAP_DEVICE_CAPS & capability)
-        os << "device_caps ";
-
-    strCap = os.str();
-
-    return strCap;
-}
-
 bool CDmdV4L2Impl::_v4l2CheckVideoCaptureCapability(uint32_t capability) {
     bool bSupportVideoCapture = true;
 
@@ -289,7 +219,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryCapability() {
     DMD_RESULT ret = DMD_S_OK;
 
     // get the device capability.
-    if (-1 == _v4l2IOCTL(m_v4l2Param.video_device_fd, VIDIOC_QUERYCAP,
+    if (-1 == v4l2IOCTL(m_v4l2Param.video_device_fd, VIDIOC_QUERYCAP,
                 &m_v4l2Param.cap)) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryCapability(), "
                 << "query video capture device capability error:"
@@ -304,7 +234,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryCapability() {
             << "bus_info:" << capture.bus_info << ", "
             << "version:" << capture.version << ", "
             << "capabilities: "
-            << _v4l2CapabilityToString(capture.capabilities));
+            << v4l2CapabilityToString(capture.capabilities));
 
     return ret;
 }
@@ -333,7 +263,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryInputFormat() {
     int fd = m_v4l2Param.video_device_fd;
     for (i = 0; ok == 0; i++) {
         m_v4l2Param.input.index = i;
-        if ((ok = _v4l2IOCTL(fd, VIDIOC_ENUMINPUT, &m_v4l2Param.input.index))
+        if ((ok = v4l2IOCTL(fd, VIDIOC_ENUMINPUT, &m_v4l2Param.input.index))
                     < 0) {
             ok = errno;
             break;
@@ -360,7 +290,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupInputFormat() {
     int fd = m_v4l2Param.video_device_fd;
     int index = 0;  // the input index to be set;
 
-    if (-1 == _v4l2IOCTL(fd, VIDIOC_S_INPUT, &index)) {
+    if (-1 == v4l2IOCTL(fd, VIDIOC_S_INPUT, &index)) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2SetupInputFormat(), "
                 << "call ioctl VIDIOC_S_INPUT error:" << strerror(errno));
         ret = DMD_S_FAIL;
@@ -385,53 +315,6 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupInputFormat() {
  *
  * traverse video frame format, query frame format this video device support.
  */
-string CDmdV4L2Impl::_v4l2BUFTypeToString(uint32_t type) {
-    /*
-     * enum v4l2_buf_type {
-     *     V4L2_BUF_TYPE_VIDEO_CAPTURE        = 1,
-     *     V4L2_BUF_TYPE_VIDEO_OUTPUT         = 2,
-     *     V4L2_BUF_TYPE_VIDEO_OVERLAY        = 3,
-     *     V4L2_BUF_TYPE_VBI_CAPTURE          = 4,
-     *     V4L2_BUF_TYPE_VBI_OUTPUT           = 5,
-     *     V4L2_BUF_TYPE_SLICED_VBI_CAPTURE   = 6,
-     *     V4L2_BUF_TYPE_SLICED_VBI_OUTPUT    = 7,
-     *     V4L2_BUF_TYPE_VIDEO_OUTPUT_OVERLAY = 8,
-     *     V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE = 9,
-     *     V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE  = 10,
-     *     V4L2_BUF_TYPE_PRIVATE              = 0x80,
-     * };
-    */
-
-    switch (type) {
-        case V4L2_BUF_TYPE_VIDEO_CAPTURE:
-            return "video_capture";
-        case V4L2_BUF_TYPE_VIDEO_OUTPUT:
-            return "video_output";
-        case V4L2_BUF_TYPE_VIDEO_OVERLAY:
-            return "video_overlay";
-        case V4L2_BUF_TYPE_VBI_CAPTURE:
-            return "vbi_capture";
-        case V4L2_BUF_TYPE_VBI_OUTPUT:
-            return "vbi_output";
-        case V4L2_BUF_TYPE_SLICED_VBI_CAPTURE:
-            return "sliced_vbi_capture";
-        case V4L2_BUF_TYPE_SLICED_VBI_OUTPUT:
-            return "sliced_vbi_output";
-        case V4L2_BUF_TYPE_VIDEO_OUTPUT_OVERLAY:
-            return "video_output_overlay";
-        case V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE:
-            return "video_capture_mplane";
-        case V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE:
-            return "video_output_mplane";
-        case V4L2_BUF_TYPE_PRIVATE:
-            return "private";
-        default:
-            return "Unknown Buffer Type";
-    }
-
-    return "Unknown Buffer Type";
-}
-
 DMD_RESULT CDmdV4L2Impl::_v4l2Queryfmtdesc() {
     DMD_RESULT ret = DMD_S_OK;
     int i = 0, ok = 0;
@@ -441,7 +324,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2Queryfmtdesc() {
     for (i = 0; ok == 0; i++) {
         m_v4l2Param.fmtdesc.index = i;
         m_v4l2Param.fmtdesc.type = targetType;
-        if ((ok = _v4l2IOCTL(fd, VIDIOC_ENUM_FMT, &m_v4l2Param.fmtdesc)) < 0) {
+        if ((ok = v4l2IOCTL(fd, VIDIOC_ENUM_FMT, &m_v4l2Param.fmtdesc)) < 0) {
             ok = errno;
             break;
         }
@@ -449,7 +332,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2Queryfmtdesc() {
         DMD_LOG_INFO("CDmdV4L2Impl::_v4l2Queryfmtdesc(), "
                 << "index:" << m_v4l2Param.fmtdesc.index << ", "
                 << "type:"
-                << _v4l2BUFTypeToString(m_v4l2Param.fmtdesc.type) << ", "
+                << v4l2BUFTypeToString(m_v4l2Param.fmtdesc.type) << ", "
                 << "flags:" << m_v4l2Param.fmtdesc.flags << ", "
                 << "description:" << m_v4l2Param.fmtdesc.description << ", "
                 << "pixelformat:0x" << (m_v4l2Param.fmtdesc.pixelformat & 0xff)
@@ -501,7 +384,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryFormat() {
     // bzero(&m_v4l2Param.fmt, sizeof(struct v4l2_format));
     m_v4l2Param.fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
-    if (-1 == (_v4l2IOCTL(fd, VIDIOC_G_FMT, &m_v4l2Param.fmt))) {
+    if (-1 == (v4l2IOCTL(fd, VIDIOC_G_FMT, &m_v4l2Param.fmt))) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryFormat(), "
                 << "call ioctl VIDIOC_G_FMT error:" << strerror(errno));
         ret = DMD_S_FAIL;
@@ -511,7 +394,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryFormat() {
     struct v4l2_format fmt = m_v4l2Param.fmt;
     DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryFormat(), "
             << "current video data format: "
-            << "type:" << _v4l2BUFTypeToString(fmt.type) << ", "
+            << "type:" << v4l2BUFTypeToString(fmt.type) << ", "
             << "width = " << fmt.fmt.pix.width << ", "
             << "height = " << fmt.fmt.pix.height << ", "
             << "pixelformat = " << fmt.fmt.pix.pixelformat << ", "
@@ -533,7 +416,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupFormat() {
     // m_v4l2Param.fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_RGB32;
     m_v4l2Param.fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
 
-    if (-1 == (_v4l2IOCTL(fd, VIDIOC_S_FMT, &m_v4l2Param.fmt))) {
+    if (-1 == (v4l2IOCTL(fd, VIDIOC_S_FMT, &m_v4l2Param.fmt))) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2SetupFormat(), "
                 << "call ioctl VIDIOC_S_FMT error:" << strerror(errno));
         ret = DMD_S_FAIL;

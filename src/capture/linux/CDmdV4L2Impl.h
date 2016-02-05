@@ -41,12 +41,8 @@
 
 #include <linux/videodev2.h>
 
-#include <string>
-
 #include "IDmdCaptureEngine.h"
 #include "IDmdDatatype.h"
-
-using std::string;
 
 namespace opendmd {
 
@@ -90,7 +86,6 @@ private:
 
     // device capability, v4l2_capability;
     DMD_RESULT _v4l2QueryCapability();
-    string _v4l2CapabilityToString(uint32_t capability);
     bool _v4l2CheckVideoCaptureCapability(uint32_t capability);
 
     // input format, v4l2_input
@@ -99,7 +94,6 @@ private:
 
     // frame format, v4l2_fmtdesc;
     DMD_RESULT _v4l2Queryfmtdesc();
-    string _v4l2BUFTypeToString(uint32_t type);
 
     // format, v4l2_format;
     DMD_RESULT _v4l2QueryFormat();
@@ -112,8 +106,6 @@ private:
     DMD_RESULT _v4l2StreamON();
     DMD_RESULT _v4l2StreamOFF();
     DMD_RESULT _v4l2unmmap();
-
-    int _v4l2IOCTL(int fd, int request, void *arg);
 
      v4l2_capture_param m_v4l2Param;
 };
