@@ -103,32 +103,32 @@ DMD_RESULT CDmdV4L2Impl::StartCapture() {
         return ret;
     }
 
-    ret =  _v4l2QueryInputFormat();
+    ret = _v4l2QueryInputFormat();
     if (ret != DMD_S_OK) {
         return ret;
     }
-    ret =  _v4l2SetupInputFormat();
+    ret = _v4l2SetupInputFormat();
     if (ret != DMD_S_OK) {
         return ret;
     }
 
     /*
-    ret =  _v4l2QueryStandard();
+    ret = _v4l2QueryStandard();
     if (ret != DMD_S_OK) {
         return ret;
     }
-    ret =  _v4l2SetupStandard();
+    ret = _v4l2SetupStandard();
     if (ret != DMD_S_OK) {
         return ret;
     }
     */
 
-    ret =  _v4l2Queryfmtdesc();
+    ret = _v4l2Queryfmtdesc();
     if (ret != DMD_S_OK) {
         return ret;
     }
 
-    ret =  _v4l2SetupFormat();
+    ret = _v4l2SetupFormat();
     if (ret != DMD_S_OK) {
         return ret;
     }
@@ -479,11 +479,13 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryFormat() {
             << "type:" << v4l2BUFTypeToString(fmt.type) << ", "
             << "width = " << fmt.fmt.pix.width << ", "
             << "height = " << fmt.fmt.pix.height << ", "
-            << "pixelformat = " << fmt.fmt.pix.pixelformat << ", "
-            << "field = " << fmt.fmt.pix.field << ", "
+            << "pixelformat = "
+            << v4l2PixFmtToString(fmt.fmt.pix.pixelformat) << ", "
+            << "field = " << v4l2FieldToString(fmt.fmt.pix.field) << ", "
             << "bytesperline = " << fmt.fmt.pix.bytesperline << ", "
             << "sizeimage = " << fmt.fmt.pix.sizeimage << ", "
-            << "colorspace = " << fmt.fmt.pix.colorspace);
+            << "colorspace = "
+            << v4l2ColorspaceToString(fmt.fmt.pix.colorspace));
 
     return ret;
 }
@@ -495,7 +497,6 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupFormat() {
     m_v4l2Param.fmt.fmt.pix.width = m_videoFormat.iWidth;
     m_v4l2Param.fmt.fmt.pix.height = m_videoFormat.iHeight;
     m_v4l2Param.fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
-    // m_v4l2Param.fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_RGB32;
     m_v4l2Param.fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
 
     if (-1 == (v4l2IOCTL(fd, VIDIOC_S_FMT, &m_v4l2Param.fmt))) {

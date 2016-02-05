@@ -189,5 +189,184 @@ string v4l2BUFTypeToString(uint32_t type) {
     return "Unknown Buffer Type";
 }
 
+// enum v4l2_colorspace {
+//     /* ITU-R 601 -- broadcast NTSC/PAL */
+//     V4L2_COLORSPACE_SMPTE170M     = 1,
+//
+//     /* 1125-Line (US) HDTV */
+//     V4L2_COLORSPACE_SMPTE240M     = 2,
+//
+//     /* HD and modern captures. */
+//     V4L2_COLORSPACE_REC709        = 3,
+//
+//     /* broken BT878 extents (601, luma range 16-253 instead of 16-235) */
+//     V4L2_COLORSPACE_BT878         = 4,
+//
+//     /* These should be useful.  Assume 601 extents. */
+//     V4L2_COLORSPACE_470_SYSTEM_M  = 5,
+//     V4L2_COLORSPACE_470_SYSTEM_BG = 6,
+//
+//     /* I know there will be cameras that send this.  So, this is
+//      * unspecified chromaticities and full 0-255 on each of the
+//      * Y'CbCr components
+//      */
+//     V4L2_COLORSPACE_JPEG          = 7,
+//
+//     /* For RGB colourspaces, this is probably a good start. */
+//     V4L2_COLORSPACE_SRGB          = 8,
+// };
+string v4l2ColorspaceToString(uint8_t colorspace) {
+    switch (colorspace) {
+        case V4L2_COLORSPACE_SMPTE170M:
+            return "smpte170m";
+        case V4L2_COLORSPACE_SMPTE240M:
+            return "smpte240m";
+        case V4L2_COLORSPACE_REC709:
+            return "rec709";
+        case V4L2_COLORSPACE_BT878:
+            return "bt878";
+        case V4L2_COLORSPACE_470_SYSTEM_M:
+            return "470_system_m";
+        case V4L2_COLORSPACE_470_SYSTEM_BG:
+            return "470_system_bg";
+        case V4L2_COLORSPACE_JPEG:
+            return "jpeg";
+        case V4L2_COLORSPACE_SRGB:
+            return "srgb";
+        default:
+            return "Unknown colorspace";
+    }
+}
+
+string v4l2PixFmtToString(uint32_t pixfmt) {
+    switch (pixfmt) {
+        // RGB formats:
+        case V4L2_PIX_FMT_RGB332:
+            return "rgb332";
+        case V4L2_PIX_FMT_RGB444:
+            return "rgb444";
+        case V4L2_PIX_FMT_RGB555:
+            return "rgb555";
+        case V4L2_PIX_FMT_RGB565:
+            return "rgb565";
+        case V4L2_PIX_FMT_RGB555X:
+            return "rgb555x";
+        case V4L2_PIX_FMT_RGB565X:
+            return "rgb565x";
+        case V4L2_PIX_FMT_BGR666:
+            return "rgb666";
+        case V4L2_PIX_FMT_BGR24:
+            return "bgr24";
+        case V4L2_PIX_FMT_RGB24:
+            return "rgb24";
+        case V4L2_PIX_FMT_BGR32:
+            return "bgr32";
+        case V4L2_PIX_FMT_RGB32:
+            return "rgb32";
+        /* Luminance+Chrominance formats */
+        case V4L2_PIX_FMT_YVU410:
+            return "yvu410";
+        case V4L2_PIX_FMT_YVU420:
+            return "yvu420";
+        case V4L2_PIX_FMT_YUYV:
+            return "yuyv";
+        case V4L2_PIX_FMT_YYUV:
+            return "yyuv";
+        case V4L2_PIX_FMT_YVYU:
+            return "yvyu";
+        case V4L2_PIX_FMT_UYVY:
+            return "uyvy";
+        case V4L2_PIX_FMT_VYUY:
+            return "vyuy";
+        case V4L2_PIX_FMT_YUV422P:
+            return "yuv422p";
+        case V4L2_PIX_FMT_YUV411P:
+            return "yuv411p";
+        case V4L2_PIX_FMT_Y41P:
+            return "y41p";
+        case V4L2_PIX_FMT_YUV444:
+            return "yuv444";
+        case V4L2_PIX_FMT_YUV555:
+            return "yuv555";
+        case V4L2_PIX_FMT_YUV565:
+            return "yuv565";
+        case V4L2_PIX_FMT_YUV32:
+            return "yuv32";
+        case V4L2_PIX_FMT_YUV410:
+            return "yuv410";
+        case V4L2_PIX_FMT_YUV420:
+            return "yuv420";
+        case V4L2_PIX_FMT_HI240:
+            return "hi240";
+        case V4L2_PIX_FMT_HM12:
+            return "hm12";
+        case V4L2_PIX_FMT_M420:
+            return "m420";
+        /* two planes -- one Y, one Cr + Cb interleaved  */
+        case V4L2_PIX_FMT_NV12:
+            return "nv12";
+        case V4L2_PIX_FMT_NV21:
+            return "nv21";
+        case V4L2_PIX_FMT_NV16:
+            return "nv16";
+        case V4L2_PIX_FMT_NV61:
+            return "nv61";
+        case V4L2_PIX_FMT_NV24:
+            return "nv24";
+        case V4L2_PIX_FMT_NV42:
+            return "nv42";
+        default:
+            return "Unknown pixfmt";
+    }
+}
+
+// enum v4l2_field {
+//     V4L2_FIELD_ANY           = 0, /* driver can choose from none, top,
+//                                      bottom, interlaced depending on
+//                                      whatever it thinks
+//                                      is approximate ... */
+//     V4L2_FIELD_NONE          = 1, /* this device has no fields ... */
+//     V4L2_FIELD_TOP           = 2, /* top field only */
+//     V4L2_FIELD_BOTTOM        = 3, /* bottom field only */
+//     V4L2_FIELD_INTERLACED    = 4, /* both fields interlaced */
+//     V4L2_FIELD_SEQ_TB        = 5, /* both fields sequential into one
+//                                      buffer, top-bottom order */
+//     V4L2_FIELD_SEQ_BT        = 6, /* same as above + bottom-top order*/
+//     V4L2_FIELD_ALTERNATE     = 7, /* both fields alternating into
+//                                      separate buffers */
+//     V4L2_FIELD_INTERLACED_TB = 8, /* both fields interlaced, top field
+//                                      first and the top field is
+//                                      transmitted first */
+//     V4L2_FIELD_INTERLACED_BT = 9, /* both fields are interlaced, top
+//                                      field first and the bottom field
+//                                      is transmitted first */
+// };
+string v4l2FieldToString(uint32_t field) {
+    switch (field) {
+        case V4L2_FIELD_ANY:
+            return "any";
+        case V4L2_FIELD_NONE:
+            return "none";
+        case V4L2_FIELD_TOP:
+            return "top";
+        case V4L2_FIELD_BOTTOM:
+            return "bottom";
+        case V4L2_FIELD_INTERLACED:
+            return "interlaced";
+        case V4L2_FIELD_SEQ_TB:
+            return "seq_tb";
+        case V4L2_FIELD_SEQ_BT:
+            return "seq_bt";
+        case V4L2_FIELD_ALTERNATE:
+            return "alternate";
+        case V4L2_FIELD_INTERLACED_TB:
+            return "interlaced_tb";
+        case V4L2_FIELD_INTERLACED_BT:
+            return "interlaced_bt";
+        default:
+            return "Unknown field";
+    }
+}
+
 }  // namespace opendmd
 
