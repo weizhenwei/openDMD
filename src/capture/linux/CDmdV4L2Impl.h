@@ -54,8 +54,6 @@ struct mmap_buffer {
 #define MMAP_REQCOUNT 5
 
 typedef struct _v4l2_capture_param {
-    DmdCaptureVideoFormat videoFormat;
-
     int video_device_fd;                          // video device fd;
     struct v4l2_capability cap;                   // video device capabilities;
     struct v4l2_input input;                      // video input;
@@ -107,7 +105,9 @@ private:
     DMD_RESULT _v4l2StreamOFF();
     DMD_RESULT _v4l2unmmap();
 
-     v4l2_capture_param m_v4l2Param;
+private:
+    DmdCaptureVideoFormat m_videoFormat;
+    v4l2_capture_param m_v4l2Param;
 };
 
 }  // namespace opendmd

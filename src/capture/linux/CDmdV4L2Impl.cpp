@@ -54,6 +54,7 @@
 namespace opendmd {
 
 CDmdV4L2Impl::CDmdV4L2Impl() {
+    memset(&m_videoFormat, 0, sizeof(m_videoFormat));
     memset(&m_v4l2Param, 0, sizeof(m_v4l2Param));
 }
 
@@ -61,7 +62,7 @@ CDmdV4L2Impl::~CDmdV4L2Impl() {
 }
 
 DMD_RESULT CDmdV4L2Impl::Init(const DmdCaptureVideoFormat &videoFormat) {
-    memcpy(&m_v4l2Param.videoFormat, &videoFormat, sizeof(videoFormat));
+    memcpy(&m_videoFormat, &videoFormat, sizeof(videoFormat));
     m_v4l2Param.mmap_reqcount = MMAP_REQCOUNT;
     m_v4l2Param.mmap_reqbuffers = (struct mmap_buffer *)
         malloc(m_v4l2Param.mmap_reqcount * sizeof(struct mmap_buffer));
@@ -136,7 +137,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2OpenCaptureDevice() {
     DMD_RESULT ret = DMD_S_OK;
     int fd = -1;
     struct stat st;
-    char *devPath = m_v4l2Param.videoFormat.sVideoDevice;
+    char *devPath = m_videoFormat.sVideoDevice;
     if (-1 == stat(devPath, &st)) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2OpenCaptureDevice(), "
             << "could not identify " << devPath
@@ -155,7 +156,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2OpenCaptureDevice() {
 
     DMD_LOG_INFO("CDmdV4L2Impl::_v4l2OpenCaptureDevice(), "
             << "open video capture device:"
-            << m_v4l2Param.videoFormat.sVideoDevice);
+            << m_videoFormat.sVideoDevice);
 
     if (-1 == (fd = open(devPath, O_RDWR))) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2OpenCaptureDevice(), "
@@ -171,7 +172,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2CloseCaptureDevice() {
     DMD_RESULT ret = DMD_S_OK;
     DMD_LOG_INFO("CDmdV4L2Impl::_v4l2CloseCaptureDevice(), "
             << "close video capture device:"
-            << m_v4l2Param.videoFormat.sVideoDevice);
+            << m_videoFormat.sVideoDevice);
     if (close(m_v4l2Param.video_device_fd) == -1) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2CloseCaptureDevice(), "
                 << "close video capture device error:" << strerror(errno));
@@ -410,8 +411,8 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupFormat() {
     DMD_RESULT ret = DMD_S_OK;
     int fd = m_v4l2Param.video_device_fd;
     m_v4l2Param.fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-    m_v4l2Param.fmt.fmt.pix.width = m_v4l2Param.videoFormat.iWidth;
-    m_v4l2Param.fmt.fmt.pix.height = m_v4l2Param.videoFormat.iHeight;
+    m_v4l2Param.fmt.fmt.pix.width = m_videoFormat.iWidth;
+    m_v4l2Param.fmt.fmt.pix.height = m_videoFormat.iHeight;
     m_v4l2Param.fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
     // m_v4l2Param.fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_RGB32;
     m_v4l2Param.fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
