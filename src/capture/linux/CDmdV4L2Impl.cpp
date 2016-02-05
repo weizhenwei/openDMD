@@ -230,7 +230,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryCapability() {
     }
 
     struct v4l2_capability capture = m_v4l2Param.cap;
-    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryCapability(), capability summary:"
+    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryCapability(), Capability: "
             << "driver:" << capture.driver << ", "
             << "bus_info:" << capture.bus_info << ", "
             << "version:" << capture.version << ", "
@@ -270,7 +270,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryInputFormat() {
             break;
         }
 
-        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryInputFormat(), "
+        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryInputFormat(), Input Format: "
                 << "input name:" << m_v4l2Param.input.name << ", "
                 << "input index:" << m_v4l2Param.input.index << ", "
                 << "input type:" << m_v4l2Param.input.type);
@@ -330,7 +330,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2Queryfmtdesc() {
             break;
         }
 
-        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2Queryfmtdesc(), "
+        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2Queryfmtdesc(), fmtdesc: "
                 << "index:" << m_v4l2Param.fmtdesc.index << ", "
                 << "type:"
                 << v4l2BUFTypeToString(m_v4l2Param.fmtdesc.type) << ", "
@@ -393,8 +393,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryFormat() {
     }
 
     struct v4l2_format fmt = m_v4l2Param.fmt;
-    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryFormat(), "
-            << "current video data format: "
+    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryFormat(), Format: "
             << "type:" << v4l2BUFTypeToString(fmt.type) << ", "
             << "width = " << fmt.fmt.pix.width << ", "
             << "height = " << fmt.fmt.pix.height << ", "
