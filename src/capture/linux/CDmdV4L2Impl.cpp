@@ -112,6 +112,17 @@ DMD_RESULT CDmdV4L2Impl::StartCapture() {
         return ret;
     }
 
+    /*
+    ret =  _v4l2QueryStandard();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+    ret =  _v4l2SetupStandard();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+    */
+
     ret =  _v4l2Queryfmtdesc();
     if (ret != DMD_S_OK) {
         return ret;
@@ -294,6 +305,77 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupInputFormat() {
     if (-1 == v4l2IOCTL(fd, VIDIOC_S_INPUT, &index)) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2SetupInputFormat(), "
                 << "call ioctl VIDIOC_S_INPUT error:" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    return ret;
+}
+
+
+// typedef __u64 v4l2_std_id;
+// struct v4l2_standard {
+//     __u32              index;
+//     v4l2_std_id        id;
+//     __u8               name[24];
+//     struct v4l2_fract  frameperiod; // Frames, not fields
+//     __u32              framelines;
+//     __u32              reserved[4];
+// };
+// struct v4l2_fract {
+//     __u32   numerator;
+//     __u32   denominator;
+// };
+//
+// standard, v4l2_std_id, v4l2_standard;
+DMD_RESULT CDmdV4L2Impl::_v4l2QueryStandard() {
+    DMD_RESULT ret = DMD_S_OK;
+    int i = 0, ok = 0;
+    int fd = m_v4l2Param.video_device_fd;
+    struct v4l2_standard standard;
+    memset(&standard, 0, sizeof(standard));
+    for (i = 0; ok == 0; i++) {
+        standard.index = i;
+        if ((ok = v4l2IOCTL(fd, VIDIOC_ENUMSTD, &standard)) < 0) {
+            ok = errno;
+            break;
+        }
+
+        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryStandard(), Standard: "
+                << "index:" << standard.index << ", "
+                << "id:" << standard.id << ", "
+                << "name:" << standard.name << ", "
+                << "v4l2_fract:" << standard.frameperiod.numerator
+                << "/" << standard.frameperiod.denominator << ","
+                << "framelines:" << standard.framelines << ","
+                << "input type:" << m_v4l2Param.input.type);
+    }  // for
+
+    if (i < 0 && ok != -EINVAL) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryStandard(), "
+                << "call ioctl VIDIOC_ENUMSTD error:" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    return ret;
+}
+
+DMD_RESULT CDmdV4L2Impl::_v4l2SetupStandard() {
+    DMD_RESULT ret = DMD_S_OK;
+    int fd = m_v4l2Param.video_device_fd;
+    if (-1 == (v4l2IOCTL(fd, VIDIOC_G_STD, &m_v4l2Param.std_id))) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2SetupStandard(), "
+                << "call ioctl VIDIOC_G_STD error:" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2SetupStandard(), "
+            << "Current std_id:" << m_v4l2Param.std_id);
+
+    if (-1 == (v4l2IOCTL(fd, VIDIOC_S_STD, &m_v4l2Param.std_id))) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2SetupStandard(), "
+                << "call ioctl VIDIOC_S_STD error:" << strerror(errno));
         ret = DMD_S_FAIL;
         return ret;
     }

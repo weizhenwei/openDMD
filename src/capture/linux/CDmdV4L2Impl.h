@@ -57,6 +57,7 @@ typedef struct _v4l2_capture_param {
     int video_device_fd;                          // video device fd;
     struct v4l2_capability cap;                   // video device capabilities;
     struct v4l2_input input;                      // video input;
+    v4l2_std_id std_id;                           // video standard id;
     struct v4l2_fmtdesc fmtdesc;                  // video format enumeration;
     struct v4l2_format fmt;                       // video stream data format;
     // struct v4l2_requestbuffers reqbuffers;        // mmap buffers;
@@ -89,6 +90,10 @@ private:
     // input format, v4l2_input
     DMD_RESULT _v4l2QueryInputFormat();
     DMD_RESULT _v4l2SetupInputFormat();
+
+    // standard, v4l2_std_id, v4l2_standard;
+    DMD_RESULT _v4l2QueryStandard();
+    DMD_RESULT _v4l2SetupStandard();
 
     // frame format, v4l2_fmtdesc;
     DMD_RESULT _v4l2Queryfmtdesc();
