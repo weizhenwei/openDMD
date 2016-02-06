@@ -59,6 +59,8 @@ typedef struct _v4l2_capture_param {
     struct v4l2_input input;                      // video input;
     v4l2_std_id std_id;                           // video standard id;
     struct v4l2_fmtdesc fmtdesc;                  // video format enumeration;
+    struct v4l2_cropcap cropcap;                  // video cropcap;
+    struct v4l2_crop crop;                        // video crop;
     struct v4l2_format fmt;                       // video stream data format;
     // struct v4l2_requestbuffers reqbuffers;        // mmap buffers;
     // struct v4l2_buffer buffer;                    // video buffer;
@@ -97,6 +99,11 @@ private:
 
     // frame format, v4l2_fmtdesc;
     DMD_RESULT _v4l2Enumfmtdesc();
+
+    // cropcap, v4l2_cropcap, v4l2_crop;
+    DMD_RESULT _v4l2QueryCropcap();
+    DMD_RESULT _v4l2QueryCrop();
+    DMD_RESULT _v4l2SetupCrop();
 
     // format, v4l2_format;
     DMD_RESULT _v4l2QueryFormat();

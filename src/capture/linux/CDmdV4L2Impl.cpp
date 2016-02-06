@@ -112,6 +112,7 @@ DMD_RESULT CDmdV4L2Impl::StartCapture() {
         return ret;
     }
 
+    // TODO(weizhenwei): Fix this ioctl fail.
     // ret = _v4l2EnumStandard();
     // if (ret != DMD_S_OK) {
     //     return ret;
@@ -125,6 +126,16 @@ DMD_RESULT CDmdV4L2Impl::StartCapture() {
     if (ret != DMD_S_OK) {
         return ret;
     }
+
+    ret = _v4l2QueryCropcap();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+    // TODO(weizhenwei): Fix this ioctl fail.
+    // ret = _v4l2SetupCrop();
+    // if (ret != DMD_S_OK) {
+    //     return ret;
+    // }
 
     ret = _v4l2SetupFormat();
     if (ret != DMD_S_OK) {
@@ -427,6 +438,106 @@ DMD_RESULT CDmdV4L2Impl::_v4l2Enumfmtdesc() {
                 << "call ioctl VIDIOC_ENUM_FMT error:" << strerror(errno));
         ret = DMD_S_FAIL;
     }
+
+    return ret;
+}
+
+
+/*
+ *    INPUT IMAGE CROPPING
+ */
+// struct v4l2_rect {
+//     __s32   left;
+//     __s32   top;
+//     __s32   width;
+//     __s32   height;
+// };
+//
+// struct v4l2_cropcap {
+//     __u32                   type;         /* enum v4l2_buf_type */
+//     struct v4l2_rect        bounds;
+//     struct v4l2_rect        defrect;
+//     struct v4l2_fract       pixelaspect;
+// };
+//
+// struct v4l2_crop {
+//     __u32                   type;         /* enum v4l2_buf_type */
+//     struct v4l2_rect        c;
+// };
+//
+// cropcap, v4l2_cropcap, v4l2_crop;
+DMD_RESULT CDmdV4L2Impl::_v4l2QueryCropcap() {
+    DMD_RESULT ret = DMD_S_OK;
+    int fd = m_v4l2Param.video_device_fd;
+    memset(&m_v4l2Param.cropcap, 0, sizeof(m_v4l2Param.cropcap));
+    m_v4l2Param.cropcap.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    if (-1 == v4l2IOCTL(fd, VIDIOC_CROPCAP, &m_v4l2Param.cropcap)) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryCropcap(), "
+                << "call ioctl VIDIOC_CROPCAP error:" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    struct v4l2_cropcap cropcap = m_v4l2Param.cropcap;
+    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryCropcap(), Cropcap: "
+            << "type:"
+            << v4l2BUFTypeToString(cropcap.type) << ", "
+            << "bounds left:" << cropcap.bounds.left<< ", "
+            << "bounds top:" << cropcap.bounds.top<< ", "
+            << "bounds width:" << cropcap.bounds.width<< ", "
+            << "bounds height:" << cropcap.bounds.height);
+
+    return ret;
+}
+
+DMD_RESULT CDmdV4L2Impl::_v4l2QueryCrop() {
+    DMD_RESULT ret = DMD_S_OK;
+    int fd = m_v4l2Param.video_device_fd;
+    struct v4l2_crop crop;
+    if (-1 == v4l2IOCTL(fd, VIDIOC_G_CROP, &crop)) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryCrop(), "
+                << "call ioctl VIDIOC_G_CROP error:" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryCrop(), Crop: "
+            << "type:"
+            << v4l2BUFTypeToString(crop.type) << ", "
+            << "left:" << crop.c.left<< ", "
+            << "top:" << crop.c.top<< ", "
+            << "width:" << crop.c.width<< ", "
+            << "height:" << crop.c.height);
+
+    return ret;
+}
+
+DMD_RESULT CDmdV4L2Impl::_v4l2SetupCrop() {
+    DMD_RESULT ret = DMD_S_OK;
+    int fd = m_v4l2Param.video_device_fd;
+    memset(&m_v4l2Param.crop, 0, sizeof(m_v4l2Param.crop));
+    m_v4l2Param.crop.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    m_v4l2Param.crop.c = m_v4l2Param.cropcap.defrect;  // reset to default
+
+    if (-1 == v4l2IOCTL(fd, VIDIOC_S_CROP, &m_v4l2Param.crop)) {
+        switch (errno) {
+            case EINVAL:
+                // Cropping not supported.
+                DMD_LOG_WARNING("CDmdV4L2Impl::_v4l2SetupCrop(), "
+                        << "call ioctl VIDIOC_S_CROP not supported");
+                ret = DMD_S_OK;
+                break;
+            default:
+                DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2SetupCrop(), "
+                        << "call ioctl VIDIOC_S_CROP error:"
+                        << strerror(errno));
+                    ret = DMD_S_FAIL;
+                    return ret;
+                    break;
+            }
+    }
+
+    _v4l2QueryCrop();
 
     return ret;
 }
