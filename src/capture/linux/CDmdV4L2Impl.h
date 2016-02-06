@@ -88,15 +88,15 @@ private:
     bool _v4l2CheckVideoCaptureCapability(uint32_t capability);
 
     // input format, v4l2_input
-    DMD_RESULT _v4l2QueryInputFormat();
+    DMD_RESULT _v4l2EnumInputFormat();
     DMD_RESULT _v4l2SetupInputFormat();
 
     // standard, v4l2_std_id, v4l2_standard;
-    DMD_RESULT _v4l2QueryStandard();
+    DMD_RESULT _v4l2EnumStandard();
     DMD_RESULT _v4l2SetupStandard();
 
     // frame format, v4l2_fmtdesc;
-    DMD_RESULT _v4l2Queryfmtdesc();
+    DMD_RESULT _v4l2Enumfmtdesc();
 
     // format, v4l2_format;
     DMD_RESULT _v4l2QueryFormat();

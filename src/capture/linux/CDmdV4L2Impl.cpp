@@ -103,7 +103,7 @@ DMD_RESULT CDmdV4L2Impl::StartCapture() {
         return ret;
     }
 
-    ret = _v4l2QueryInputFormat();
+    ret = _v4l2EnumInputFormat();
     if (ret != DMD_S_OK) {
         return ret;
     }
@@ -112,18 +112,16 @@ DMD_RESULT CDmdV4L2Impl::StartCapture() {
         return ret;
     }
 
-    /*
-    ret = _v4l2QueryStandard();
-    if (ret != DMD_S_OK) {
-        return ret;
-    }
-    ret = _v4l2SetupStandard();
-    if (ret != DMD_S_OK) {
-        return ret;
-    }
-    */
+    // ret = _v4l2EnumStandard();
+    // if (ret != DMD_S_OK) {
+    //     return ret;
+    // }
+    // ret = _v4l2SetupStandard();
+    // if (ret != DMD_S_OK) {
+    //     return ret;
+    // }
 
-    ret = _v4l2Queryfmtdesc();
+    ret = _v4l2Enumfmtdesc();
     if (ret != DMD_S_OK) {
         return ret;
     }
@@ -267,9 +265,9 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryCapability() {
  *     __u32         reserved[3];
  * }
  *
- * query current video input format
+ * enum current video input format
  */
-DMD_RESULT CDmdV4L2Impl::_v4l2QueryInputFormat() {
+DMD_RESULT CDmdV4L2Impl::_v4l2EnumInputFormat() {
     DMD_RESULT ret = DMD_S_OK;
     int i = 0, ok = 0;
     int fd = m_v4l2Param.video_device_fd;
@@ -281,14 +279,14 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryInputFormat() {
             break;
         }
 
-        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryInputFormat(), Input Format: "
+        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2EnumInputFormat(), Input Format: "
                 << "input name:" << m_v4l2Param.input.name << ", "
                 << "input index:" << m_v4l2Param.input.index << ", "
                 << "input type:" << m_v4l2Param.input.type);
     }  // for
 
-    if (i < 0 && ok != -EINVAL) {
-        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryInputFormat(), "
+    if (i <= 0 && ok != -EINVAL) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2EnumInputFormat(), "
                 << "call ioctl VIDIOC_ENUMINPUT error:" << strerror(errno));
         ret = DMD_S_FAIL;
         return ret;
@@ -328,7 +326,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupInputFormat() {
 // };
 //
 // standard, v4l2_std_id, v4l2_standard;
-DMD_RESULT CDmdV4L2Impl::_v4l2QueryStandard() {
+DMD_RESULT CDmdV4L2Impl::_v4l2EnumStandard() {
     DMD_RESULT ret = DMD_S_OK;
     int i = 0, ok = 0;
     int fd = m_v4l2Param.video_device_fd;
@@ -341,7 +339,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryStandard() {
             break;
         }
 
-        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryStandard(), Standard: "
+        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2EnumStandard(), Standard: "
                 << "index:" << standard.index << ", "
                 << "id:" << standard.id << ", "
                 << "name:" << standard.name << ", "
@@ -351,8 +349,8 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryStandard() {
                 << "input type:" << m_v4l2Param.input.type);
     }  // for
 
-    if (i < 0 && ok != -EINVAL) {
-        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryStandard(), "
+    if (i <= 0 && ok != -EINVAL) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2EnumStandard(), "
                 << "call ioctl VIDIOC_ENUMSTD error:" << strerror(errno));
         ret = DMD_S_FAIL;
         return ret;
@@ -398,7 +396,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupStandard() {
  *
  * traverse video frame format, query frame format this video device support.
  */
-DMD_RESULT CDmdV4L2Impl::_v4l2Queryfmtdesc() {
+DMD_RESULT CDmdV4L2Impl::_v4l2Enumfmtdesc() {
     DMD_RESULT ret = DMD_S_OK;
     int i = 0, ok = 0;
     int fd = m_v4l2Param.video_device_fd;
@@ -412,7 +410,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2Queryfmtdesc() {
             break;
         }
 
-        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2Queryfmtdesc(), fmtdesc: "
+        DMD_LOG_INFO("CDmdV4L2Impl::_v4l2Enumfmtdesc(), fmtdesc: "
                 << "index:" << m_v4l2Param.fmtdesc.index << ", "
                 << "type:"
                 << v4l2BUFTypeToString(m_v4l2Param.fmtdesc.type) << ", "
@@ -424,8 +422,8 @@ DMD_RESULT CDmdV4L2Impl::_v4l2Queryfmtdesc() {
                 << ((m_v4l2Param.fmtdesc.pixelformat >> 24) & 0xff));
     }  // for
 
-    if (i < 0 && ok != -EINVAL) {
-        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2Queryfmtdesc(), "
+    if (i <= 0 && ok != -EINVAL) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2Enumfmtdesc(), "
                 << "call ioctl VIDIOC_ENUM_FMT error:" << strerror(errno));
         ret = DMD_S_FAIL;
     }
@@ -464,7 +462,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2Queryfmtdesc() {
 DMD_RESULT CDmdV4L2Impl::_v4l2QueryFormat() {
     DMD_RESULT ret = DMD_S_OK;
     int fd = m_v4l2Param.video_device_fd;
-    // bzero(&m_v4l2Param.fmt, sizeof(struct v4l2_format));
+    bzero(&m_v4l2Param.fmt, sizeof(struct v4l2_format));
     m_v4l2Param.fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
     if (-1 == (v4l2IOCTL(fd, VIDIOC_G_FMT, &m_v4l2Param.fmt))) {
