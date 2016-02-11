@@ -570,6 +570,29 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupCrop() {
  *
  * set video stream data format
  */
+/*
+ * ENUMS
+ */
+// enum v4l2_field {
+//     V4L2_FIELD_ANY           = 0, // driver can choose from none, top,
+//                                   // bottom, interlaced depending on
+//                                   // whatever it thinks is approximate.
+//     V4L2_FIELD_NONE          = 1, // this device has no fields ...
+//     V4L2_FIELD_TOP           = 2, // top field only
+//     V4L2_FIELD_BOTTOM        = 3, // bottom field only
+//     V4L2_FIELD_INTERLACED    = 4, // both fields interlaced
+//     V4L2_FIELD_SEQ_TB        = 5, // both fields sequential into one buffer,
+//                                   // top-bottom order
+//     V4L2_FIELD_SEQ_BT        = 6, // same as above + bottom-top order
+//     V4L2_FIELD_ALTERNATE     = 7, // both fields alternating into
+//                                   // separate buffers
+//     V4L2_FIELD_INTERLACED_TB = 8, // both fields interlaced, top field first
+//                                   // and the top field is transmitted first
+//     V4L2_FIELD_INTERLACED_BT = 9, // both fields interlaced, top field first
+//                                   // and the bottom field is
+//                                   // transmitted first
+// };
+
 DMD_RESULT CDmdV4L2Impl::_v4l2QueryFormat() {
     DMD_RESULT ret = DMD_S_OK;
     int fd = m_v4l2Param.video_device_fd;
