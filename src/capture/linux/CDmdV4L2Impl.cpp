@@ -596,17 +596,17 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupCrop() {
 DMD_RESULT CDmdV4L2Impl::_v4l2QueryFormat() {
     DMD_RESULT ret = DMD_S_OK;
     int fd = m_v4l2Param.video_device_fd;
-    bzero(&m_v4l2Param.fmt, sizeof(struct v4l2_format));
-    m_v4l2Param.fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 
-    if (-1 == (v4l2IOCTL(fd, VIDIOC_G_FMT, &m_v4l2Param.fmt))) {
+    struct v4l2_format fmt;
+    bzero(&fmt, sizeof(fmt));
+    fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    if (-1 == (v4l2IOCTL(fd, VIDIOC_G_FMT, &fmt))) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryFormat(), "
                 << "call ioctl VIDIOC_G_FMT error:" << strerror(errno));
         ret = DMD_S_FAIL;
         return ret;
     }
 
-    struct v4l2_format fmt = m_v4l2Param.fmt;
     DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryFormat(), Format: "
             << "type:" << v4l2BUFTypeToString(fmt.type) << ", "
             << "width = " << fmt.fmt.pix.width << ", "
@@ -639,6 +639,8 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupFormat() {
         return ret;
     }
 
+    // TODO(weizhenwei): deal with the difference of m_videoFormat
+    //                   and m_v4l2Param.fmt;
     _v4l2QueryFormat();
     return ret;
 }
