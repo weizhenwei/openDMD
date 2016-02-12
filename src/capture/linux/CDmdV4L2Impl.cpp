@@ -427,10 +427,8 @@ DMD_RESULT CDmdV4L2Impl::_v4l2Enumfmtdesc() {
                 << v4l2BUFTypeToString(m_v4l2Param.fmtdesc.type) << ", "
                 << "flags:" << m_v4l2Param.fmtdesc.flags << ", "
                 << "description:" << m_v4l2Param.fmtdesc.description << ", "
-                << "pixelformat:0x" << (m_v4l2Param.fmtdesc.pixelformat & 0xff)
-                << ((m_v4l2Param.fmtdesc.pixelformat >> 8) & 0xff)
-                << ((m_v4l2Param.fmtdesc.pixelformat >> 16) & 0xff)
-                << ((m_v4l2Param.fmtdesc.pixelformat >> 24) & 0xff));
+                << "pixelformat:"
+                << v4l2PixFmtToString(m_v4l2Param.fmtdesc.pixelformat));
     }  // for
 
     if (i <= 0 && ok != -EINVAL) {
@@ -609,14 +607,14 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryFormat() {
 
     DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryFormat(), Format: "
             << "type:" << v4l2BUFTypeToString(fmt.type) << ", "
-            << "width = " << fmt.fmt.pix.width << ", "
-            << "height = " << fmt.fmt.pix.height << ", "
-            << "pixelformat = "
+            << "width:" << fmt.fmt.pix.width << ", "
+            << "height:" << fmt.fmt.pix.height << ", "
+            << "pixelformat:"
             << v4l2PixFmtToString(fmt.fmt.pix.pixelformat) << ", "
-            << "field = " << v4l2FieldToString(fmt.fmt.pix.field) << ", "
-            << "bytesperline = " << fmt.fmt.pix.bytesperline << ", "
-            << "sizeimage = " << fmt.fmt.pix.sizeimage << ", "
-            << "colorspace = "
+            << "field:" << v4l2FieldToString(fmt.fmt.pix.field) << ", "
+            << "bytesperline:" << fmt.fmt.pix.bytesperline << ", "
+            << "sizeimage:" << fmt.fmt.pix.sizeimage << ", "
+            << "colorspace:"
             << v4l2ColorspaceToString(fmt.fmt.pix.colorspace));
 
     return ret;
