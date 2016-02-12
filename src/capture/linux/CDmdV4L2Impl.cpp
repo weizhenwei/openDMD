@@ -41,6 +41,7 @@
 #include <string.h>
 #include <strings.h>
 #include <errno.h>
+#include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -63,9 +64,9 @@ CDmdV4L2Impl::~CDmdV4L2Impl() {
 
 DMD_RESULT CDmdV4L2Impl::Init(const DmdCaptureVideoFormat &videoFormat) {
     memcpy(&m_videoFormat, &videoFormat, sizeof(videoFormat));
-    m_v4l2Param.mmap_reqcount = MMAP_REQCOUNT;
+    m_v4l2Param.request_buffers_count = REQUEST_BUFFERS_COUNT;
     m_v4l2Param.mmap_reqbuffers = (struct mmap_buffer *)
-        malloc(m_v4l2Param.mmap_reqcount * sizeof(struct mmap_buffer));
+        malloc(m_v4l2Param.request_buffers_count * sizeof(struct mmap_buffer));
     if (NULL == m_v4l2Param.mmap_reqbuffers) {
         DMD_LOG_ERROR("CDmdV4L2Impl::Init(), "
                 << "malloc m_v4l2Param.mmap_reqbuffers failed.");
@@ -147,11 +148,22 @@ DMD_RESULT CDmdV4L2Impl::StartCapture() {
         return ret;
     }
 
+    ret = _v4l2MMAPRequestBuffers();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+
     return ret;
 }
 
 DMD_RESULT CDmdV4L2Impl::StopCapture() {
     DMD_RESULT ret = DMD_S_OK;
+
+    ret = _v4l2MUNMAPRequestBuffers();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+
     ret = _v4l2CloseCaptureDevice();
 
     return ret;
@@ -725,16 +737,156 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupStreamParam() {
     }
 
     ret = _v4l2QueryStreamParam();
+return ret;
+}
+
+
+/*
+ * MEMORY-MAPPING BUFFERS
+ *
+ * struct v4l2_requestbuffers {
+ *     __u32                count;
+ *     enum v4l2_buf_type   type;
+ *     enum v4l2_memory     memory;
+ *     __u32                reserved[2];
+ * };
+ *
+ * struct v4l2_buffer - video buffer info
+ * @index: id number of the buffer
+ * @type: buffer type (type == *_MPLANE for multiplanar buffers)
+ * @bytesused: number of bytes occupied by data in the buffer (payload);
+ *             unused (set to 0) for multiplanar buffers
+ * @flags: buffer informational flags
+ * @field: field order of the image in the buffer
+ * @timestamp: frame timestamp
+ * @timecode: frame timecode
+ * @sequence: sequence count of this frame
+ * @memory: the method, in which the actual video data is passed
+ * @offset: for non-multiplanar buffers with memory == V4L2_MEMORY_MMAP;
+ *          offset from the start of the device memory for this plane,
+ *          (or a "cookie" that should be passed to mmap() as offset)
+ * @userptr: for non-multiplanar buffers with memory == V4L2_MEMORY_USERPTR;
+ *           a userspace pointer pointing to this buffer
+ * @planes: for multiplanar buffers; userspace pointer to the array of plane
+ *          info structs for this buffer
+ * @length: size in bytes of the buffer (NOT its payload) for single-plane
+ *          buffers (when type != *_MPLANE); number of elements in the
+ *          planes array for multi-plane buffers
+ * @input:  input number from which the video data has has been captured
+ *
+ * Contains data exchanged by application and driver using one of the Streaming
+ * I/O methods.
+ *
+ * struct v4l2_buffer {
+ *     __u32                   index;
+ *     enum v4l2_buf_type      type;
+ *     __u32                   bytesused;
+ *     __u32                   flags;
+ *     enum v4l2_field         field;
+ *     struct timeval          timestamp;
+ *     struct v4l2_timecode    timecode;
+ *     __u32                   sequence;
+ *     
+ *     // memory location
+ *     enum v4l2_memory        memory;
+ *     union {
+ *         __u32           offset;
+ *         unsigned long   userptr;
+ *         struct v4l2_plane *planes;
+ *     } m;
+ *     __u32    length;
+ *     __u32    input;
+ *     __u32    reserved;
+ * };
+ *
+ * memory map for the request buffer
+ */
+
+DMD_RESULT CDmdV4L2Impl::_v4l2MMAPRequestBuffers() {
+    DMD_RESULT ret = DMD_S_OK;
+    int fd = m_v4l2Param.video_device_fd;
+
+    // step 1, allocate request buffers
+    bzero(&m_v4l2Param.reqbuffers, sizeof(struct v4l2_requestbuffers));
+    m_v4l2Param.reqbuffers.count = m_v4l2Param.request_buffers_count;
+    m_v4l2Param.reqbuffers.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    m_v4l2Param.reqbuffers.memory = V4L2_MEMORY_MMAP;
+    if (-1 == v4l2IOCTL(fd, VIDIOC_REQBUFS, &m_v4l2Param.reqbuffers)) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2MMAPRequestBuffers(), "
+                << "call VIDIOC_REQBUFS failed:" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    if (m_v4l2Param.reqbuffers.count < m_v4l2Param.request_buffers_count) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2MMAPRequestBuffers(), "
+                << "Allocate insufficient request buffers:"
+                << "allocated " << m_v4l2Param.reqbuffers.count << ", "
+                << "needed " << m_v4l2Param.request_buffers_count);
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    // step 2, getting request buffer physical address
+    struct mmap_buffer *buffers = m_v4l2Param.mmap_reqbuffers;
+    for (unsigned int i = 0; i < m_v4l2Param.reqbuffers.count; i++) {
+        struct v4l2_buffer buf;  // stands for a frame in driver
+        bzero(&buf, sizeof(struct v4l2_buffer));
+        buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        buf.memory = V4L2_MEMORY_MMAP;
+        buf.index = i;
+
+        if (-1 == v4l2IOCTL(fd, VIDIOC_QUERYBUF, &buf)) {
+            DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2RequestBuffersMMAP(), "
+                    << "call VIDIOC_QUERYBUF failed:" << strerror(errno));
+            ret = DMD_S_FAIL;
+            return ret;
+        }
+
+        // step 3, Mapping kernel space address to user space
+        buffers[i].length = buf.length;
+        buffers[i].start = mmap(NULL, buf.length,
+                PROT_READ | PROT_WRITE, MAP_SHARED, fd, buf.m.offset);
+
+        if (buffers[i].start == MAP_FAILED) {
+            DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2RequestBuffersMMAP(), "
+                    << "call mmap() failed:" << strerror(errno));
+
+            for (unsigned int j = 0; i < i; i++) {
+                if (-1 == munmap(buffers[j].start, buffers[j].length)) {
+                    DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2RequestBuffersMMAP(), "
+                            << "call munmap() failed:" << strerror(errno));
+                    break;
+                }
+            }  // for j
+            ret = DMD_S_FAIL;
+            return ret;
+        }
+    }  // for i
+
+    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2MMAPRequestBuffers(), "
+            << "request count:" << m_v4l2Param.reqbuffers.count << ", "
+            << "request type:"
+            << v4l2BUFTypeToString(m_v4l2Param.reqbuffers.type) << ", "
+            << "memory type:mmap");
 
     return ret;
 }
 
-DMD_RESULT CDmdV4L2Impl::_v4l2CreateRequestBuffers() {
-    return DMD_S_OK;
-}
+DMD_RESULT CDmdV4L2Impl::_v4l2MUNMAPRequestBuffers() {
+    DMD_RESULT ret = DMD_S_OK;
 
-DMD_RESULT CDmdV4L2Impl::_v4l2mmap() {
-    return DMD_S_OK;
+    struct mmap_buffer *buffers = m_v4l2Param.mmap_reqbuffers;
+    for (unsigned int i = 0; i < m_v4l2Param.reqbuffers.count; i++) {
+        if (-1 == munmap(buffers[i].start, buffers[i].length)) {
+            DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2RequestBuffersMUNMAP(), "
+                    << "call munmap() failed:" << strerror(errno));
+            ret = DMD_S_FAIL;
+            break;
+        }
+    }  // for i
+
+    return ret;
 }
 
 DMD_RESULT CDmdV4L2Impl::_v4l2StreamON() {

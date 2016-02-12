@@ -51,7 +51,7 @@ struct mmap_buffer {
     unsigned int length;
 };
 
-#define MMAP_REQCOUNT 5
+#define REQUEST_BUFFERS_COUNT 5
 
 typedef struct _v4l2_capture_param {
     int video_device_fd;                          // video device fd;
@@ -63,10 +63,8 @@ typedef struct _v4l2_capture_param {
     struct v4l2_crop crop;                        // video crop;
     struct v4l2_format fmt;                       // video stream data format;
     struct v4l2_streamparm streamparam;           // video stream param;
-    // struct v4l2_requestbuffers reqbuffers;        // mmap buffers;
-    // struct v4l2_buffer buffer;                    // video buffer;
-
-    int mmap_reqcount;                            // mmap reqcount;
+    struct v4l2_requestbuffers reqbuffers;        // video request buffers;
+    unsigned int request_buffers_count;           // request buffers count;
     struct mmap_buffer *mmap_reqbuffers;          // mmap buffers;
 } v4l2_capture_param;
 
@@ -114,8 +112,9 @@ private:
     DMD_RESULT _v4l2QueryStreamParam();
     DMD_RESULT _v4l2SetupStreamParam();
 
-    DMD_RESULT _v4l2CreateRequestBuffers();
-    DMD_RESULT _v4l2mmap();
+    DMD_RESULT _v4l2MMAPRequestBuffers();
+    DMD_RESULT _v4l2MUNMAPRequestBuffers();
+
     DMD_RESULT _v4l2StreamON();
     DMD_RESULT _v4l2StreamOFF();
     DMD_RESULT _v4l2unmmap();
