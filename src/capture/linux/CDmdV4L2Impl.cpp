@@ -628,7 +628,8 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupFormat() {
     m_v4l2Param.fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     m_v4l2Param.fmt.fmt.pix.width = m_videoFormat.iWidth;
     m_v4l2Param.fmt.fmt.pix.height = m_videoFormat.iHeight;
-    m_v4l2Param.fmt.fmt.pix.pixelformat = V4L2_PIX_FMT_YUYV;
+    m_v4l2Param.fmt.fmt.pix.pixelformat =
+        v4l2DmdVideoTypeToPixelFormat(m_videoFormat.eVideoType);
     m_v4l2Param.fmt.fmt.pix.field = V4L2_FIELD_INTERLACED;
 
     if (-1 == (v4l2IOCTL(fd, VIDIOC_S_FMT, &m_v4l2Param.fmt))) {

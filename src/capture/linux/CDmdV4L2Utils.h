@@ -47,6 +47,7 @@
 #include "IDmdDatatype.h"
 
 using std::string;
+using opendmd::DmdVideoType;
 
 namespace opendmd {
 int v4l2IOCTL(int fd, int request, void *arg);
@@ -55,6 +56,8 @@ string v4l2BUFTypeToString(uint32_t type);
 string v4l2ColorspaceToString(uint8_t colorspace);
 string v4l2PixFmtToString(uint32_t pixfmt);
 string v4l2FieldToString(uint32_t field);
+
+uint32_t v4l2DmdVideoTypeToPixelFormat(DmdVideoType videoType);
 }  // namespace opendmd
 
 #endif  // SRC_CAPTURE_LINUX_CDMDV4L2UTILS_H

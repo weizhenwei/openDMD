@@ -43,6 +43,9 @@
 #include <string>
 
 #include "DmdLog.h"
+#include "IDmdDatatype.h"
+
+#include "CDmdV4L2Utils.h"
 
 using std::ostringstream;
 using std::string;
@@ -366,6 +369,66 @@ string v4l2FieldToString(uint32_t field) {
         default:
             return "Unknown field";
     }
+}
+
+/*
+ * typedef enum {
+ *     DmdUnknown = 0,
+ * 
+ *     // yuv color space;
+ *     DmdI420,    // Y'CbCr 4:2:0 - 420v, NV12 actually;
+ *     DmdYUYV,    // Y'CbCr 4:2:2 - yuvs packed;
+ *     DmdUYVY,    // Y'CbCr 4:2:2 - uyvy packed;
+ *     DmdNV12,    // Y'CbCr 4:2:0 - nv12 planar;
+ *     DmdNV21,    // Y'CbCr 4:2:0 - nv21 planar;
+ * 
+ *     // RGB color space;
+ *     DmdRGB24,
+ *     DmdBGR24,
+ *     DmdRGBA32,
+ *     DmdBGRA32,
+ * } DmdVideoType;
+ */
+uint32_t v4l2DmdVideoTypeToPixelFormat(DmdVideoType videoType) {
+    uint32_t pixelFormat = 0;
+    switch (videoType) {
+        // YUV color space;
+        case DmdI420:
+            pixelFormat = V4L2_PIX_FMT_YUV420;
+            break;
+        case DmdYUYV:
+            pixelFormat = V4L2_PIX_FMT_YUYV;
+            break;
+        case DmdUYVY:
+            pixelFormat = V4L2_PIX_FMT_UYVY;
+            break;
+        case DmdNV12:
+            pixelFormat = V4L2_PIX_FMT_NV12;
+            break;
+        case DmdNV21:
+            pixelFormat = V4L2_PIX_FMT_NV21;
+            break;
+
+        // RGB color space;
+        case DmdRGB24:
+            pixelFormat = V4L2_PIX_FMT_RGB24;
+            break;
+        case DmdBGR24:
+            pixelFormat = V4L2_PIX_FMT_BGR24;
+            break;
+        case DmdRGBA32:
+            pixelFormat = V4L2_PIX_FMT_RGB32;
+            break;
+        case DmdBGRA32:
+            pixelFormat = V4L2_PIX_FMT_BGR32;
+            break;
+
+        default:
+            pixelFormat = 0;  // unsupported pixel format;
+            break;
+    }
+
+    return pixelFormat;
 }
 
 }  // namespace opendmd
