@@ -112,12 +112,13 @@ private:
     DMD_RESULT _v4l2QueryStreamParam();
     DMD_RESULT _v4l2SetupStreamParam();
 
+    // mmap/munmap, v4l2_requestbuffers;
     DMD_RESULT _v4l2MMAPRequestBuffers();
     DMD_RESULT _v4l2MUNMAPRequestBuffers();
 
+    // stream on/off;
     DMD_RESULT _v4l2StreamON();
     DMD_RESULT _v4l2StreamOFF();
-    DMD_RESULT _v4l2unmmap();
 
 private:
     DmdCaptureVideoFormat m_videoFormat;

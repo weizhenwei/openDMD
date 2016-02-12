@@ -153,11 +153,21 @@ DMD_RESULT CDmdV4L2Impl::StartCapture() {
         return ret;
     }
 
+    ret = _v4l2StreamON();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+
     return ret;
 }
 
 DMD_RESULT CDmdV4L2Impl::StopCapture() {
     DMD_RESULT ret = DMD_S_OK;
+
+    ret = _v4l2StreamOFF();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
 
     ret = _v4l2MUNMAPRequestBuffers();
     if (ret != DMD_S_OK) {
@@ -890,15 +900,56 @@ DMD_RESULT CDmdV4L2Impl::_v4l2MUNMAPRequestBuffers() {
 }
 
 DMD_RESULT CDmdV4L2Impl::_v4l2StreamON() {
-    return DMD_S_OK;
+    DMD_RESULT ret = DMD_S_OK;
+    int fd = m_v4l2Param.video_device_fd;
+
+    // step 1, place kernel request buffers to a queue
+    for (unsigned int i = 0; i < m_v4l2Param.request_buffers_count; i++) {
+        struct v4l2_buffer buf;
+        bzero(&buf, sizeof(struct v4l2_buffer));
+        buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        buf.memory = V4L2_MEMORY_MMAP;
+        buf.index = i;
+
+        // request buffer to queue
+        if (-1 == v4l2IOCTL(fd, VIDIOC_QBUF, &buf)) {
+            DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2StreamON(), "
+                    << "call VIDIOC_QBUF failed:" << strerror(errno));
+            ret = DMD_S_FAIL;
+            return ret;
+        }
+    }
+
+    // step 2, start stream on, start capture data
+    enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    if (-1 == v4l2IOCTL(fd, VIDIOC_STREAMON, &type)) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2StreamON(), "
+                << "call VIDIOC_STREAMON failed:" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    DMD_LOG_INFO("Video stream is now on!");
+
+    return ret;
 }
 
 DMD_RESULT CDmdV4L2Impl::_v4l2StreamOFF() {
-    return DMD_S_OK;
-}
+    DMD_RESULT ret = DMD_S_OK;
+    int fd = m_v4l2Param.video_device_fd;
 
-DMD_RESULT CDmdV4L2Impl::_v4l2unmmap() {
-    return DMD_S_OK;
+    // stop stream off, stop capture
+    enum v4l2_buf_type type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    if (-1 == v4l2IOCTL(fd, VIDIOC_STREAMOFF, &type)) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2StreamOFF(), "
+                << "call VIDIOC_STREAMOFF failed:" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    DMD_LOG_INFO("Video stream is now off!");
+
+    return ret;
 }
 
 }  // namespace opendmd
