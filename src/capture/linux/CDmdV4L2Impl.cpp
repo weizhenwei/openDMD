@@ -161,6 +161,7 @@ DMD_RESULT CDmdV4L2Impl::StopCapture() {
 DMD_RESULT CDmdV4L2Impl::_v4l2OpenCaptureDevice() {
     DMD_RESULT ret = DMD_S_OK;
     int fd = -1;
+
     struct stat st;
     bzero(&st, sizeof(st));
     char *devPath = m_videoFormat.sVideoDevice;
@@ -347,6 +348,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2EnumStandard() {
     DMD_RESULT ret = DMD_S_OK;
     int i = 0, ok = 0;
     int fd = m_v4l2Param.video_device_fd;
+
     struct v4l2_standard standard;
     memset(&standard, 0, sizeof(standard));
     for (i = 0; ok == 0; i++) {
@@ -417,6 +419,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2Enumfmtdesc() {
     DMD_RESULT ret = DMD_S_OK;
     int i = 0, ok = 0;
     int fd = m_v4l2Param.video_device_fd;
+
     enum v4l2_buf_type targetType = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     memset(&m_v4l2Param.fmtdesc, 0, sizeof(m_v4l2Param.fmtdesc));
     for (i = 0; ok == 0; i++) {
@@ -473,6 +476,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2Enumfmtdesc() {
 DMD_RESULT CDmdV4L2Impl::_v4l2QueryCropcap() {
     DMD_RESULT ret = DMD_S_OK;
     int fd = m_v4l2Param.video_device_fd;
+
     memset(&m_v4l2Param.cropcap, 0, sizeof(m_v4l2Param.cropcap));
     m_v4l2Param.cropcap.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     if (-1 == v4l2IOCTL(fd, VIDIOC_CROPCAP, &m_v4l2Param.cropcap)) {
@@ -497,7 +501,9 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryCropcap() {
 DMD_RESULT CDmdV4L2Impl::_v4l2QueryCrop() {
     DMD_RESULT ret = DMD_S_OK;
     int fd = m_v4l2Param.video_device_fd;
+
     struct v4l2_crop crop;
+    bzero(&crop, sizeof(crop));
     if (-1 == v4l2IOCTL(fd, VIDIOC_G_CROP, &crop)) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryCrop(), "
                 << "call ioctl VIDIOC_G_CROP error:" << strerror(errno));
@@ -519,10 +525,10 @@ DMD_RESULT CDmdV4L2Impl::_v4l2QueryCrop() {
 DMD_RESULT CDmdV4L2Impl::_v4l2SetupCrop() {
     DMD_RESULT ret = DMD_S_OK;
     int fd = m_v4l2Param.video_device_fd;
+
     memset(&m_v4l2Param.crop, 0, sizeof(m_v4l2Param.crop));
     m_v4l2Param.crop.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
     m_v4l2Param.crop.c = m_v4l2Param.cropcap.defrect;  // reset to default
-
     if (-1 == v4l2IOCTL(fd, VIDIOC_S_CROP, &m_v4l2Param.crop)) {
         switch (errno) {
             case EINVAL:
@@ -541,7 +547,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupCrop() {
             }
     }
 
-    _v4l2QueryCrop();
+    ret = _v4l2QueryCrop();
 
     return ret;
 }
@@ -571,11 +577,6 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupCrop() {
  *     __u32    colorspace;    // enum v4l2_colorspace
  *     __u32    priv;          // private data, depends on pixelformat
  * };
- *
- * set video stream data format
- */
-/*
- * ENUMS
  */
 // enum v4l2_field {
 //     V4L2_FIELD_ANY           = 0, // driver can choose from none, top,
@@ -597,6 +598,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupCrop() {
 //                                   // transmitted first
 // };
 
+// set video stream data format
 DMD_RESULT CDmdV4L2Impl::_v4l2QueryFormat() {
     DMD_RESULT ret = DMD_S_OK;
     int fd = m_v4l2Param.video_device_fd;
@@ -645,7 +647,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupFormat() {
 
     // TODO(weizhenwei): deal with the difference of m_videoFormat
     //                   and m_v4l2Param.fmt;
-    _v4l2QueryFormat();
+    ret = _v4l2QueryFormat();
     return ret;
 }
 
