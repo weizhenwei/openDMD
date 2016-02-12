@@ -62,6 +62,7 @@ typedef struct _v4l2_capture_param {
     struct v4l2_cropcap cropcap;                  // video cropcap;
     struct v4l2_crop crop;                        // video crop;
     struct v4l2_format fmt;                       // video stream data format;
+    struct v4l2_streamparm streamparam;           // video stream param;
     // struct v4l2_requestbuffers reqbuffers;        // mmap buffers;
     // struct v4l2_buffer buffer;                    // video buffer;
 
@@ -109,8 +110,10 @@ private:
     DMD_RESULT _v4l2QueryFormat();
     DMD_RESULT _v4l2SetupFormat();
 
-    DMD_RESULT _v4l2QueryFPS();
-    DMD_RESULT _v4l2SetupFPS();
+    // stream param, v4l2_streamparm;
+    DMD_RESULT _v4l2QueryStreamParam();
+    DMD_RESULT _v4l2SetupStreamParam();
+
     DMD_RESULT _v4l2CreateRequestBuffers();
     DMD_RESULT _v4l2mmap();
     DMD_RESULT _v4l2StreamON();

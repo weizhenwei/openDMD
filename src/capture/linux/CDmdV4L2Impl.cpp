@@ -142,6 +142,11 @@ DMD_RESULT CDmdV4L2Impl::StartCapture() {
         return ret;
     }
 
+    ret = _v4l2SetupStreamParam();
+    if (ret != DMD_S_OK) {
+        return ret;
+    }
+
     return ret;
 }
 
@@ -157,6 +162,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2OpenCaptureDevice() {
     DMD_RESULT ret = DMD_S_OK;
     int fd = -1;
     struct stat st;
+    bzero(&st, sizeof(st));
     char *devPath = m_videoFormat.sVideoDevice;
     if (-1 == stat(devPath, &st)) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2OpenCaptureDevice(), "
@@ -238,10 +244,10 @@ bool CDmdV4L2Impl::_v4l2CheckVideoCaptureCapability(uint32_t capability) {
 
 DMD_RESULT CDmdV4L2Impl::_v4l2QueryCapability() {
     DMD_RESULT ret = DMD_S_OK;
+    int fd = m_v4l2Param.video_device_fd;
 
     // get the device capability.
-    if (-1 == v4l2IOCTL(m_v4l2Param.video_device_fd, VIDIOC_QUERYCAP,
-                &m_v4l2Param.cap)) {
+    if (-1 == v4l2IOCTL(fd, VIDIOC_QUERYCAP, &m_v4l2Param.cap)) {
         DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryCapability(), "
                 << "query video capture device capability error:"
                 << strerror(errno));
@@ -643,12 +649,82 @@ DMD_RESULT CDmdV4L2Impl::_v4l2SetupFormat() {
     return ret;
 }
 
-DMD_RESULT CDmdV4L2Impl::_v4l2QueryFPS() {
-    return DMD_S_OK;
+
+/*
+ * struct v4l2_streamparm {
+ *     enum v4l2_buf_type type;
+ *     union {
+ *         struct v4l2_captureparm capture;
+ *         struct v4l2_outputparm  output;
+ *         __u8    raw_data[200];  // user-defined
+ *     } parm;
+ * };
+ *
+ * struct v4l2_captureparm {
+ *     __u32              capability;    // Supported modes
+ *     __u32              capturemode;   // Current mode
+ *     struct v4l2_fract  timeperframe;  // Time per frame in seconds
+ *     __u32              extendedmode;  // Driver-specific extensions
+ *     __u32              readbuffers;   // of buffers for read
+ *     __u32              reserved[4];
+ * };
+ *
+ *  Flags for 'capability' and 'capturemode' fields
+ *  #define V4L2_MODE_HIGHQUALITY 0x0001  //  High quality imaging mode
+ *  #define V4L2_CAP_TIMEPERFRAME 0x1000  //  timeperframe field is supported
+ */
+
+// get/set stream fps;
+DMD_RESULT CDmdV4L2Impl::_v4l2QueryStreamParam() {
+    DMD_RESULT ret = DMD_S_OK;
+    int fd = m_v4l2Param.video_device_fd;
+
+    struct v4l2_streamparm streamparam;
+    bzero(&streamparam, sizeof(streamparam));
+    streamparam.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    if (-1 == v4l2IOCTL(fd, VIDIOC_G_PARM, &streamparam)) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2QueryStreamParam(), "
+                << "query video stream param error:" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2QueryStreamParam(), StreamParam: "
+            << "type:" << v4l2BUFTypeToString(streamparam.type) << ", "
+            << "capability:"
+            << v4l2StreamParamToString(streamparam.parm.capture.capability)
+            << ", mode:"
+            << v4l2StreamParamToString(streamparam.parm.capture.capturemode)
+            << ", fps.numerator:"
+            << streamparam.parm.capture.timeperframe.numerator << ", "
+            << "fps.denominator:"
+            << streamparam.parm.capture.timeperframe.denominator);
+
+    return ret;
 }
 
-DMD_RESULT CDmdV4L2Impl::_v4l2SetupFPS() {
-    return DMD_S_OK;
+DMD_RESULT CDmdV4L2Impl::_v4l2SetupStreamParam() {
+    DMD_RESULT ret = DMD_S_OK;
+    int fd = m_v4l2Param.video_device_fd;
+
+    bzero(&m_v4l2Param.streamparam, sizeof(m_v4l2Param.streamparam));
+    m_v4l2Param.streamparam.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+    m_v4l2Param.streamparam.parm.capture.capturemode = V4L2_MODE_HIGHQUALITY;
+    m_v4l2Param.streamparam.parm.capture.capability = V4L2_CAP_TIMEPERFRAME;
+    m_v4l2Param.streamparam.parm.capture.timeperframe.numerator = 1;
+    m_v4l2Param.streamparam.parm.capture.timeperframe.denominator =
+        m_videoFormat.fFrameRate;
+
+    if (-1 == v4l2IOCTL(fd, VIDIOC_S_PARM, &m_v4l2Param.streamparam)) {
+        DMD_LOG_ERROR("CDmdV4L2Impl::_v4l2SetStreamParam(), "
+                << "set video stream param error:" << strerror(errno));
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    ret = _v4l2QueryStreamParam();
+
+    return ret;
 }
 
 DMD_RESULT CDmdV4L2Impl::_v4l2CreateRequestBuffers() {

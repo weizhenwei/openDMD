@@ -58,6 +58,7 @@ string v4l2PixFmtToString(uint32_t pixfmt);
 string v4l2FieldToString(uint32_t field);
 
 uint32_t v4l2DmdVideoTypeToPixelFormat(DmdVideoType videoType);
+string v4l2StreamParamToString(uint32_t streamparam);
 }  // namespace opendmd
 
 #endif  // SRC_CAPTURE_LINUX_CDMDV4L2UTILS_H

@@ -431,5 +431,31 @@ uint32_t v4l2DmdVideoTypeToPixelFormat(DmdVideoType videoType) {
     return pixelFormat;
 }
 
+/*
+ *  Flags for 'capability' and 'capturemode' fields
+ *  #define V4L2_MODE_HIGHQUALITY 0x0001  //  High quality imaging mode
+ *  #define V4L2_CAP_TIMEPERFRAME 0x1000  //  timeperframe field is supported
+ */
+string v4l2StreamParamToString(uint32_t streamparam) {
+    ostringstream os;
+    string strParam;
+
+    if (0x0 == streamparam) {
+        os << "0";
+    } else {
+        if (streamparam & V4L2_MODE_HIGHQUALITY) {
+            os << "support hight quality mode ";
+        }
+
+        if (streamparam & V4L2_CAP_TIMEPERFRAME) {
+            os << "support timeperframe capture ";
+        }
+    }
+
+    strParam = os.str();
+
+    return strParam;
+}
+
 }  // namespace opendmd
 
