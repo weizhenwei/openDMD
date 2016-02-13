@@ -4,7 +4,7 @@
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
  Date           :2016.02.05
  Copyright   :
- * Copyright (c) 2015, weizhenwei
+ * Copyright (c) 2016, weizhenwei
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

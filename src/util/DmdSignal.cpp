@@ -1,10 +1,10 @@
 /*
  ============================================================================
- Name        : main.cpp
+ Name        : DmdSignal.cpp
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.06.24
+ Date           :2016.01.13
  Copyright   :
- * Copyright (c) 2015, weizhenwei
+ * Copyright (c) 2016, weizhenwei
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,54 +32,42 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : main entry of the project.
+ Description : signal processing implementation file.
  ============================================================================
  */
 
-#include <stdlib.h>
-#include <locale.h>
+#include <assert.h>
+#include <signal.h>
 
-#include "IDmdDatatype.h"
 #include "DmdLog.h"
+
 #include "DmdSignal.h"
 
-#include "IDmdCaptureEngine.h"
-#include "CDmdCaptureEngine.h"
-#include "DmdCmdlineParameter.h"
+namespace opendmd {
+static void DmdSIGINTHandler(int signal) {
+    assert(signal == SIGINT);
 
-#include "main.h"
-
-using namespace opendmd;
-
-static void parseCmdline(int argc, char *argv[]) {
-    DmdCmdlineParameter::singleton()->parseCmdlineParameter(argc, argv);
-
-    if (DmdCmdlineParameter::singleton()->isShowHelp()) {
-        DmdCmdlineParameter::singleton()->showHelp();
-        exit(EXIT_SUCCESS);
-    }
-    if (DmdCmdlineParameter::singleton()->isShowVersion()) {
-        DmdCmdlineParameter::singleton()->showVersion();
-        exit(EXIT_SUCCESS);
-    }
-    if (!DmdCmdlineParameter::singleton()->isValidParameter()) {
-        exit(EXIT_FAILURE);
-    }
-    if (DmdCmdlineParameter::singleton()->isDaemonize()) {
-        DmdCmdlineParameter::singleton()->daemonize();
-    }
+    DMD_LOG_INFO("DmdSIGINTHandler(), SIGINT processing");
+    exit(EXIT_SUCCESS);
 }
 
-int main(int argc, char *argv[]) {
-    // set locale according current environment
-    setlocale(LC_ALL, "");
+static void DmdSIGHUPHandler(int signal) {
+    assert(signal == SIGHUP);
 
-    DmdRegisterSignalHandler();
-
-    parseCmdline(argc, argv);
-
-    client_main(argc, argv);
-
-    return 0;
+    DMD_LOG_INFO("DmdSIGINTHandler(), SIGHUP processing");
+    exit(EXIT_SUCCESS);
 }
+
+void DmdRegisterSignalHandler() {
+    signal(SIGPIPE, SIG_IGN);
+    signal(SIGTERM, SIG_DFL);
+
+    // signal Ctrl+C, capture it manually;
+    signal(SIGINT, DmdSIGINTHandler);
+
+    // SIGHUP handler, reload config file;
+    signal(SIGHUP, DmdSIGHUPHandler);
+}
+
+}  // namespace opendmd
 
