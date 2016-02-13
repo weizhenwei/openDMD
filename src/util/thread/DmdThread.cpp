@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : DmdSignal.cpp
+ Name        : DmdThread.cpp
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
  Date           :2016.02.13
  Copyright   :
@@ -32,41 +32,23 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : signal processing implementation file.
+ Description : thread implementation file.
  ============================================================================
  */
 
-#include <assert.h>
-#include <signal.h>
-
-#include "DmdLog.h"
-
-#include "DmdSignal.h"
+#include "DmdThread.h"
 
 namespace opendmd {
-static void DmdSIGINTHandler(int signal) {
-    assert(signal == SIGINT);
 
-    DMD_LOG_INFO("DmdSIGINTHandler(), SIGINT processing");
-    exit(EXIT_SUCCESS);
+DmdThread::DmdThread() : m_eThreadType(DMD_THREAD_UNKNOWN),
+    m_ulThreadHandler(0) {
 }
 
-static void DmdSIGHUPHandler(int signal) {
-    assert(signal == SIGHUP);
-
-    DMD_LOG_INFO("DmdSIGINTHandler(), SIGHUP processing");
-    exit(EXIT_SUCCESS);
+DmdThread::DmdThread(DmdThreadType type) : m_eThreadType(type),
+    m_ulThreadHandler(0) {
 }
 
-void DmdRegisterSignalHandler() {
-    signal(SIGPIPE, SIG_IGN);
-    signal(SIGTERM, SIG_DFL);
-
-    // signal Ctrl+C, capture it manually;
-    signal(SIGINT, DmdSIGINTHandler);
-
-    // SIGHUP handler, reload config file;
-    signal(SIGHUP, DmdSIGHUPHandler);
+DmdThread::~DmdThread() {
 }
 
 }  // namespace opendmd

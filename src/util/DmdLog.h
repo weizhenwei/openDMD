@@ -44,7 +44,7 @@
 
 #include "glog/logging.h"
 
-#include "DmdMutex.h"
+#include "thread/DmdThreadMutex.h"
 
 using std::string;
 using std::stringstream;
@@ -74,7 +74,7 @@ private:
     DMD_LOG_LEVEL_T m_uLevel;
     void initGLog();
 
-    static DmdMutex s_Mutex;
+    static DmdThreadMutex s_Mutex;
     static DmdLog* s_Log;
 };
 

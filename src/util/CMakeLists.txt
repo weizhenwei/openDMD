@@ -1,6 +1,7 @@
 message(STATUS "Entering directory ${CMAKE_CURRENT_SOURCE_DIR}")
 
-file(GLOB UNIVERSAL_FILES ./*.h ./*.cpp)
+
+file(GLOB UNIVERSAL_FILES *.h *.cpp thread/*.h thread/*.cpp)
 set(ALL_FILES ${UNIVERSAL_FILES})
 
 # default is static library

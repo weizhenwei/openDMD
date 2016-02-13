@@ -39,7 +39,7 @@
 #ifndef SRC_UTIL_DMDCONFIG_H
 #define SRC_UTIL_DMDCONFIG_H
 
-#include "DmdMutex.h"
+#include "thread/DmdThreadMutex.h"
 
 namespace opendmd {
 
@@ -57,7 +57,7 @@ public:
 
 private:
     static DmdConfig *s_Config;
-    static DmdMutex *s_configMutex;
+    static DmdThreadMutex *s_configMutex;
     const char *m_pConfigFile;
 };
 

@@ -1,10 +1,10 @@
 /*
  ============================================================================
- Name        : DmdMutex.h
+ Name        : DmdThreadUtils.h
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.06.29
+ Date           :2016.02.13
  Copyright   :
- * Copyright (c) 2015, weizhenwei
+ * Copyright (c) 2016, weizhenwei
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,33 +32,30 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : mutex util header file.
+ Description : thread util header file.
  ============================================================================
  */
 
-#ifndef SRC_UTIL_DMDMUTEX_H
-#define SRC_UTIL_DMDMUTEX_H
+#ifndef SRC_UTIL_THREAD_DMDTHREADUTILS_H
+#define SRC_UTIL_THREAD_DMDTHREADUTILS_H
 
 #include <pthread.h>
 
 namespace opendmd {
 
-typedef pthread_mutex_t DMD_THREAD_MUTEX_T;
-typedef pthread_t DMD_THREAD_T;
+typedef pthread_mutex_t DmdThreadMutex_t;
+typedef pthread_t DmdThreadHandler;
 
-class DmdMutex {
-public:
-    DmdMutex();
-    virtual ~DmdMutex();
-
-    int Lock();
-    int Unlock();
-
-private:
-    DMD_THREAD_MUTEX_T m_Mutex;
-};
+typedef enum {
+    DMD_THREAD_UNKNOWN,
+    DMD_THREAD_MAIN,     // for monitor the whole openDMD running;
+    DMD_THREAD_CAPTURE,  // for capture video data;
+    DMD_THREAD_ENCODE,   // for encode video data;
+    DMD_THREAD_NETWORK,  // for network send/recv;
+    DMD_THREAD_DECODE,   // for decode video data;
+} DmdThreadType;
 
 }  // namespace opendmd
 
-#endif  // SRC_UTIL_DMDMUTEX_H
+#endif  // SRC_UTIL_THREAD_DMDTHREADUTILS_H
 

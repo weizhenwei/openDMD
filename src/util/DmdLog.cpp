@@ -44,7 +44,7 @@
 
 namespace opendmd {
 
-DmdMutex DmdLog::s_Mutex;
+DmdThreadMutex DmdLog::s_Mutex;
 DmdLog* DmdLog::s_Log = NULL;
 
 

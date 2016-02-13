@@ -50,7 +50,6 @@
 #import "CDmdCaptureSessionMac.h"
 
 #include "DmdLog.h"
-#include "DmdMutex.h"
 #include "IDmdDatatype.h"
 
 namespace opendmd {

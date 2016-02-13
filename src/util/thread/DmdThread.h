@@ -1,10 +1,10 @@
 /*
  ============================================================================
- Name        : DmdMutex.cpp
+ Name        : DmdThread.h
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.06.29
+ Date           :2016.02.13
  Copyright   :
- * Copyright (c) 2015, weizhenwei
+ * Copyright (c) 2016, weizhenwei
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,27 +32,30 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : Mutex util implementation file.
+ Description : thread module header file.
  ============================================================================
  */
 
-#include "DmdMutex.h"
+#ifndef SRC_UTIL_THREAD_DMDTHREAD_H
+#define SRC_UTIL_THREAD_DMDTHREAD_H
+
+#include "thread/DmdThreadUtils.h"
+#include "thread/DmdThreadMutex.h"
 
 namespace opendmd {
+class DmdThread {
+public:
+    DmdThread();
+    explicit DmdThread(DmdThreadType type);
+    ~DmdThread();
 
-DmdMutex::DmdMutex() {
-    pthread_mutex_init(&m_Mutex, NULL);
-}
-
-DmdMutex::~DmdMutex() {
-    pthread_mutex_destroy(&m_Mutex);
-}
-int DmdMutex::Lock() {
-    return pthread_mutex_lock(&m_Mutex);
-}
-
-int DmdMutex::Unlock() {
-    return pthread_mutex_unlock(&m_Mutex);
-}
+private:
+    DmdThreadType m_eThreadType;
+    DmdThreadHandler m_ulThreadHandler;
+    DmdThreadMutex m_mtxThreadMutex;
+};
 
 }  // namespace opendmd
+
+#endif  // SRC_UTIL_THREAD_DMDTHREAD_H
+

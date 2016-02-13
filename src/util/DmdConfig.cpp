@@ -41,7 +41,7 @@
 namespace opendmd {
 
 // TODO(weizhenwei): confirm that is this initialized at compile stage?
-DmdMutex *DmdConfig::s_configMutex = new DmdMutex();
+DmdThreadMutex *DmdConfig::s_configMutex = new DmdThreadMutex();
 DmdConfig *DmdConfig::s_Config = NULL;
 
 DmdConfig::DmdConfig() : m_pConfigFile(NULL) {

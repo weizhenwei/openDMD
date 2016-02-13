@@ -1,10 +1,10 @@
 /*
  ============================================================================
- Name        : DmdSignal.cpp
+ Name        : DmdThreadMutex.h
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2016.02.13
+ Date           :2015.06.29
  Copyright   :
- * Copyright (c) 2016, weizhenwei
+ * Copyright (c) 2015, weizhenwei
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,42 +32,29 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : signal processing implementation file.
+ Description : thread mutex util header file.
  ============================================================================
  */
 
-#include <assert.h>
-#include <signal.h>
+#ifndef SRC_UTIL_THREAD_DMDTHREADMUTEX_H
+#define SRC_UTIL_THREAD_DMDTHREADMUTEX_H
 
-#include "DmdLog.h"
-
-#include "DmdSignal.h"
+#include "thread/DmdThreadUtils.h"
 
 namespace opendmd {
-static void DmdSIGINTHandler(int signal) {
-    assert(signal == SIGINT);
+class DmdThreadMutex {
+public:
+    DmdThreadMutex();
+    ~DmdThreadMutex();
 
-    DMD_LOG_INFO("DmdSIGINTHandler(), SIGINT processing");
-    exit(EXIT_SUCCESS);
-}
+    int Lock();
+    int Unlock();
 
-static void DmdSIGHUPHandler(int signal) {
-    assert(signal == SIGHUP);
-
-    DMD_LOG_INFO("DmdSIGINTHandler(), SIGHUP processing");
-    exit(EXIT_SUCCESS);
-}
-
-void DmdRegisterSignalHandler() {
-    signal(SIGPIPE, SIG_IGN);
-    signal(SIGTERM, SIG_DFL);
-
-    // signal Ctrl+C, capture it manually;
-    signal(SIGINT, DmdSIGINTHandler);
-
-    // SIGHUP handler, reload config file;
-    signal(SIGHUP, DmdSIGHUPHandler);
-}
+private:
+    DmdThreadMutex_t m_Mutex;
+};
 
 }  // namespace opendmd
+
+#endif  // SRC_UTIL_THREAD_DMDTHREADMUTEX_H
 
