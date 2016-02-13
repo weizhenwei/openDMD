@@ -105,6 +105,8 @@ DMD_RESULT CDmdCaptureEngineLinux::StartCapture() {
     DMD_RESULT result = m_pV4L2Impl->StartCapture();
     m_bStartCapture = result == DMD_S_OK ? true : false;
 
+    // result = m_pV4L2Impl->CaptureRunloop();
+
     return result;
 }
 

@@ -42,7 +42,9 @@
 #include <strings.h>
 #include <errno.h>
 #include <sys/mman.h>
+#include <sys/time.h>
 #include <sys/types.h>
+#include <sys/select.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -175,6 +177,75 @@ DMD_RESULT CDmdV4L2Impl::StopCapture() {
     }
 
     ret = _v4l2CloseCaptureDevice();
+
+    return ret;
+}
+
+DMD_RESULT CDmdV4L2Impl::CaptureRunloop() {
+    DMD_RESULT ret = DMD_S_OK;
+    int fd = m_v4l2Param.video_device_fd;
+    struct mmap_buffer *buffers = m_v4l2Param.mmap_reqbuffers;
+    int width = m_v4l2Param.fmt.fmt.pix.width;
+    int height = m_v4l2Param.fmt.fmt.pix.height;
+
+    // TODO(weizhenwei): add more control on while end condition;
+    while (1) {
+        fd_set fds;
+        struct timeval tv;
+        int r;
+
+        FD_ZERO(&fds);
+        FD_SET(fd, &fds);
+
+        // timeout
+        tv.tv_sec = 2;
+        tv.tv_usec = 0;
+
+        // step 1, select;
+        // TODO(weizhenwei): replace select with epoll invoking;
+        r = select(fd + 1, &fds, NULL, NULL, &tv);
+        if (-1 == r) {
+            if (errno == EINTR)
+                continue;
+            DMD_LOG_ERROR("CDmdV4L2Impl::CaptureRunloop(), "
+                    << "Multi I/O select failed");
+            ret = DMD_S_FAIL;
+            return ret;
+        } else if (0 == r) {
+            DMD_LOG_WARNING("CDmdV4L2Impl::CaptureRunloop(), "
+                    << "Multi I/O select timeout in 2 seconds");
+            // ret = DMD_S_FAIL;
+            // return ret;
+        }
+
+
+        // step 2, dequeue request buffer;
+        struct v4l2_buffer buf;
+        bzero(&buf, sizeof(struct v4l2_buffer));
+        buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+        buf.memory = V4L2_MEMORY_MMAP;
+        if (-1 == v4l2IOCTL(fd, VIDIOC_DQBUF, &buf)) {
+            DMD_LOG_ERROR("CDmdV4L2Impl::CaptureRunloop(), "
+                    << "call ioctl VIDIOC_DQBUF failed:" << strerror(errno));
+            ret = DMD_S_FAIL;
+            return ret;
+        }
+
+        // step 3, process video data;
+        DMD_LOG_INFO("CDmdV4L2Impl::CaptureRunloop(), "
+                << "video data start address:" << buffers[buf.index].start
+                << ", buffer index:" << buf.index
+                << ", width:" << width << ", height:" << height
+                << ", length:" << buffers[buf.index].length);
+
+        // step 4, put request buffer back to queue
+        if (-1 == v4l2IOCTL(fd, VIDIOC_QBUF, &buf)) {
+            DMD_LOG_ERROR("CDmdV4L2Impl::CaptureRunloop(), "
+                    << "call ioctl VIDIOC_QBUF failed:" << strerror(errno));
+            ret = DMD_S_FAIL;
+            return ret;
+        }
+    }  // while
 
     return ret;
 }
