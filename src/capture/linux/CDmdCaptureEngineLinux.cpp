@@ -64,7 +64,7 @@ DMD_RESULT CDmdCaptureEngineLinux::Init(const DmdCaptureVideoFormat
         &capVideoFormat) {
     DMD_LOG_INFO("CDmdCaptureEngineLinux::Init()"
             << ", capVideoFormat.eVideoType = "
-            << DMDVIDEOTYPE(capVideoFormat.eVideoType)
+            << dmdVideoType[capVideoFormat.eVideoType]
             << ", capVideoFormat.iWidth = " << capVideoFormat.iWidth
             << ", capVideoFormat.iHeight = " << capVideoFormat.iHeight
             << ", capVideoFormat.fFrameRate = " << capVideoFormat.fFrameRate

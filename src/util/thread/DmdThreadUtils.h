@@ -41,8 +41,6 @@
 
 #include <pthread.h>
 
-#include "IDmdDataType.h"
-
 namespace opendmd {
 
 typedef pthread_mutex_t DmdThreadMutex_t;

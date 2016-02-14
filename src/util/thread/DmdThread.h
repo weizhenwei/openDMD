@@ -42,7 +42,7 @@
 #include "thread/DmdThreadUtils.h"
 #include "thread/DmdThreadMutex.h"
 
-#include "IDmdDataType.h"
+#include "IDmdDatatype.h"
 
 namespace opendmd {
 class DmdThread {
