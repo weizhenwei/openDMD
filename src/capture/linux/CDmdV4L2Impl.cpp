@@ -1000,7 +1000,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2StreamON() {
         return ret;
     }
 
-    DMD_LOG_INFO("Video stream is now on!");
+    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2StreamON(), Video stream is now on!");
 
     return ret;
 }
@@ -1018,7 +1018,7 @@ DMD_RESULT CDmdV4L2Impl::_v4l2StreamOFF() {
         return ret;
     }
 
-    DMD_LOG_INFO("Video stream is now off!");
+    DMD_LOG_INFO("CDmdV4L2Impl::_v4l2StreamOFF(), Video stream is now OFF!");
 
     return ret;
 }

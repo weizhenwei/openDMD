@@ -3,6 +3,9 @@
 # exit when command return value != 0.
 set -e
 
+# avoid ctrl + c impact on this script;
+trap '' INT
+
 # echo "Checking code format"
 # ./tools/format_check.sh;
 

@@ -61,9 +61,13 @@ public:
     DMD_RESULT addThread(DmdThreadType eType, DmdThreadRoutine pRoutine);
     DmdThread *getThread(DmdThreadType eType);
     DMD_RESULT spawnThread(DmdThreadType eType);
-    DMD_RESULT spawnAllThread();
+    DMD_RESULT spawnAllThreads();
+
+    DMD_RESULT killThread(DmdThreadType eType);
+    DMD_RESULT killAllThreads();
+
     void cleanThread(DmdThreadType eType);
-    void cleanAllThread();
+    void cleanAllThreads();
 
     static DmdThreadManager *singleton();
 

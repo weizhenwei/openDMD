@@ -36,6 +36,9 @@
  ============================================================================
  */
 
+#include <signal.h>
+#include <pthread.h>
+
 #include "IDmdDatatype.h"
 #include "DmdLog.h"
 #include "DmdThreadUtils.h"
@@ -101,17 +104,34 @@ DMD_RESULT DmdThreadManager::spawnThread(DmdThreadType eType) {
         return ret;
     }
 
+    if (pThread->isThreadSpawned()) {
+        DMD_LOG_ERROR("DmdThreadManager::spawnThread(), "
+                << "thread with type " << dmdThreadType[eType]
+                << " is already spawned");
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
     ret = pThread->spawnThread();
     return ret;
 }
 
-DMD_RESULT DmdThreadManager::spawnAllThread() {
+DMD_RESULT DmdThreadManager::spawnAllThreads() {
     DMD_RESULT ret = DMD_S_OK;
     DmdThread *pThread = NULL;
     DmdThreadListIterator iter;
     for (iter = m_listThreadList.begin(); iter != m_listThreadList.end();
             iter++) {
         pThread = *iter;
+
+        DmdThreadType eType = pThread->getThreadType();
+        if (pThread->isThreadSpawned()) {
+            DMD_LOG_WARNING("DmdThreadManager::spawnAllThreads(), "
+                    << "thread with type " << dmdThreadType[eType]
+                    << " is already spawned");
+            continue;
+        }
+
         if (DMD_S_OK != (ret = pThread->spawnThread())) {
             return ret;
         }
@@ -120,6 +140,84 @@ DMD_RESULT DmdThreadManager::spawnAllThread() {
     return ret;
 }
 
+DMD_RESULT DmdThreadManager::killThread(DmdThreadType eType) {
+    DMD_RESULT ret = DMD_S_OK;
+    DmdThread *pThread = getThread(eType);
+    if (NULL == pThread) {
+        DMD_LOG_ERROR("DmdThreadManager::killThread(), "
+                << "thread with type " << dmdThreadType[eType]
+                << " is not added to thread manager yet");
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    if (!pThread->isThreadSpawned()) {
+        DMD_LOG_ERROR("DmdThreadManager::killThread(), "
+                << "thread with type " << dmdThreadType[eType]
+                << " is not spawned yet");
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    int val = -1;
+    DmdThreadHandler handler = pThread->getThreadHandler();
+    if (0 != (val = pthread_kill(handler, SIGUSR1))) {
+        DMD_LOG_ERROR("DmdThreadManager::killThread(), "
+                << "could not to send SIGUSR1 signal to "
+                << "thread with type " << dmdThreadType[eType]
+                << ", error number:" << val);
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    if (0 != (val = pthread_join(handler, NULL))) {
+        DMD_LOG_ERROR("DmdThreadManager::killThread(), "
+                << "could not call pthread_join, error number:" << val);
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    return ret;
+}
+
+DMD_RESULT DmdThreadManager::killAllThreads() {
+    DMD_RESULT ret = DMD_S_OK;
+    DmdThread *pThread = NULL;
+    DmdThreadListIterator iter;
+    for (iter = m_listThreadList.begin(); iter != m_listThreadList.end();
+            iter++) {
+        pThread = *iter;
+
+        DmdThreadType eType = pThread->getThreadType();
+        if (!pThread->isThreadSpawned()) {
+            DMD_LOG_ERROR("DmdThreadManager::killAllThreads(), "
+                    << "thread with type " << dmdThreadType[eType]
+                    << " is not spawned yet");
+            ret = DMD_S_FAIL;
+            return ret;
+        }
+
+        int val = -1;
+        DmdThreadHandler handler = pThread->getThreadHandler();
+        if (0 != (val = pthread_kill(handler, SIGUSR1))) {
+            DMD_LOG_ERROR("DmdThreadManager::killAllThreads(), "
+                    << "could not to send SIGINT signal to "
+                    << "thread with type " << dmdThreadType[eType]
+                    << ", error number:" << val);
+            ret = DMD_S_FAIL;
+            return ret;
+        }
+
+        if (0 != (val = pthread_join(handler, NULL))) {
+            DMD_LOG_ERROR("DmdThreadManager::killAllThreads(), "
+                    << "could not call pthread_join, error number:" << val);
+            ret = DMD_S_FAIL;
+            return ret;
+        }
+    }
+
+    return ret;
+}
 
 void DmdThreadManager::cleanThread(DmdThreadType eType) {
     DmdThreadListIterator iter;
@@ -132,7 +230,7 @@ void DmdThreadManager::cleanThread(DmdThreadType eType) {
     }  // for
 }
 
-void DmdThreadManager::cleanAllThread() {
+void DmdThreadManager::cleanAllThreads() {
     if (0 != m_listThreadList.size()) {
         m_listThreadList.clear();
     }

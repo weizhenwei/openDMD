@@ -61,8 +61,20 @@ void initGlobal() {
     g_ThreadManager = DmdThreadManager::singleton();
 }
 
+static bool g_bCaptureRunning = true;
+static void DmdSIGUSR1Handler(int signal) {
+    assert(signal == SIGUSR1);
+
+    DMD_LOG_INFO("DmdSIGUSR1Handler(), SIGUSR1 processing");
+    g_bCaptureRunning = false;
+}
+
 void *captureThreadRoutine(void *param) {
     DMD_LOG_INFO("At the beginning of capture thread function");
+
+    DmdRegisterDefaultSignal();
+    DmdSignalHandler pHandler = DmdSIGUSR1Handler;
+    DmdRegisterSignalHandler(SIGUSR1, pHandler);
 
     DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
     capVideoFormat.eVideoType = DmdI420;
@@ -85,11 +97,19 @@ void *captureThreadRoutine(void *param) {
     CreateVideoCaptureEngine(&pVideoCapEngine);
     pVideoCapEngine->Init(capVideoFormat);
     pVideoCapEngine->StartCapture();
-    // while (1);  // capture data test;
+
+    while (g_bCaptureRunning) {
+        sleep(1);
+        DMD_LOG_INFO("captureThreadRoutine(), capture thread is running");
+    }
+
     pVideoCapEngine->StopCapture();
     pVideoCapEngine->Uninit();
     ReleaseVideoCaptureEngine(&pVideoCapEngine);
     pVideoCapEngine = NULL;
+
+    DMD_LOG_INFO("captureThreadRoutine(), capture thread is exiting");
+    return NULL;
 }
 
 static void DmdSIGINTHandler(int signal) {
@@ -97,6 +117,24 @@ static void DmdSIGINTHandler(int signal) {
 
     DMD_LOG_INFO("DmdSIGINTHandler(), SIGINT processing");
     g_bMainThreadRunning = false;
+}
+
+static void createAndSpawnThreads() {
+    // create capture thread;
+    DmdThreadType eCaptureThread = DMD_THREAD_CAPTURE;
+    DmdThreadRoutine pRoutine = captureThreadRoutine;
+    g_ThreadManager->addThread(eCaptureThread, pRoutine);
+
+    // spawn all working thread;
+    g_ThreadManager->spawnAllThreads();
+}
+
+static void exitAndCleanThreads() {
+    // send signal to all threads;
+    g_ThreadManager->killAllThreads();
+
+    // clean all working thread;
+    g_ThreadManager->cleanAllThreads();
 }
 
 int client_main(int argc, char *argv[]) {
@@ -107,23 +145,20 @@ int client_main(int argc, char *argv[]) {
     DmdSignalHandler pHandler = DmdSIGINTHandler;
     DmdRegisterSignalHandler(SIGINT, pHandler);
 
-    // create capture thread;
-    DmdThreadType eCaptureThread = DMD_THREAD_CAPTURE;
-    DmdThreadRoutine pRoutine = captureThreadRoutine;
-    g_ThreadManager->addThread(eCaptureThread, pRoutine);
+#if 0
+    // create and spawn threads;
+    createAndSpawnThreads();
 
-    // spawn all working thread;
-    // g_ThreadManager->spawnThread(eCaptureThread);
+    while (g_bMainThreadRunning) {
+        sleep(1);
+        DMD_LOG_INFO("client_main(), main thread is running");
+    }
 
-    // while (g_bMainThreadRunning) {
-    //     DMD_LOG_INFO("client_main(), main thread is running");
-    // }
+    // exit and clean threads;
+    exitAndCleanThreads();
+#endif
 
-    // clean all working thread;
-    // g_ThreadManager->cleanThread(eCaptureThread);
-
-    g_ThreadManager->cleanAllThread();
-
+    DMD_LOG_INFO("client_main(), main thread is exiting");
     return DMD_S_OK;
 }
 
