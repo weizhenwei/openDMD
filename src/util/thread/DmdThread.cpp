@@ -36,19 +36,50 @@
  ============================================================================
  */
 
+#include "DmdLog.h"
+
 #include "DmdThread.h"
 
 namespace opendmd {
 
 DmdThread::DmdThread() : m_eThreadType(DMD_THREAD_UNKNOWN),
-    m_ulThreadHandler(0) {
+    m_pThreadRoutine(NULL), m_ulThreadHandler(0), bSpawned(false) {
 }
 
-DmdThread::DmdThread(DmdThreadType type) : m_eThreadType(type),
-    m_ulThreadHandler(0) {
+DmdThread::DmdThread(DmdThreadType eType, DmdThreadRoutine pThreadRoutine)
+    : m_eThreadType(eType), m_pThreadRoutine(pThreadRoutine),
+    m_ulThreadHandler(0), bSpawned(false) {
 }
 
 DmdThread::~DmdThread() {
+    if (bSpawned) {
+        pthread_exit(NULL);
+    }
+}
+
+DMD_RESULT DmdThread::spawnThread() {
+    DMD_RESULT ret = DMD_S_OK;
+    if (bSpawned) {
+        DMD_LOG_ERROR("DmdThread::spawnThread(), "
+                      << "thread with type " << dmdThreadType[m_eThreadType]
+                      << "is already spawned");
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    int val = pthread_create(&m_ulThreadHandler, NULL, m_pThreadRoutine, NULL);
+    if (val != 0) {
+        DMD_LOG_ERROR("DmdThread::spawnThread(), call pthread_create() failed, "
+                      << "error number:" << val);
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    bSpawned = true;
+    DMD_LOG_INFO("DmdThread::spawnThread(), "
+                 << "thread with type " << dmdThreadType[m_eThreadType]
+                 << "spawned");
+    return ret;
 }
 
 }  // namespace opendmd

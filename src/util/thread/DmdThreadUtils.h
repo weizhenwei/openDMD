@@ -41,10 +41,14 @@
 
 #include <pthread.h>
 
+#include "IDmdDataType.h"
+
 namespace opendmd {
 
 typedef pthread_mutex_t DmdThreadMutex_t;
 typedef pthread_t DmdThreadHandler;
+
+typedef void *(*DmdThreadRoutine)(void *);
 
 typedef enum {
     DMD_THREAD_UNKNOWN,
@@ -54,6 +58,15 @@ typedef enum {
     DMD_THREAD_NETWORK,  // for network send/recv;
     DMD_THREAD_DECODE,   // for decode video data;
 } DmdThreadType;
+
+static const char *dmdThreadType[] = {
+    "thread_unknown",
+    "thread_main",
+    "thread_capture",
+    "thread_encode",
+    "thread_network",
+    "thread_decode",
+};
 
 }  // namespace opendmd
 

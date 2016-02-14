@@ -258,7 +258,7 @@ DMD_RESULT
 CDmdCaptureEngineMac::Init(const DmdCaptureVideoFormat &capVideoFormat) {
     DMD_LOG_INFO("CDmdCaptureEngineMac::Init()"
             << ", capVideoFormat.eVideoType = "
-            << DMDVIDEOTYPE(capVideoFormat.eVideoType)
+            << dmdVideoType[capVideoFormat.eVideoType]
             << ", capVideoFormat.iWidth = " << capVideoFormat.iWidth
             << ", capVideoFormat.iHeight = " << capVideoFormat.iHeight
             << ", capVideoFormat.fFrameRate = " << capVideoFormat.fFrameRate

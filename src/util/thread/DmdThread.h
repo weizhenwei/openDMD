@@ -42,17 +42,23 @@
 #include "thread/DmdThreadUtils.h"
 #include "thread/DmdThreadMutex.h"
 
+#include "IDmdDataType.h"
+
 namespace opendmd {
 class DmdThread {
 public:
     DmdThread();
-    explicit DmdThread(DmdThreadType type);
+    DmdThread(DmdThreadType eType, DmdThreadRoutine pThreadRoutine);
     ~DmdThread();
+
+    DMD_RESULT spawnThread();
 
 private:
     DmdThreadType m_eThreadType;
+    DmdThreadRoutine m_pThreadRoutine;
     DmdThreadHandler m_ulThreadHandler;
     DmdThreadMutex m_mtxThreadMutex;
+    bool bSpawned;
 };
 
 }  // namespace opendmd

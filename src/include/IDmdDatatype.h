@@ -84,8 +84,6 @@ static const char *dmdVideoType[] = {
     "DmdRGBA32",
     "DmdBGRA32",
 };
-#define DMDVIDEOTYPE(type) dmdVideoType[type]
-
 
 typedef struct {
     DmdVideoType    eVideoType;
