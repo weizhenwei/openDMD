@@ -36,63 +36,28 @@
  ============================================================================
  */
 
-#include <string.h>
-#include <map>
-#include <utility>
+#include <pthread.h>
 
 #include "DmdLog.h"
+#include "IDmdDatatype.h"
 #include "IDmdCaptureEngine.h"
 #include "CDmdCaptureEngine.h"
 
+#include "thread/DmdThreadUtils.h"
+#include "thread/DmdThread.h"
+#include "thread/DmdThreadManager.h"
+
+#include "DmdClient.h"
 #include "main.h"
 
-using namespace opendmd;
-using std::map;
-using std::pair;
+namespace opendmd {
 
-static void CDmdCaptureEngineTest_Init() {
-    IDmdCaptureEngine *pVideoCapEngine = NULL;
-    CreateVideoCaptureEngine(&pVideoCapEngine);
-
-    DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
-    char *pDeviceName = GetDeviceName();
-    if (NULL == pDeviceName) {
-        ReleaseVideoCaptureEngine(&pVideoCapEngine);
-        pVideoCapEngine = NULL;
-        return;
-    }
-
-    DmdVideoType arrVideoTypes[3] = {
-        DmdI420, DmdYUYV, DmdUYVY,
-    };
-    map<int, int> mapResolutions;
-    pair<int, int> elem = pair<int, int>(1280, 720);
-    mapResolutions.insert(elem);
-    elem = pair<int, int>(640, 480);
-    mapResolutions.insert(elem);
-    elem = pair<int, int>(320, 240);
-    mapResolutions.insert(elem);
-
-    for (map<int, int>::iterator iter = mapResolutions.begin();
-         iter != mapResolutions.end(); iter++) {
-        memset(&capVideoFormat, 0, sizeof(capVideoFormat));
-        capVideoFormat.iWidth = iter->first;
-        capVideoFormat.iHeight = iter->second;
-        capVideoFormat.fFrameRate = 30;
-        strncpy(capVideoFormat.sVideoDevice, pDeviceName, strlen(pDeviceName));
-        for (DmdVideoType eVideoType : arrVideoTypes) {
-            capVideoFormat.eVideoType = eVideoType;
-            pVideoCapEngine->Init(capVideoFormat);
-            pVideoCapEngine->Uninit();
-        }
-    }
-
-    ReleaseVideoCaptureEngine(&pVideoCapEngine);
-    pVideoCapEngine = NULL;
+void initGlobal() {
+    g_ThreadManager = DmdThreadManager::singleton();
 }
 
-int opendmd::client_main(int argc, char *argv[]) {
-    DMD_LOG_INFO("At the beginning of client_main function");
+void *captureThreadRoutine(void *param) {
+    DMD_LOG_INFO("At the beginning of capture thread function");
 
     DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
     capVideoFormat.eVideoType = DmdI420;
@@ -102,20 +67,46 @@ int opendmd::client_main(int argc, char *argv[]) {
 
     char *pDeviceName = GetDeviceName();
     if (NULL == pDeviceName) {
-        return DMD_S_FAIL;
+        DMD_LOG_ERROR("captureThreadRoutine(), "
+                << "could not get capture device name");
+        pthread_exit(NULL);
     }
-    DMD_LOG_INFO("Get video device name = " << pDeviceName);
+
+    DMD_LOG_INFO("captureThreadRoutine(), "
+            << "Get video device name = " << pDeviceName);
     strncpy(capVideoFormat.sVideoDevice, pDeviceName, strlen(pDeviceName));
 
     IDmdCaptureEngine *pVideoCapEngine = NULL;
     CreateVideoCaptureEngine(&pVideoCapEngine);
     pVideoCapEngine->Init(capVideoFormat);
     pVideoCapEngine->StartCapture();
-    // while (1);  // capture data test;
+    while(1);  // capture data test;
     pVideoCapEngine->StopCapture();
     pVideoCapEngine->Uninit();
     ReleaseVideoCaptureEngine(&pVideoCapEngine);
     pVideoCapEngine = NULL;
+}
+
+int client_main(int argc, char *argv[]) {
+    DMD_LOG_INFO("At the beginning of client_main function");
+
+    initGlobal();
+
+    // create capture thread;
+    DmdThreadType eCaptureThread = DMD_THREAD_CAPTURE;
+    DmdThreadRoutine pRoutine = captureThreadRoutine;
+    g_ThreadManager->addThread(eCaptureThread, pRoutine);
+
+    // spawn all working thread;
+    // g_ThreadManager->spawnThread(eCaptureThread);
+
+    // clean all working thread;
+    // g_ThreadManager->cleanThread(eCaptureThread);
+
+    g_ThreadManager->cleanAllThread();
 
     return DMD_S_OK;
 }
+
+}  // namespace opendmd
+

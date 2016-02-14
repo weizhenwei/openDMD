@@ -42,10 +42,9 @@
 
 #include "DmdThreadManager.h"
 
-DmdThreadManager *g_ThreadManager = NULL;
-
 namespace opendmd {
 
+DmdThreadManager *g_ThreadManager = NULL;
 DmdThreadManager *DmdThreadManager::s_ThreadManager = NULL;
 
 DmdThreadManager::DmdThreadManager() {
@@ -89,6 +88,48 @@ DmdThread *DmdThreadManager::getThread(DmdThreadType eType) {
     }
 
     return NULL;
+}
+
+DMD_RESULT DmdThreadManager::spawnThread(DmdThreadType eType) {
+    DMD_RESULT ret = DMD_S_OK;
+    DmdThread *pThread = getThread(eType);
+    if (NULL == pThread) {
+        DMD_LOG_ERROR("DmdThreadManager::spawnThread(), "
+                << "thread with type " << dmdThreadType[eType]
+                << " is not added to thread manager yet");
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    ret = pThread->spawnThread();
+    return ret;
+}
+
+DMD_RESULT DmdThreadManager::spawnAllThread() {
+    DMD_RESULT ret = DMD_S_OK;
+    DmdThread *pThread = NULL;
+    DmdThreadListIterator iter;
+    for (iter = m_listThreadList.begin(); iter != m_listThreadList.end();
+            iter++) {
+        pThread = *iter;
+        if (DMD_S_OK != (ret = pThread->spawnThread())) {
+            return ret;
+        }
+    }
+
+    return ret;
+}
+
+
+void DmdThreadManager::cleanThread(DmdThreadType eType) {
+    DmdThreadListIterator iter;
+    for (iter = m_listThreadList.begin(); iter != m_listThreadList.end();
+            iter++) {
+        if (eType == (*iter)->getThreadType()) {
+            m_listThreadList.erase(iter);
+            break;
+        }
+    }  // for
 }
 
 void DmdThreadManager::cleanAllThread() {

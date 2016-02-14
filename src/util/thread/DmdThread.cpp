@@ -79,7 +79,7 @@ DMD_RESULT DmdThread::spawnThread() {
     m_bThreadSpawned = true;
     DMD_LOG_INFO("DmdThread::spawnThread(), "
                  << "thread with type " << dmdThreadType[m_eThreadType]
-                 << "spawned");
+                 << " spawned");
     return ret;
 }
 

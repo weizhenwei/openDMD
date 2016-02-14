@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : DmdThreadManager.h
+ Name        : DmdClient.h
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
  Date           :2016.02.14
  Copyright   :
@@ -32,52 +32,18 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : thread manager header file.
+ Description : main entry header of client program;
  ============================================================================
  */
 
-#ifndef SRC_UTIL_THREAD_DMDTHREADMANAGER_H
-#define SRC_UTIL_THREAD_DMDTHREADMANAGER_H
-
-#include <pthread.h>
-#include <list>
-
-#include "IDmdDatatype.h"
-
-#include "DmdThread.h"
-#include "DmdThreadMutex.h"
-#include "DmdThreadUtils.h"
+#ifndef SRC_MAIN_DMDCLIENT_H
+#define SRC_MAIN_DMDCLIENT_H
 
 namespace opendmd {
+extern void initGlobal();
 
-class DmdThreadManager;
-extern DmdThreadManager *g_ThreadManager;
-
-class DmdThreadManager {
-public:
-    DmdThreadManager();
-    ~DmdThreadManager();
-
-    DMD_RESULT addThread(DmdThreadType eType, DmdThreadRoutine pRoutine);
-    DmdThread *getThread(DmdThreadType eType);
-    DMD_RESULT spawnThread(DmdThreadType eType);
-    DMD_RESULT spawnAllThread();
-    void cleanThread(DmdThreadType eType);
-    void cleanAllThread();
-
-    static DmdThreadManager *singleton();
-
-private:
-    static DmdThreadManager *s_ThreadManager;
-
-    typedef std::list<DmdThread*> DmdThreadList;
-    typedef std::list<DmdThread*>::iterator DmdThreadListIterator;
-
-    DmdThreadList m_listThreadList;
-    DmdThreadMutex m_mtxThreadManagerMutex;
-};
-
+extern void *captureThreadRoutine(void *param);
 }  // namespace opendmd
 
-#endif  // SRC_UTIL_THREAD_DMDTHREADMANAGER_H
+#endif  // SRC_MAIN_DMDCLIENT_H
 

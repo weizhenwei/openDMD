@@ -32,7 +32,7 @@ elseif(MAC_PLATFORM)
 endif()
 
 # main source files;
-file(GLOB UNIVERSAL_FILES main/main.h main/main.cpp main/DmdClient.cpp)
+file(GLOB UNIVERSAL_FILES main/*.h main/*.cpp)
 add_executable(openDMD ${UNIVERSAL_FILES})
 
 # libraries
