@@ -38,6 +38,7 @@
 
 #include <assert.h>
 #include <pthread.h>
+#include <signal.h>
 
 #include "DmdLog.h"
 #include "IDmdDatatype.h"
