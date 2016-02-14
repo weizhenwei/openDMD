@@ -44,29 +44,15 @@
 #include "DmdSignal.h"
 
 namespace opendmd {
-static void DmdSIGINTHandler(int signal) {
-    assert(signal == SIGINT);
 
-    DMD_LOG_INFO("DmdSIGINTHandler(), SIGINT processing");
-    exit(EXIT_SUCCESS);
-}
-
-static void DmdSIGHUPHandler(int signal) {
-    assert(signal == SIGHUP);
-
-    DMD_LOG_INFO("DmdSIGINTHandler(), SIGHUP processing");
-    exit(EXIT_SUCCESS);
-}
-
-void DmdRegisterSignalHandler() {
+void DmdRegisterDefaultSignal() {
     signal(SIGPIPE, SIG_IGN);
     signal(SIGTERM, SIG_DFL);
+    signal(SIGHUP, SIG_DFL);
+}
 
-    // signal Ctrl+C, capture it manually;
-    signal(SIGINT, DmdSIGINTHandler);
-
-    // SIGHUP handler, reload config file;
-    signal(SIGHUP, DmdSIGHUPHandler);
+void DmdRegisterSignalHandler(int sig, DmdSignalHandler pSigHandler) {
+    signal(sig, pSigHandler);
 }
 
 }  // namespace opendmd

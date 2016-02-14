@@ -41,7 +41,6 @@
 
 #include "IDmdDatatype.h"
 #include "DmdLog.h"
-#include "DmdSignal.h"
 
 #include "IDmdCaptureEngine.h"
 #include "CDmdCaptureEngine.h"
@@ -73,8 +72,6 @@ static void parseCmdline(int argc, char *argv[]) {
 int main(int argc, char *argv[]) {
     // set locale according current environment
     setlocale(LC_ALL, "");
-
-    DmdRegisterSignalHandler();
 
     parseCmdline(argc, argv);
 

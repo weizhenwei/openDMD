@@ -36,12 +36,14 @@
  ============================================================================
  */
 
+#include <assert.h>
 #include <pthread.h>
 
 #include "DmdLog.h"
 #include "IDmdDatatype.h"
 #include "IDmdCaptureEngine.h"
 #include "CDmdCaptureEngine.h"
+#include "DmdSignal.h"
 
 #include "thread/DmdThreadUtils.h"
 #include "thread/DmdThread.h"
@@ -51,6 +53,8 @@
 #include "main.h"
 
 namespace opendmd {
+
+static bool g_bMainThreadRunning = true;
 
 void initGlobal() {
     g_ThreadManager = DmdThreadManager::singleton();
@@ -80,17 +84,27 @@ void *captureThreadRoutine(void *param) {
     CreateVideoCaptureEngine(&pVideoCapEngine);
     pVideoCapEngine->Init(capVideoFormat);
     pVideoCapEngine->StartCapture();
-    while(1);  // capture data test;
+    // while (1);  // capture data test;
     pVideoCapEngine->StopCapture();
     pVideoCapEngine->Uninit();
     ReleaseVideoCaptureEngine(&pVideoCapEngine);
     pVideoCapEngine = NULL;
 }
 
+static void DmdSIGINTHandler(int signal) {
+    assert(signal == SIGINT);
+
+    DMD_LOG_INFO("DmdSIGINTHandler(), SIGINT processing");
+    g_bMainThreadRunning = false;
+}
+
 int client_main(int argc, char *argv[]) {
     DMD_LOG_INFO("At the beginning of client_main function");
 
     initGlobal();
+    DmdRegisterDefaultSignal();
+    DmdSignalHandler pHandler = DmdSIGINTHandler;
+    DmdRegisterSignalHandler(SIGINT, pHandler);
 
     // create capture thread;
     DmdThreadType eCaptureThread = DMD_THREAD_CAPTURE;
@@ -99,6 +113,10 @@ int client_main(int argc, char *argv[]) {
 
     // spawn all working thread;
     // g_ThreadManager->spawnThread(eCaptureThread);
+
+    // while (g_bMainThreadRunning) {
+    //     DMD_LOG_INFO("client_main(), main thread is running");
+    // }
 
     // clean all working thread;
     // g_ThreadManager->cleanThread(eCaptureThread);

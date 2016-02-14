@@ -40,7 +40,11 @@
 #define SRC_UTIL_DMDSIGNAL_H
 
 namespace opendmd {
-void DmdRegisterSignalHandler();
+
+typedef void (*DmdSignalHandler)(int);
+
+void DmdRegisterDefaultSignal();
+void DmdRegisterSignalHandler(int sig, DmdSignalHandler pSigHandler);
 
 }  // namespace opendmd
 
