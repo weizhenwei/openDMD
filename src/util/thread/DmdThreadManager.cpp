@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : DmdThread.h
+ Name        : DmdThreadManager.cpp
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2016.02.13
+ Date           :2016.02.14
  Copyright   :
  * Copyright (c) 2016, weizhenwei
  * All rights reserved.
@@ -32,40 +32,78 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : thread module header file.
+ Description : thread manager implementation file.
  ============================================================================
  */
 
-#ifndef SRC_UTIL_THREAD_DMDTHREAD_H
-#define SRC_UTIL_THREAD_DMDTHREAD_H
-
-#include "thread/DmdThreadUtils.h"
-#include "thread/DmdThreadMutex.h"
-
 #include "IDmdDatatype.h"
+#include "DmdLog.h"
+#include "DmdThreadUtils.h"
+
+#include "DmdThreadManager.h"
+
+DmdThreadManager *g_ThreadManager = NULL;
 
 namespace opendmd {
-class DmdThread {
-public:
-    DmdThread();
-    DmdThread(DmdThreadType eType, DmdThreadRoutine pThreadRoutine);
-    ~DmdThread();
 
-    DmdThreadType getThreadType() {return m_eThreadType;}
-    DmdThreadHandler getThreadHandler() {return m_ulThreadHandler;}
-    bool isThreadSpawned() {return m_bThreadSpawned;}
+DmdThreadManager *DmdThreadManager::s_ThreadManager = NULL;
 
-    DMD_RESULT spawnThread();
+DmdThreadManager::DmdThreadManager() {
+}
 
-private:
-    DmdThreadType m_eThreadType;
-    DmdThreadRoutine m_pThreadRoutine;
-    DmdThreadHandler m_ulThreadHandler;
-    DmdThreadMutex m_mtxThreadMutex;
-    bool m_bThreadSpawned;
-};
+DmdThreadManager::~DmdThreadManager() {
+    if (0 != m_listThreadList.size()) {
+        m_listThreadList.clear();
+    }
+}
+
+DMD_RESULT DmdThreadManager::addThread(DmdThreadType eType,
+        DmdThreadRoutine pRoutine) {
+    DMD_RESULT ret = DMD_S_OK;
+
+    DmdThread *pThread = getThread(eType);
+    if (NULL != pThread) {
+        DMD_LOG_ERROR("DmdThreadManager::addThread(), "
+                << "thread with type " << dmdThreadType[eType]
+                << " already added to thread manager");
+        ret = DMD_S_FAIL;
+        return ret;
+    }
+
+    pThread = new DmdThread(eType, pRoutine);
+
+    m_mtxThreadManagerMutex.Lock();
+    m_listThreadList.push_back(pThread);
+    m_mtxThreadManagerMutex.Unlock();
+
+    return ret;
+}
+
+DmdThread *DmdThreadManager::getThread(DmdThreadType eType) {
+    DmdThreadListIterator iter;
+    for (iter = m_listThreadList.begin(); iter != m_listThreadList.end();
+            iter++) {
+        if (eType == (*iter)->getThreadType()) {
+            return *iter;
+        }
+    }
+
+    return NULL;
+}
+
+void DmdThreadManager::cleanAllThread() {
+    if (0 != m_listThreadList.size()) {
+        m_listThreadList.clear();
+    }
+}
+
+DmdThreadManager *DmdThreadManager::singleton() {
+    if (NULL == s_ThreadManager) {
+        s_ThreadManager = new DmdThreadManager();
+    }
+
+    return s_ThreadManager;
+}
 
 }  // namespace opendmd
-
-#endif  // SRC_UTIL_THREAD_DMDTHREAD_H
 

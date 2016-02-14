@@ -43,26 +43,27 @@
 namespace opendmd {
 
 DmdThread::DmdThread() : m_eThreadType(DMD_THREAD_UNKNOWN),
-    m_pThreadRoutine(NULL), m_ulThreadHandler(0), bSpawned(false) {
+    m_pThreadRoutine(NULL), m_ulThreadHandler(0), m_bThreadSpawned(false) {
 }
 
 DmdThread::DmdThread(DmdThreadType eType, DmdThreadRoutine pThreadRoutine)
     : m_eThreadType(eType), m_pThreadRoutine(pThreadRoutine),
-    m_ulThreadHandler(0), bSpawned(false) {
+    m_ulThreadHandler(0), m_bThreadSpawned(false) {
 }
 
 DmdThread::~DmdThread() {
-    if (bSpawned) {
+    if (m_bThreadSpawned) {
         pthread_exit(NULL);
     }
+    m_bThreadSpawned = false;
 }
 
 DMD_RESULT DmdThread::spawnThread() {
     DMD_RESULT ret = DMD_S_OK;
-    if (bSpawned) {
+    if (m_bThreadSpawned) {
         DMD_LOG_ERROR("DmdThread::spawnThread(), "
                       << "thread with type " << dmdThreadType[m_eThreadType]
-                      << "is already spawned");
+                      << " is already spawned");
         ret = DMD_S_FAIL;
         return ret;
     }
@@ -75,7 +76,7 @@ DMD_RESULT DmdThread::spawnThread() {
         return ret;
     }
 
-    bSpawned = true;
+    m_bThreadSpawned = true;
     DMD_LOG_INFO("DmdThread::spawnThread(), "
                  << "thread with type " << dmdThreadType[m_eThreadType]
                  << "spawned");

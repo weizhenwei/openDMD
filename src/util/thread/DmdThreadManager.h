@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : DmdThread.h
+ Name        : DmdThreadManager.h
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2016.02.13
+ Date           :2016.02.14
  Copyright   :
  * Copyright (c) 2016, weizhenwei
  * All rights reserved.
@@ -32,40 +32,49 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : thread module header file.
+ Description : thread manager header file.
  ============================================================================
  */
 
-#ifndef SRC_UTIL_THREAD_DMDTHREAD_H
-#define SRC_UTIL_THREAD_DMDTHREAD_H
+#ifndef SRC_UTIL_THREAD_DMDTHREADMANAGER_H
+#define SRC_UTIL_THREAD_DMDTHREADMANAGER_H
 
-#include "thread/DmdThreadUtils.h"
-#include "thread/DmdThreadMutex.h"
+#include <pthread.h>
+#include <list>
 
 #include "IDmdDatatype.h"
 
+#include "DmdThread.h"
+#include "DmdThreadMutex.h"
+#include "DmdThreadUtils.h"
+
+class DmdThreadManager;
+
+extern DmdThreadManager *g_ThreadManager;
+
 namespace opendmd {
-class DmdThread {
+class DmdThreadManager {
 public:
-    DmdThread();
-    DmdThread(DmdThreadType eType, DmdThreadRoutine pThreadRoutine);
-    ~DmdThread();
+    DmdThreadManager();
+    ~DmdThreadManager();
 
-    DmdThreadType getThreadType() {return m_eThreadType;}
-    DmdThreadHandler getThreadHandler() {return m_ulThreadHandler;}
-    bool isThreadSpawned() {return m_bThreadSpawned;}
+    DMD_RESULT addThread(DmdThreadType eType, DmdThreadRoutine pRoutine);
+    DmdThread *getThread(DmdThreadType eType);
+    void cleanAllThread();
 
-    DMD_RESULT spawnThread();
+    static DmdThreadManager *singleton();
 
 private:
-    DmdThreadType m_eThreadType;
-    DmdThreadRoutine m_pThreadRoutine;
-    DmdThreadHandler m_ulThreadHandler;
-    DmdThreadMutex m_mtxThreadMutex;
-    bool m_bThreadSpawned;
+    static DmdThreadManager *s_ThreadManager;
+
+    typedef std::list<DmdThread*> DmdThreadList;
+    typedef std::list<DmdThread*>::iterator DmdThreadListIterator;
+
+    DmdThreadList m_listThreadList;
+    DmdThreadMutex m_mtxThreadManagerMutex;
 };
 
 }  // namespace opendmd
 
-#endif  // SRC_UTIL_THREAD_DMDTHREAD_H
+#endif  // SRC_UTIL_THREAD_DMDTHREADMANAGER_H
 
