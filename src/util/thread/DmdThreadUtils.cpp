@@ -40,5 +40,15 @@
 
 namespace opendmd {
 
+const char *dmdThreadType[] = {
+    "thread_unknown",
+    "thread_sigmgr",
+    "thread_main",
+    "thread_capture",
+    "thread_encode",
+    "thread_network",
+    "thread_decode",
+};
+
 }  // namespace opendmd
 

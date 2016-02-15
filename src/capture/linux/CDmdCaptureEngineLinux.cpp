@@ -48,6 +48,24 @@
 
 namespace opendmd {
 
+// declared at IDmdDatatype.h
+const char *dmdVideoType[] = {
+    "DmdUnknown",
+
+    // yuv color space;
+    "DmdI420",    // Y'CbCr 4:2:0 - 420v, NV12 actually;
+    "DmdYUYV",    // Y'CbCr 4:2:2 - yuvs;
+    "DmdUYVY",    // Y'CbCr 4:2:2 - uyvy;
+    "DmdNV12",    // Y'CbCr 4:2:0 - nv12 planar;
+    "DmdNV21",    // Y'CbCr 4:2:0 - nv21 planar;
+
+    // rgb color space;
+    "DmdRGB24",
+    "DmdBGR24",
+    "DmdRGBA32",
+    "DmdBGRA32",
+};
+
 CDmdCaptureEngineLinux::CDmdCaptureEngineLinux() : m_pV4L2Impl(NULL),
         m_bStartCapture(false) {
     memset(&m_capVideoFormat, 0, sizeof(m_capVideoFormat));

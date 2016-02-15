@@ -58,15 +58,7 @@ typedef enum {
     DMD_THREAD_DECODE,   // for decode video data;
 } DmdThreadType;
 
-static const char *dmdThreadType[] = {
-    "thread_unknown",
-    "thread_sigmgr",
-    "thread_main",
-    "thread_capture",
-    "thread_encode",
-    "thread_network",
-    "thread_decode",
-};
+extern const char *dmdThreadType[];
 
 }  // namespace opendmd
 

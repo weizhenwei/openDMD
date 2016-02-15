@@ -167,18 +167,18 @@ int client_main(int argc, char *argv[]) {
     initGlobal();
     initSignal();
 
-#if 0
-    // create and spawn threads;
-    createAndSpawnThreads();
+    if (1) {
+        // create and spawn threads;
+        createAndSpawnThreads();
 
-    while (g_bMainThreadRunning) {
-        sleep(1);
-        DMD_LOG_INFO("client_main(), main thread is running");
+        while (g_bMainThreadRunning) {
+            sleep(1);
+            DMD_LOG_INFO("client_main(), main thread is running");
+        }
+
+        // exit and clean threads;
+        exitAndCleanThreads();
     }
-
-    // exit and clean threads;
-    exitAndCleanThreads();
-#endif
 
     DMD_LOG_INFO("client_main(), main thread is exiting");
     return DMD_S_OK;

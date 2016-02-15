@@ -4,7 +4,16 @@
 set -e
 
 # avoid ctrl + c impact on this script;
-# trap '' INT
+os=`uname`
+if [ $os="Linux" ]
+then
+    echo "Linux platform"
+    trap '' INT
+elif [ $os="Darwin" ]
+then
+    echo "Mac platform"
+    # trap '' INT
+fi
 
 # echo "Checking code format"
 # ./tools/format_check.sh;

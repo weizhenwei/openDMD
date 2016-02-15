@@ -67,23 +67,8 @@ typedef enum {
     DmdRGBA32,
     DmdBGRA32,
 } DmdVideoType;
-
-static const char *dmdVideoType[] = {
-    "DmdUnknown",
-
-    // yuv color space;
-    "DmdI420",    // Y'CbCr 4:2:0 - 420v, NV12 actually;
-    "DmdYUYV",    // Y'CbCr 4:2:2 - yuvs;
-    "DmdUYVY",    // Y'CbCr 4:2:2 - uyvy;
-    "DmdNV12",    // Y'CbCr 4:2:0 - nv12 planar;
-    "DmdNV21",    // Y'CbCr 4:2:0 - nv21 planar;
-
-    // rgb color space;
-    "DmdRGB24",
-    "DmdBGR24",
-    "DmdRGBA32",
-    "DmdBGRA32",
-};
+// defined at CDmdCaptureEngine*** at earch platform.
+extern const char *dmdVideoType[];
 
 typedef struct {
     DmdVideoType    eVideoType;
