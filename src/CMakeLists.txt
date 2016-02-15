@@ -40,7 +40,7 @@ add_subdirectory(capture)
 add_subdirectory(util)
 link_directories(${PROJECT_SOURCE_DIR}/src/capture)
 link_directories(${PROJECT_SOURCE_DIR}/src/util)
-target_link_libraries(openDMD glog capture util ${PLATFORM_LIB}) 
+target_link_libraries(openDMD glog capture util pthread ${PLATFORM_LIB}) 
 
 message(STATUS "Leaving directory ${CMAKE_CURRENT_SOURCE_DIR}")
 
