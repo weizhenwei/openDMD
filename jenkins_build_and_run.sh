@@ -5,11 +5,11 @@ set -e
 
 # avoid ctrl + c impact on this script;
 os=`uname`
-if [ $os="Linux" ]
+if [ x$os = x"Linux" ]
 then
     echo "Linux platform"
     trap '' INT
-elif [ $os="Darwin" ]
+elif [ x$os = x"Darwin" ]
 then
     echo "Mac platform"
     # trap '' INT

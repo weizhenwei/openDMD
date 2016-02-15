@@ -167,7 +167,7 @@ int client_main(int argc, char *argv[]) {
     initGlobal();
     initSignal();
 
-    if (1) {
+    if (0) {
         // create and spawn threads;
         createAndSpawnThreads();
 
