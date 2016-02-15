@@ -41,7 +41,9 @@
 
 namespace opendmd {
 extern void initGlobal();
+extern void initSignal();
 
+extern void *signalManagerThreadRoutine(void *param);
 extern void *captureThreadRoutine(void *param);
 }  // namespace opendmd
 

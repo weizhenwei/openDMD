@@ -4,7 +4,7 @@
 set -e
 
 # avoid ctrl + c impact on this script;
-trap '' INT
+# trap '' INT
 
 # echo "Checking code format"
 # ./tools/format_check.sh;

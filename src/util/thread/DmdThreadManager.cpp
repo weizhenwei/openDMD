@@ -196,7 +196,7 @@ DMD_RESULT DmdThreadManager::killAllThreads() {
             ret = DMD_S_FAIL;
             return ret;
         }
-
+#if 0
         int val = -1;
         DmdThreadHandler handler = pThread->getThreadHandler();
         if (0 != (val = pthread_kill(handler, SIGUSR1))) {
@@ -214,6 +214,7 @@ DMD_RESULT DmdThreadManager::killAllThreads() {
             ret = DMD_S_FAIL;
             return ret;
         }
+#endif
     }
 
     return ret;

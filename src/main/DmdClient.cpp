@@ -56,25 +56,51 @@
 namespace opendmd {
 
 static bool g_bMainThreadRunning = true;
+static bool g_bCaptureRunning = true;
 
 void initGlobal() {
     g_ThreadManager = DmdThreadManager::singleton();
 }
 
-static bool g_bCaptureRunning = true;
-static void DmdSIGUSR1Handler(int signal) {
-    assert(signal == SIGUSR1);
+void initSignal() {
+    int ret = -1;
+    sigset_t blockedSignalSet;
+    sigemptyset(&blockedSignalSet);
+    sigaddset(&blockedSignalSet, SIGINT);
+    if (0 != (ret = pthread_sigmask(SIG_BLOCK, &blockedSignalSet, NULL))) {
+        DMD_LOG_WARNING("initSignal(), call pthread_sigmask error:"
+                        << ret);
+    }
+}
 
-    DMD_LOG_INFO("DmdSIGUSR1Handler(), SIGUSR1 processing");
-    g_bCaptureRunning = false;
+void *signalManagerThreadRoutine(void *param) {
+    DMD_LOG_INFO("At the beginning of signal manager thread function");
+
+    int ret = -1;
+    int sig = -1;
+    sigset_t sigwaitSet;
+    pthread_t ppid = pthread_self();
+    pthread_detach(ppid);
+
+    sigemptyset(&sigwaitSet);
+    sigaddset(&sigwaitSet, SIGINT);
+    while (1) {
+        ret = sigwait(&sigwaitSet, &sig);
+        if (ret == 0) {
+            assert(sig == SIGINT);
+            DMD_LOG_INFO("signalManagerThreadRoutine(), "
+                         "receive signal " << sig);
+            g_bCaptureRunning = false;
+            g_bMainThreadRunning = false;
+            break;
+        }
+    }  // while
+
+    return NULL;
 }
 
 void *captureThreadRoutine(void *param) {
     DMD_LOG_INFO("At the beginning of capture thread function");
-
-    DmdRegisterDefaultSignal();
-    DmdSignalHandler pHandler = DmdSIGUSR1Handler;
-    DmdRegisterSignalHandler(SIGUSR1, pHandler);
 
     DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
     capVideoFormat.eVideoType = DmdI420;
@@ -112,18 +138,16 @@ void *captureThreadRoutine(void *param) {
     return NULL;
 }
 
-static void DmdSIGINTHandler(int signal) {
-    assert(signal == SIGINT);
-
-    DMD_LOG_INFO("DmdSIGINTHandler(), SIGINT processing");
-    g_bMainThreadRunning = false;
-}
-
 static void createAndSpawnThreads() {
     // create capture thread;
+    DmdThreadType eSignalManagerThread = DMD_THREAD_SIGMGR;
+    DmdThreadRoutine pSigMgrRoutine = signalManagerThreadRoutine;
+    g_ThreadManager->addThread(eSignalManagerThread, pSigMgrRoutine);
+
+    // create capture thread;
     DmdThreadType eCaptureThread = DMD_THREAD_CAPTURE;
-    DmdThreadRoutine pRoutine = captureThreadRoutine;
-    g_ThreadManager->addThread(eCaptureThread, pRoutine);
+    DmdThreadRoutine pCaptureRoutine = captureThreadRoutine;
+    g_ThreadManager->addThread(eCaptureThread, pCaptureRoutine);
 
     // spawn all working thread;
     g_ThreadManager->spawnAllThreads();
@@ -141,9 +165,7 @@ int client_main(int argc, char *argv[]) {
     DMD_LOG_INFO("At the beginning of client_main function");
 
     initGlobal();
-    DmdRegisterDefaultSignal();
-    DmdSignalHandler pHandler = DmdSIGINTHandler;
-    DmdRegisterSignalHandler(SIGINT, pHandler);
+    initSignal();
 
 #if 0
     // create and spawn threads;

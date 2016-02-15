@@ -50,6 +50,7 @@ typedef void *(*DmdThreadRoutine)(void *);
 
 typedef enum {
     DMD_THREAD_UNKNOWN,
+    DMD_THREAD_SIGMGR,   // for signal manager;
     DMD_THREAD_MAIN,     // for monitor the whole openDMD running;
     DMD_THREAD_CAPTURE,  // for capture video data;
     DMD_THREAD_ENCODE,   // for encode video data;
@@ -59,6 +60,7 @@ typedef enum {
 
 static const char *dmdThreadType[] = {
     "thread_unknown",
+    "thread_sigmgr",
     "thread_main",
     "thread_capture",
     "thread_encode",
