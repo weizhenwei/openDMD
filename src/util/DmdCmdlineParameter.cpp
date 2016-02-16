@@ -32,7 +32,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : implementation of cmdline parameter operation.
+ * Description : implementation of cmdline parameter operation.
  ============================================================================
  */
 

@@ -7,11 +7,11 @@ set -e
 os=`uname`
 if [ x$os = x"Linux" ]
 then
-    echo "Linux platform"
+    echo "Running on Linux platform"
     trap '' INT
 elif [ x$os = x"Darwin" ]
 then
-    echo "Mac platform"
+    echo "Running on Mac platform"
     # trap '' INT
 fi
 

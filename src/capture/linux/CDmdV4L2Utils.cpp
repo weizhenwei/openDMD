@@ -32,7 +32,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : utils of V4L2 capture implementation on linux platform.
+ * Description : utils of V4L2 capture implementation on linux platform.
  ============================================================================
  */
 
