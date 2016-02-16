@@ -58,6 +58,7 @@ public:
 
     DMD_RESULT StartCapture();
     DMD_BOOL   IsCapturing();
+    DMD_RESULT RunCaptureLoop();
     DMD_RESULT StopCapture();
 
     // IDmdCaptureEngineSink interface;

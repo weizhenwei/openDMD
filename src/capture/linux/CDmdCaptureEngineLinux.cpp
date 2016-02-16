@@ -40,11 +40,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "CDmdCaptureEngine.h"
-#include "CDmdCaptureEngineLinux.h"
 #include "DmdLog.h"
-
 #include "CDmdV4L2Impl.h"
+#include "CDmdCaptureEngine.h"
+#include "CDmdCaptureThread.h"
+
+#include "CDmdCaptureEngineLinux.h"
 
 namespace opendmd {
 
@@ -123,13 +124,20 @@ DMD_RESULT CDmdCaptureEngineLinux::StartCapture() {
     DMD_RESULT result = m_pV4L2Impl->StartCapture();
     m_bStartCapture = result == DMD_S_OK ? true : false;
 
-    // result = m_pV4L2Impl->CaptureRunloop();
-
     return result;
 }
 
 DMD_BOOL CDmdCaptureEngineLinux::IsCapturing() {
     return m_bStartCapture;
+}
+
+DMD_RESULT CDmdCaptureEngineLinux::RunCaptureLoop() {
+    while (g_bCaptureThreadRunning) {
+        sleep(1);
+        DMD_LOG_INFO("CDmdCaptureEngineLinux::RunCaptureLoop(), "
+                     << "capture thread is running");
+    }
+    return DMD_S_OK;
 }
 
 DMD_RESULT CDmdCaptureEngineLinux::StopCapture() {

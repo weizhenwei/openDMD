@@ -63,6 +63,7 @@ class IDmdCaptureEngine {
 
     virtual DMD_RESULT StartCapture() = 0;
     virtual DMD_BOOL   IsCapturing() = 0;
+    virtual DMD_RESULT RunCaptureLoop() = 0;
     virtual DMD_RESULT StopCapture() = 0;
 };
 

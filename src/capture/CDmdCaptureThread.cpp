@@ -76,12 +76,7 @@ void *CaptureThreadRoutine(void *param) {
     CreateVideoCaptureEngine(&pVideoCapEngine);
     pVideoCapEngine->Init(capVideoFormat);
     pVideoCapEngine->StartCapture();
-
-    while (g_bCaptureThreadRunning) {
-        sleep(1);
-        DMD_LOG_INFO("CaptureThreadRoutine(), capture thread is running");
-    }
-
+    pVideoCapEngine->RunCaptureLoop();
     pVideoCapEngine->StopCapture();
     pVideoCapEngine->Uninit();
     ReleaseVideoCaptureEngine(&pVideoCapEngine);

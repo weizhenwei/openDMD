@@ -45,12 +45,14 @@
 #import <CoreVideo/CVPixelBuffer.h>
 
 #import <string.h>
-
-#import "CDmdCaptureEngineMac.h"
-#import "CDmdCaptureSessionMac.h"
+#import <unistd.h>
 
 #include "DmdLog.h"
 #include "IDmdDatatype.h"
+#import "CDmdCaptureEngineMac.h"
+#import "CDmdCaptureSessionMac.h"
+
+#include "CDmdCaptureThread.h"
 
 namespace opendmd {
 
@@ -335,6 +337,16 @@ DMD_RESULT CDmdCaptureEngineMac::StartCapture() {
 
 DMD_BOOL CDmdCaptureEngineMac::IsCapturing() {
     return [m_pVideoCapSession isRunning];
+}
+
+DMD_RESULT CDmdCaptureEngineMac::RunCaptureLoop() {
+    while (g_bCaptureThreadRunning) {
+        sleep(1);
+        DMD_LOG_INFO("CDmdCaptureEngineMac::RunCaptureLoop(), "
+                     << "capture thread is running");
+    }
+
+    return DMD_S_OK;
 }
 
 DMD_RESULT CDmdCaptureEngineMac::StopCapture() {
