@@ -41,10 +41,7 @@
 #include <signal.h>
 
 #include "DmdLog.h"
-#include "IDmdDatatype.h"
-#include "IDmdCaptureEngine.h"
-#include "CDmdCaptureEngine.h"
-#include "DmdSignal.h"
+#include "CDmdCaptureThread.h"
 
 #include "thread/DmdThreadUtils.h"
 #include "thread/DmdThread.h"
@@ -56,7 +53,6 @@
 namespace opendmd {
 
 static bool g_bMainThreadRunning = true;
-static bool g_bCaptureRunning = true;
 
 void initGlobal() {
     g_ThreadManager = DmdThreadManager::singleton();
@@ -90,51 +86,12 @@ void *signalManagerThreadRoutine(void *param) {
             assert(sig == SIGINT);
             DMD_LOG_INFO("signalManagerThreadRoutine(), "
                          "receive signal " << sig);
-            g_bCaptureRunning = false;
+            g_bCaptureThreadRunning = false;
             g_bMainThreadRunning = false;
             break;
         }
     }  // while
 
-    return NULL;
-}
-
-void *captureThreadRoutine(void *param) {
-    DMD_LOG_INFO("At the beginning of capture thread function");
-
-    DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
-    capVideoFormat.eVideoType = DmdI420;
-    capVideoFormat.iWidth = 1280;
-    capVideoFormat.iHeight = 720;
-    capVideoFormat.fFrameRate = 30.0f;
-
-    char *pDeviceName = GetDeviceName();
-    if (NULL == pDeviceName) {
-        DMD_LOG_ERROR("captureThreadRoutine(), "
-                << "could not get capture device name");
-        pthread_exit(NULL);
-    }
-
-    DMD_LOG_INFO("captureThreadRoutine(), "
-            << "Get video device name = " << pDeviceName);
-    strncpy(capVideoFormat.sVideoDevice, pDeviceName, strlen(pDeviceName));
-
-    IDmdCaptureEngine *pVideoCapEngine = NULL;
-    CreateVideoCaptureEngine(&pVideoCapEngine);
-    pVideoCapEngine->Init(capVideoFormat);
-    pVideoCapEngine->StartCapture();
-
-    while (g_bCaptureRunning) {
-        sleep(1);
-        DMD_LOG_INFO("captureThreadRoutine(), capture thread is running");
-    }
-
-    pVideoCapEngine->StopCapture();
-    pVideoCapEngine->Uninit();
-    ReleaseVideoCaptureEngine(&pVideoCapEngine);
-    pVideoCapEngine = NULL;
-
-    DMD_LOG_INFO("captureThreadRoutine(), capture thread is exiting");
     return NULL;
 }
 
@@ -146,7 +103,7 @@ static void createAndSpawnThreads() {
 
     // create capture thread;
     DmdThreadType eCaptureThread = DMD_THREAD_CAPTURE;
-    DmdThreadRoutine pCaptureRoutine = captureThreadRoutine;
+    DmdThreadRoutine pCaptureRoutine = CaptureThreadRoutine;
     g_ThreadManager->addThread(eCaptureThread, pCaptureRoutine);
 
     // spawn all working thread;
