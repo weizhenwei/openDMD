@@ -36,16 +36,17 @@
  ============================================================================
  */
 
-#ifndef SRC_MAIN_DMDCLIENT_H
-#define SRC_MAIN_DMDCLIENT_H
+#ifndef SRC_MAIN_CLIENT_DMDCLIENT_H
+#define SRC_MAIN_CLIENT_DMDCLIENT_H
 
 namespace opendmd {
-extern void initGlobal();
-extern void initSignal();
+extern bool g_bMainThreadRunning;
 
-extern void *signalManagerThreadRoutine(void *param);
-extern void *captureThreadRoutine(void *param);
+extern void InitGlobal();
+extern void InitSignal();
+
+extern void *SignalManagerThreadRoutine(void *param);
 }  // namespace opendmd
 
-#endif  // SRC_MAIN_DMDCLIENT_H
+#endif  // SRC_MAIN_CLIENT_DMDCLIENT_H
 

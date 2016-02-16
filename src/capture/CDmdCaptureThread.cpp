@@ -63,12 +63,12 @@ void *CaptureThreadRoutine(void *param) {
 
     char *pDeviceName = GetDeviceName();
     if (NULL == pDeviceName) {
-        DMD_LOG_ERROR("captureThreadRoutine(), "
+        DMD_LOG_ERROR("CaptureThreadRoutine(), "
                 << "could not get capture device name");
         pthread_exit(NULL);
     }
 
-    DMD_LOG_INFO("captureThreadRoutine(), "
+    DMD_LOG_INFO("CaptureThreadRoutine(), "
             << "Get video device name = " << pDeviceName);
     strncpy(capVideoFormat.sVideoDevice, pDeviceName, strlen(pDeviceName));
 
@@ -79,7 +79,7 @@ void *CaptureThreadRoutine(void *param) {
 
     while (g_bCaptureThreadRunning) {
         sleep(1);
-        DMD_LOG_INFO("captureThreadRoutine(), capture thread is running");
+        DMD_LOG_INFO("CaptureThreadRoutine(), capture thread is running");
     }
 
     pVideoCapEngine->StopCapture();
@@ -87,7 +87,7 @@ void *CaptureThreadRoutine(void *param) {
     ReleaseVideoCaptureEngine(&pVideoCapEngine);
     pVideoCapEngine = NULL;
 
-    DMD_LOG_INFO("captureThreadRoutine(), capture thread is exiting");
+    DMD_LOG_INFO("CaptureThreadRoutine(), capture thread is exiting");
     return NULL;
 }
 

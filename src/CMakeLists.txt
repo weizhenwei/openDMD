@@ -22,6 +22,7 @@ endif()
 include_directories(${PROJECT_SOURCE_DIR}/src/include)
 include_directories(${PROJECT_SOURCE_DIR}/src/capture)
 include_directories(${PROJECT_SOURCE_DIR}/src/util)
+include_directories(${PROJECT_SOURCE_DIR}/src/main)
 
 if(LINUX_PLATFORM)
     include_directories(${PROJECT_SOURCE_DIR}/vendor/glog/linux-x86_64/include)
@@ -32,7 +33,8 @@ elseif(MAC_PLATFORM)
 endif()
 
 # main source files;
-file(GLOB UNIVERSAL_FILES main/*.h main/*.cpp)
+file(GLOB UNIVERSAL_FILES main/*.h main/*.cpp main/client/*.h main/client/*.cpp
+    main/server/*.h main/server/*.cpp)
 add_executable(openDMD ${UNIVERSAL_FILES})
 
 # libraries

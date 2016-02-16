@@ -52,13 +52,13 @@
 
 namespace opendmd {
 
-static bool g_bMainThreadRunning = true;
+bool g_bMainThreadRunning = true;
 
-void initGlobal() {
+void InitGlobal() {
     g_ThreadManager = DmdThreadManager::singleton();
 }
 
-void initSignal() {
+void InitSignal() {
     int ret = -1;
     sigset_t blockedSignalSet;
     sigemptyset(&blockedSignalSet);
@@ -69,7 +69,7 @@ void initSignal() {
     }
 }
 
-void *signalManagerThreadRoutine(void *param) {
+void *SignalManagerThreadRoutine(void *param) {
     DMD_LOG_INFO("At the beginning of signal manager thread function");
 
     int ret = -1;
@@ -84,7 +84,7 @@ void *signalManagerThreadRoutine(void *param) {
         ret = sigwait(&sigwaitSet, &sig);
         if (ret == 0) {
             assert(sig == SIGINT);
-            DMD_LOG_INFO("signalManagerThreadRoutine(), "
+            DMD_LOG_INFO("SignalManagerThreadRoutine(), "
                          "receive signal " << sig);
             g_bCaptureThreadRunning = false;
             g_bMainThreadRunning = false;
@@ -92,13 +92,15 @@ void *signalManagerThreadRoutine(void *param) {
         }
     }  // while
 
+    DMD_LOG_INFO("SignalManagerThreadRoutine(), "
+                 << "signal manager thread is exiting");
     return NULL;
 }
 
 static void createAndSpawnThreads() {
     // create capture thread;
     DmdThreadType eSignalManagerThread = DMD_THREAD_SIGMGR;
-    DmdThreadRoutine pSigMgrRoutine = signalManagerThreadRoutine;
+    DmdThreadRoutine pSigMgrRoutine = SignalManagerThreadRoutine;
     g_ThreadManager->addThread(eSignalManagerThread, pSigMgrRoutine);
 
     // create capture thread;
@@ -121,8 +123,8 @@ static void exitAndCleanThreads() {
 int client_main(int argc, char *argv[]) {
     DMD_LOG_INFO("At the beginning of client_main function");
 
-    initGlobal();
-    initSignal();
+    InitGlobal();
+    InitSignal();
 
     if (0) {
         // create and spawn threads;
