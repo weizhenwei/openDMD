@@ -36,6 +36,7 @@
  ============================================================================
  */
 
+#include <pthread.h>
 #include <unistd.h>
 
 #include "DmdLog.h"
@@ -65,13 +66,19 @@ int client_main(int argc, char *argv[]) {
             DMD_LOG_INFO("client_main(), main thread is running");
         }
 
-        sleep(2);  // wait all threads exit;
+        sleep(1);  // wait all threads exit;
 
         // exit and clean threads;
         ExitAndCleanThreads();
     }
 
     DMD_LOG_INFO("client_main(), main thread is exiting");
+#if 0
+    // main thread exit, but main process is still running;
+    // with all child threads are running.
+    pthread_exit(NULL);
+#endif
+
     return DMD_S_OK;
 }
 

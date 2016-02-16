@@ -81,7 +81,7 @@ public:
     DMD_RESULT StopCapture();
 
     // capture runloop;
-    DMD_RESULT CaptureRunloop();
+    DMD_RESULT RunCaptureLoop();
 
 private:
     DMD_RESULT _v4l2OpenCaptureDevice();

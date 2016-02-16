@@ -43,7 +43,6 @@
 #include "DmdLog.h"
 #include "CDmdV4L2Impl.h"
 #include "CDmdCaptureEngine.h"
-#include "CDmdCaptureThread.h"
 
 #include "CDmdCaptureEngineLinux.h"
 
@@ -132,12 +131,13 @@ DMD_BOOL CDmdCaptureEngineLinux::IsCapturing() {
 }
 
 DMD_RESULT CDmdCaptureEngineLinux::RunCaptureLoop() {
-    while (g_bCaptureThreadRunning) {
-        sleep(1);
-        DMD_LOG_INFO("CDmdCaptureEngineLinux::RunCaptureLoop(), "
-                     << "capture thread is running");
+    if (!m_pV4L2Impl) {
+        DMD_LOG_ERROR("CDmdCaptureEngineLinux::RunCaptureLoop(), "
+                << "m_pV4L2Impl == NULL");
+        return DMD_S_FAIL;
     }
-    return DMD_S_OK;
+
+    return m_pV4L2Impl->RunCaptureLoop();
 }
 
 DMD_RESULT CDmdCaptureEngineLinux::StopCapture() {

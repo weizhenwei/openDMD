@@ -50,6 +50,7 @@
 #include <unistd.h>
 
 #include "DmdLog.h"
+#include "CDmdCaptureThread.h"
 
 #include "CDmdV4L2Utils.h"
 #include "CDmdV4L2Impl.h"
@@ -181,15 +182,16 @@ DMD_RESULT CDmdV4L2Impl::StopCapture() {
     return ret;
 }
 
-DMD_RESULT CDmdV4L2Impl::CaptureRunloop() {
+DMD_RESULT CDmdV4L2Impl::RunCaptureLoop() {
     DMD_RESULT ret = DMD_S_OK;
     int fd = m_v4l2Param.video_device_fd;
     struct mmap_buffer *buffers = m_v4l2Param.mmap_reqbuffers;
     int width = m_v4l2Param.fmt.fmt.pix.width;
     int height = m_v4l2Param.fmt.fmt.pix.height;
 
-    // TODO(weizhenwei): add more control on while end condition;
-    while (1) {
+    // g_bCaptureThreadRunning is defined at CDmdCaptureThread.cpp
+    // when SIGINT is send to openDMD, g_bCaptureThreadRunning = false;
+    while (g_bCaptureThreadRunning) {
         fd_set fds;
         struct timeval tv;
         int r;
