@@ -36,88 +36,18 @@
  ============================================================================
  */
 
-#include <assert.h>
-#include <pthread.h>
-#include <signal.h>
+#include <unistd.h>
 
 #include "DmdLog.h"
-#include "CDmdCaptureThread.h"
-
-#include "thread/DmdThreadUtils.h"
-#include "thread/DmdThread.h"
 #include "thread/DmdThreadManager.h"
+#include "client/DmdClientThreads.h"
 
 #include "DmdClient.h"
-#include "main.h"
 
 namespace opendmd {
 
-bool g_bMainThreadRunning = true;
-
 void InitGlobal() {
     g_ThreadManager = DmdThreadManager::singleton();
-}
-
-void InitSignal() {
-    int ret = -1;
-    sigset_t blockedSignalSet;
-    sigemptyset(&blockedSignalSet);
-    sigaddset(&blockedSignalSet, SIGINT);
-    if (0 != (ret = pthread_sigmask(SIG_BLOCK, &blockedSignalSet, NULL))) {
-        DMD_LOG_WARNING("initSignal(), call pthread_sigmask error:"
-                        << ret);
-    }
-}
-
-void *SignalManagerThreadRoutine(void *param) {
-    DMD_LOG_INFO("At the beginning of signal manager thread function");
-
-    int ret = -1;
-    int sig = -1;
-    sigset_t sigwaitSet;
-    pthread_t ppid = pthread_self();
-    pthread_detach(ppid);
-
-    sigemptyset(&sigwaitSet);
-    sigaddset(&sigwaitSet, SIGINT);
-    while (1) {
-        ret = sigwait(&sigwaitSet, &sig);
-        if (ret == 0) {
-            assert(sig == SIGINT);
-            DMD_LOG_INFO("SignalManagerThreadRoutine(), "
-                         "receive signal " << sig);
-            g_bCaptureThreadRunning = false;
-            g_bMainThreadRunning = false;
-            break;
-        }
-    }  // while
-
-    DMD_LOG_INFO("SignalManagerThreadRoutine(), "
-                 << "signal manager thread is exiting");
-    return NULL;
-}
-
-static void createAndSpawnThreads() {
-    // create capture thread;
-    DmdThreadType eSignalManagerThread = DMD_THREAD_SIGMGR;
-    DmdThreadRoutine pSigMgrRoutine = SignalManagerThreadRoutine;
-    g_ThreadManager->addThread(eSignalManagerThread, pSigMgrRoutine);
-
-    // create capture thread;
-    DmdThreadType eCaptureThread = DMD_THREAD_CAPTURE;
-    DmdThreadRoutine pCaptureRoutine = CaptureThreadRoutine;
-    g_ThreadManager->addThread(eCaptureThread, pCaptureRoutine);
-
-    // spawn all working thread;
-    g_ThreadManager->spawnAllThreads();
-}
-
-static void exitAndCleanThreads() {
-    // send signal to all threads;
-    g_ThreadManager->killAllThreads();
-
-    // clean all working thread;
-    g_ThreadManager->cleanAllThreads();
 }
 
 int client_main(int argc, char *argv[]) {
@@ -128,15 +58,17 @@ int client_main(int argc, char *argv[]) {
 
     if (0) {
         // create and spawn threads;
-        createAndSpawnThreads();
+        CreateAndSpawnThreads();
 
         while (g_bMainThreadRunning) {
             sleep(1);
             DMD_LOG_INFO("client_main(), main thread is running");
         }
 
+        sleep(2);  // wait all threads exit;
+
         // exit and clean threads;
-        exitAndCleanThreads();
+        ExitAndCleanThreads();
     }
 
     DMD_LOG_INFO("client_main(), main thread is exiting");

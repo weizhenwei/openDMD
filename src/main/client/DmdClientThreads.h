@@ -1,8 +1,8 @@
 /*
  ============================================================================
- Name        : DmdClient.h
+ Name        : DmdClientThreads.h
  Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2016.02.14
+ Date           :2016.02.16
  Copyright   :
  * Copyright (c) 2016, weizhenwei
  * All rights reserved.
@@ -32,16 +32,22 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Description : main entry header of client program;
+ * Description : thread model header file of client program;
  ============================================================================
  */
 
-#ifndef SRC_MAIN_CLIENT_DMDCLIENT_H
-#define SRC_MAIN_CLIENT_DMDCLIENT_H
+#ifndef SRC_MAIN_CLIENT_DMDCLIENTTHREADS_H
+#define SRC_MAIN_CLIENT_DMDCLIENTTHREADS_H
 
 namespace opendmd {
-extern void InitGlobal();
+extern bool g_bMainThreadRunning;
+
+extern void InitSignal();
+extern void *SignalManagerThreadRoutine(void *param);
+
+extern void CreateAndSpawnThreads();
+extern void ExitAndCleanThreads();
 }  // namespace opendmd
 
-#endif  // SRC_MAIN_CLIENT_DMDCLIENT_H
+#endif  // SRC_MAIN_CLIENT_DMDCLIENTTHREADS_H
 
