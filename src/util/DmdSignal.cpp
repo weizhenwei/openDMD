@@ -103,8 +103,10 @@ string DmdSignalToString(int sig) {
         return "SIGTRAP";
     } else if (sig == SIGABRT) {
         return "SIGABRT";
-    } else if (sig == SIGEMT) {
+    /*
+    } else if (sig == SIGEMT) {  // didn't define on linux;
         return "SIGEMT";
+    */
     } else if (sig == SIGFPE) {
         return "SIGFPE";
     } else if (sig == SIGKILL) {
@@ -147,8 +149,10 @@ string DmdSignalToString(int sig) {
         return "SIGPROF";
     } else if (sig == SIGWINCH) {
         return "SIGWINCH";
-    } else if (sig == SIGINFO) {
+    /*
+    } else if (sig == SIGINFO) {  // didn't define on linux;
         return "SIGINFO";
+    */
     } else if (sig == SIGUSR1) {
         return "SIGUSR1";
     } else if (sig == SIGUSR2) {
