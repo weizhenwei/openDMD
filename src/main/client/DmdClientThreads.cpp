@@ -63,14 +63,11 @@ void InitSignal() {
 }
 
 void *SignalManagerThreadRoutine(void *param) {
-    DMD_LOG_INFO("At the beginning of signal manager thread function");
-
     int ret = -1;
     int sig = -1;
-    sigset_t sigwaitSet;
-    pthread_t ppid = pthread_self();
-    pthread_detach(ppid);
+    DMD_LOG_INFO("At the beginning of signal manager thread function");
 
+    sigset_t sigwaitSet;
     sigemptyset(&sigwaitSet);
     sigaddset(&sigwaitSet, SIGINT);  // wait SIGINT;
     while (1) {
@@ -91,7 +88,7 @@ void *SignalManagerThreadRoutine(void *param) {
 }
 
 void CreateAndSpawnThreads() {
-    // create capture thread;
+    // create signal manager thread;
     DmdThreadType eSignalManagerThread = DMD_THREAD_SIGMGR;
     DmdThreadRoutine pSigMgrRoutine = SignalManagerThreadRoutine;
     g_ThreadManager->addThread(eSignalManagerThread, pSigMgrRoutine);

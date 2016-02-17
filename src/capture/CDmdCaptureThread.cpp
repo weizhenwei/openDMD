@@ -52,9 +52,6 @@ bool g_bCaptureThreadRunning = true;
 void *CaptureThreadRoutine(void *param) {
     DMD_LOG_INFO("At the beginning of capture thread function");
 
-    pthread_t ppid = pthread_self();
-    pthread_detach(ppid);
-
     DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
     capVideoFormat.eVideoType = DmdI420;
     capVideoFormat.iWidth = 1280;
@@ -65,7 +62,7 @@ void *CaptureThreadRoutine(void *param) {
     if (NULL == pDeviceName) {
         DMD_LOG_ERROR("CaptureThreadRoutine(), "
                 << "could not get capture device name");
-        pthread_exit(NULL);
+        return NULL;
     }
 
     DMD_LOG_INFO("CaptureThreadRoutine(), "

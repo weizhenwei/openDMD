@@ -68,7 +68,11 @@ DMD_RESULT DmdThread::spawnThread() {
         return ret;
     }
 
-    int val = pthread_create(&m_ulThreadHandler, NULL, m_pThreadRoutine, NULL);
+    // spawn thread as detached.
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+    int val = pthread_create(&m_ulThreadHandler, &attr, m_pThreadRoutine, NULL);
     if (val != 0) {
         DMD_LOG_ERROR("DmdThread::spawnThread(), call pthread_create() failed, "
                       << "error number:" << val);
