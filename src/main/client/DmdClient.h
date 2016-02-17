@@ -39,8 +39,10 @@
 #ifndef SRC_MAIN_CLIENT_DMDCLIENT_H
 #define SRC_MAIN_CLIENT_DMDCLIENT_H
 
+#include "IDmdDatatype.h"
+
 namespace opendmd {
-extern void InitGlobal();
+extern DMD_RESULT InitGlobal();
 }  // namespace opendmd
 
 #endif  // SRC_MAIN_CLIENT_DMDCLIENT_H

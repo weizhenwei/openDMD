@@ -41,10 +41,20 @@
 
 #include <stdint.h>  // uint64_t series is defined in this header file;
 #include <stddef.h>  // "NULL" is defined in this header file!
+#include <stdio.h>
+#include <signal.h>
 
 namespace opendmd {
 
 #define DMD_BOOL bool
+
+#define DMD_ASSERT(expr) \
+do {                     \
+    if (!(expr)) {       \
+        printf("%s:%d:Assert failed:%s\n", __FILE__, __LINE__, #expr); \
+        raise(SIGINT);   \
+    }                    \
+} while (0)
 
 typedef enum {
     DMD_S_OK = 0x0,

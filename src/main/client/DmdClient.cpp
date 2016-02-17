@@ -47,8 +47,15 @@
 
 namespace opendmd {
 
-void InitGlobal() {
+DMD_RESULT InitGlobal() {
     g_ThreadManager = DmdThreadManager::singleton();
+    if (NULL == g_ThreadManager) {
+        DMD_LOG_ERROR("InitGlobal(), "
+                      << "init g_ThreadManager failed");
+        return DMD_S_FAIL;
+    }
+
+    return DMD_S_OK;
 }
 
 int client_main(int argc, char *argv[]) {

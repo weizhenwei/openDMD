@@ -76,9 +76,11 @@ DMD_RESULT DmdThread::spawnThread() {
     if (val != 0) {
         DMD_LOG_ERROR("DmdThread::spawnThread(), call pthread_create() failed, "
                       << "error number:" << val);
+        pthread_attr_destroy(&attr);
         ret = DMD_S_FAIL;
         return ret;
     }
+    pthread_attr_destroy(&attr);
 
     m_bThreadSpawned = true;
     DMD_LOG_INFO("DmdThread::spawnThread(), "
