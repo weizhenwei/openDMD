@@ -23,6 +23,11 @@ openDMD architecture design
    other utils:
    1) There should be a webUI or app to monitor on the whole system status.
 
-3. Other ideas
+3. thread model
+   MAIN THREAD:          waiting other thread to exit;
+   SIGNAL HANDLE THREAD: handle signal SIGINT to notify other threads to exit;
+   CAPTURE THREAD:       capture video data for further operation;
+
+n. Other ideas
    TO BE CONTINUED.
 

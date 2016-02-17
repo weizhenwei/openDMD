@@ -39,12 +39,16 @@
 #ifndef SRC_UTIL_DMDSIGNAL_H
 #define SRC_UTIL_DMDSIGNAL_H
 
+#include <string>
+
 namespace opendmd {
 
 typedef void (*DmdSignalHandler)(int);
 
-void DmdRegisterDefaultSignal();
-void DmdRegisterSignalHandler(int sig, DmdSignalHandler pSigHandler);
+extern void DmdRegisterDefaultSignal();
+extern void DmdRegisterSignalHandler(int sig, DmdSignalHandler pSigHandler);
+
+extern string DmdSignalToString(int sig);
 
 }  // namespace opendmd
 

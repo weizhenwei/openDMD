@@ -41,11 +41,14 @@
 #include <signal.h>
 
 #include "DmdLog.h"
+#include "DmdSignal.h"
 #include "CDmdCaptureThread.h"
 
 #include "thread/DmdThreadUtils.h"
 #include "thread/DmdThread.h"
 #include "thread/DmdThreadManager.h"
+
+#include "DmdClientThreads.h"
 
 namespace opendmd {
 
@@ -53,6 +56,8 @@ bool g_bMainThreadRunning = true;
 
 void InitSignal() {
     int ret = -1;
+    DmdRegisterDefaultSignal();
+
     sigset_t blockedSignalSet;
     sigemptyset(&blockedSignalSet);
     sigaddset(&blockedSignalSet, SIGINT);  // block SIGINT for sigwait;
@@ -75,7 +80,7 @@ void *SignalManagerThreadRoutine(void *param) {
         if (ret == 0) {
             assert(sig == SIGINT);
             DMD_LOG_INFO("SignalManagerThreadRoutine(), "
-                         "receive signal " << sig);
+                         "receive signal " << DmdSignalToString(sig));
             g_bCaptureThreadRunning = false;
             g_bMainThreadRunning = false;
             break;
