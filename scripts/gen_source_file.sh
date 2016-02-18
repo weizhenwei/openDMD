@@ -91,6 +91,7 @@ echo "/*
  * Name        : $filename
  * Author      : weizhenwei, <weizhenwei1988@gmail.com>
  * Date        : $date
+ *
  $copyright
  * Description : header file of $filename
  ============================================================================
@@ -137,6 +138,7 @@ echo "/*
  * Name        : $filename
  * Author      : weizhenwei, <weizhenwei1988@gmail.com>
  * Date        : $date
+ *
  $copyright
  * Description : implementation file of $filename
  ============================================================================
