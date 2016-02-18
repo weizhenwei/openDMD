@@ -1,9 +1,9 @@
 /*
  ============================================================================
- Name        : foo.h
- Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.11.24
- Copyright   :
+ * Name        : foo.h
+ * Author      : weizhenwei, <weizhenwei1988@gmail.com>
+ * Date        : 2015.11.24
+ *
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
  *
@@ -32,7 +32,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- Description : test header file of gtest usage.
+ * Description : test header file of gtest usage.
  ============================================================================
  */
 
