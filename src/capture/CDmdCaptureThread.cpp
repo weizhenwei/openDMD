@@ -1,9 +1,9 @@
 /*
  ============================================================================
- Name        : CDmdCaptureThread.cpp
- Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2016.02.16
- Copyright   :
+ * Name        : CDmdCaptureThread.cpp
+ * Author      : weizhenwei, <weizhenwei1988@gmail.com>
+ * Date        : 2016.02.16
+ *
  * Copyright (c) 2016, weizhenwei
  * All rights reserved.
  *

@@ -1,9 +1,9 @@
 /*
  ============================================================================
- Name        : DmdCmdlineParameter.cpp
- Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.07.03
- Copyright   :
+ * Name        : DmdCmdlineParameter.cpp
+ * Author      : weizhenwei, <weizhenwei1988@gmail.com>
+ * Date        : 2015.07.03
+ *
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
  *

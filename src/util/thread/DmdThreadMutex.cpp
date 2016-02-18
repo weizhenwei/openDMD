@@ -1,9 +1,9 @@
 /*
  ============================================================================
- Name        : DmdThreadMutex.cpp
- Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.06.29
- Copyright   :
+ * Name        : DmdThreadMutex.cpp
+ * Author      : weizhenwei, <weizhenwei1988@gmail.com>
+ * Date        : 2015.06.29
+ *
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
  *

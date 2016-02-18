@@ -1,9 +1,9 @@
 /*
  ============================================================================
- Name        : DmdServer.cpp
- Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.11.24
- Copyright   :
+ * Name        : DmdServer.cpp
+ * Author      : weizhenwei, <weizhenwei1988@gmail.com>
+ * Date        : 2015.11.24
+ *
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
  *
