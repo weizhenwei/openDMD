@@ -1,9 +1,9 @@
 /*
  ============================================================================
- Name        : DmdThreadUtils.h
- Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2016.02.13
- Copyright   :
+ * Name        : DmdThreadUtils.h
+ * Author      : weizhenwei, <weizhenwei1988@gmail.com>
+ * Date        : 2016.02.13
+ *
  * Copyright (c) 2016, weizhenwei
  * All rights reserved.
  *

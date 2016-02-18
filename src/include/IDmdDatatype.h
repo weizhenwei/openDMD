@@ -1,9 +1,9 @@
 /*
  ============================================================================
- Name        : IDmdDatatype.h
- Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.07.06
- Copyright   :
+ * Name        : IDmdDatatype.h
+ * Author      : weizhenwei, <weizhenwei1988@gmail.com>
+ * Date        : 2015.07.06
+ *
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
  *

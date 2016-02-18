@@ -1,9 +1,9 @@
 /*
  ============================================================================
- Name        : CDmdV4L2Utils.h
- Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2016.02.05
- Copyright   :
+ * Name        : CDmdV4L2Utils.h
+ * Author      : weizhenwei, <weizhenwei1988@gmail.com>
+ * Date        : 2016.02.05
+ *
  * Copyright (c) 2016, weizhenwei
  * All rights reserved.
  *

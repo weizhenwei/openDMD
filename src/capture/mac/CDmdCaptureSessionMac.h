@@ -1,9 +1,9 @@
 /*
  ============================================================================
- Name        : CDmdCaptureSessionMac.h
- Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2015.11.19
- Copyright   :
+ * Name        : CDmdCaptureSessionMac.h
+ * Author      : weizhenwei, <weizhenwei1988@gmail.com>
+ * Date        : 2015.11.19
+ *
  * Copyright (c) 2015, weizhenwei
  * All rights reserved.
  *

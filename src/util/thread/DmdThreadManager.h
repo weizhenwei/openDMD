@@ -1,9 +1,9 @@
 /*
  ============================================================================
- Name        : DmdThreadManager.h
- Author      : weizhenwei, <weizhenwei1988@gmail.com>
- Date           :2016.02.14
- Copyright   :
+ * Name        : DmdThreadManager.h
+ * Author      : weizhenwei, <weizhenwei1988@gmail.com>
+ * Date        : 2016.02.14
+ *
  * Copyright (c) 2016, weizhenwei
  * All rights reserved.
  *
