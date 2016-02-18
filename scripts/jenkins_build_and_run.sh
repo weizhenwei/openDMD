@@ -2,15 +2,15 @@
 
 # exit when command return value != 0.
 set -e
+# print verbose debug message
+# set -x
 
 # avoid ctrl + c impact on this script;
 os=`uname`
-if [ x$os = x"Linux" ]
-then
+if [ x$os = x"Linux" ]; then
     echo "Running on Linux platform"
     trap '' INT
-elif [ x$os = x"Darwin" ]
-then
+elif [ x$os = x"Darwin" ]; then
     echo "Running on Mac platform"
     # trap '' INT
 fi
