@@ -1,10 +1,11 @@
 /*
  ============================================================================
- * Name        : DmdServer.cpp
+ * Name        : DmdServer.h
  * Author      : weizhenwei, <weizhenwei1988@gmail.com>
- * Date        : 2015.11.24
+ * Date        : 2016.02.19
  *
- * Copyright (c) 2015, weizhenwei
+ * Copyright   :
+ * Copyright (c) 2016, weizhenwei
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,19 +33,17 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Description : main entry of server.
+ * Description : header file of DmdServer.h
  ============================================================================
  */
 
-#include "DmdLog.h"
-#include "main.h"
+#ifndef SRC_MAIN_SERVER_DMDSERVER_H
+#define SRC_MAIN_SERVER_DMDSERVER_H
 
-#include "DmdServer.h"
+namespace opendmd {
 
-using namespace opendmd;
 
-int opendmd::server_main(int argc, char *argv[]) {
-    DMD_LOG_INFO("At the beginning of server_main function.\n");
+}  // namespace opendmd
 
-    return 0;
-}
+#endif  // SRC_MAIN_SERVER_DMDSERVER_H
+
