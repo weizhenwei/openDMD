@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 
     parseCmdline(argc, argv);
 
-    client_main(argc, argv);
+    DmdClientMain(argc, argv);
 
     return 0;
 }

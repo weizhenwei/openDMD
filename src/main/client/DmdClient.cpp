@@ -58,7 +58,7 @@ DMD_RESULT InitGlobal() {
     return DMD_S_OK;
 }
 
-int client_main(int argc, char *argv[]) {
+int DmdClientMain(int argc, char *argv[]) {
     DMD_LOG_INFO("At the beginning of client_main function");
 
     InitGlobal();
