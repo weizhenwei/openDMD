@@ -14,9 +14,15 @@ programming skills that openDMD used:
     12. linux networking programming: epoll, socket, http protocol, etc;
     13. sqlite database, manual and C API;
 
+programming ideas:
+    1. add Qt UI to render video frame on client local or server end;
+    2. using event loop module to do ipc. take a look at libevent/Qt.
+
 libraries skills that openDMD used:
-    1. libjpeg, a open source implementation of jpeg format operation;
-    2. libx264, a open source implementation of H264 specification;
-    3. libortp, a open source implementation of rtp protocol specification;
-    3. libsqlite, sqlite database;
+    1. libjpeg:   an open source implementation of jpeg format operation;
+    2. libx264:   an open source implementation of H264 specification;
+    3. libortp:   an open source implementation of rtp protocol specification;
+    4. libsqlite: sqlite database;
+    5. glog:      log manapulation library from google;
+    6. gtest:     unit test library from google;
 

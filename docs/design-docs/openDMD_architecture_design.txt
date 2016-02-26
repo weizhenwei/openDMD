@@ -24,7 +24,7 @@ openDMD architecture design
    1) There should be a webUI or app to monitor on the whole system status.
 
 3. thread model
-   MAIN THREAD:          waiting other thread to exit;
+   MAIN THREAD:          main event loop, waiting other thread to exit;
    SIGNAL HANDLE THREAD: handle signal SIGINT to notify other threads to exit;
    CAPTURE THREAD:       capture video data for further operation;
 
