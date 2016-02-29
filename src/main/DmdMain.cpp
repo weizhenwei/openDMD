@@ -1,6 +1,6 @@
 /*
  ============================================================================
- * Name        : main.cpp
+ * Name        : DmdMain.cpp
  * Author      : weizhenwei, <weizhenwei1988@gmail.com>
  * Date        : 2015.06.24
  *
@@ -46,7 +46,7 @@
 #include "CDmdCaptureEngine.h"
 #include "DmdCmdlineParameter.h"
 
-#include "main.h"
+#include "DmdMain.h"
 
 using namespace opendmd;
 

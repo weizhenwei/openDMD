@@ -37,7 +37,7 @@
  */
 
 #include "DmdLog.h"
-#include "main.h"
+#include "DmdMain.h"
 
 #include "DmdServer.h"
 
