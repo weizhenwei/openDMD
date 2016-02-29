@@ -1,10 +1,11 @@
 /*
  ============================================================================
- * Name        : main.h
+ * Name        : DmdSetProcessName.h
  * Author      : weizhenwei, <weizhenwei1988@gmail.com>
- * Date        : 2015.06.24
+ * Date        : 2016.02.29
  *
- * Copyright (c) 2015, weizhenwei
+ * Copyright   :
+ * Copyright (c) 2016, weizhenwei
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,21 +33,43 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Description : header file of main.
+ * Description : header file of DmdSetProcessName.h
  ============================================================================
  */
 
-#ifndef SRC_MAIN_DMDMAIN_H
-#define SRC_MAIN_DMDMAIN_H
+#ifndef SRC_MAIN_DMDSETPROCESSNAME_H
+#define SRC_MAIN_DMDSETPROCESSNAME_H
 
+#include "IDmdDatatype.h"
 
 namespace opendmd {
 
-extern int DmdClientMain(int argc, char *argv[]);
+typedef struct  DmdArgv {
+    DmdArgv() : base(NULL), pArgv(NULL), pOriginArgv(NULL), iArgc(0) {}
 
-extern int DmdServerMain(int argc, char *argv[]);
+    char *base;
+    char **pArgv;
+    char **pOriginArgv;
+    int iArgc;
+} DmdArgv;
 
+typedef struct  DmdEnviron {
+    DmdEnviron() : base(NULL), pEnviron(NULL), iNumOfEnviron(0) {}
+
+    char *base;
+    char **pEnviron;
+    int iNumOfEnviron;
+} DmdEnviron;
+
+extern DmdArgv *g_pDmdArgv;
+extern DmdEnviron *g_pDmdEnviron;
+
+extern DMD_RESULT InitArgvEnviron();
+extern DMD_RESULT UnInitArgvEnviron();
+extern DMD_RESULT SaveArgv(int argc, char *argv[]);
+extern DMD_RESULT SaveEnviron();
+extern DMD_RESULT SetProcessName(char *pProcessName);
 }  // namespace opendmd
 
-#endif  // SRC_MAIN_DMDMAIN_H
+#endif  // SRC_MAIN_DMDSETPROCESSNAME_H
 

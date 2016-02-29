@@ -45,6 +45,7 @@
 #include "IDmdCaptureEngine.h"
 #include "CDmdCaptureEngine.h"
 #include "DmdCmdlineParameter.h"
+#include "DmdSetProcessName.h"
 
 #include "DmdMain.h"
 
@@ -69,13 +70,25 @@ static void parseCmdline(int argc, char *argv[]) {
     }
 }
 
+static void setProcessName(int argc, char *argv[]) {
+    InitArgvEnviron();
+    SaveArgv(argc, argv);
+    SaveEnviron();
+    char processName[256];
+    strncpy(processName, "openDMD", strlen("openDMD"));
+    SetProcessName(processName);
+}
+
 int main(int argc, char *argv[]) {
     // set locale according current environment
     setlocale(LC_ALL, "");
 
     parseCmdline(argc, argv);
+    setProcessName(argc, argv);
 
-    DmdClientMain(argc, argv);
+    DmdClientMain(g_pDmdArgv->iArgc, g_pDmdArgv->pArgv);
+
+    UnInitArgvEnviron();
 
     return 0;
 }
