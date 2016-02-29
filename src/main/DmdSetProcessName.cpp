@@ -40,6 +40,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <string>
+
 #include "DmdLog.h"
 #include "DmdSetProcessName.h"
 
@@ -72,21 +74,21 @@ static void releaseArgc(DmdArgv **ppArgv) {
     DmdArgv *pArgv = *ppArgv;
     if (pArgv) {
         if (pArgv->base) {
-            free(pArgv->base);
+            delete [] pArgv->base;
             pArgv->base = NULL;
         }
 
         if (pArgv->pArgv) {
-            free(pArgv->pArgv);
+            delete [] pArgv->pArgv;
             pArgv->pArgv = NULL;
         }
 
         if (pArgv->pOriginArgv) {
-            free(pArgv->pOriginArgv);
+            delete [] pArgv->pOriginArgv;
             pArgv->pOriginArgv = NULL;
         }
 
-        free(pArgv);
+        delete pArgv;
         pArgv = NULL;
     }
 }
@@ -95,16 +97,16 @@ static void releaseEnviron(DmdEnviron **ppEnviron) {
     DmdEnviron *pEnviron = *ppEnviron;
     if (pEnviron) {
         if (pEnviron->base) {
-            free(pEnviron->base);
+            delete [] pEnviron->base;
             pEnviron->base = NULL;
         }
 
         if (pEnviron->pEnviron) {
-            free(pEnviron->pEnviron);
+            delete [] pEnviron->pEnviron;
             pEnviron->pEnviron = NULL;
         }
 
-        free(pEnviron);
+        delete pEnviron;
         pEnviron = NULL;
     }
 }
@@ -113,12 +115,12 @@ DMD_RESULT InitArgvEnviron() {
     releaseArgc(&g_pDmdArgv);
     releaseEnviron(&g_pDmdEnviron);
 
-    g_pDmdArgv = static_cast<DmdArgv *>(malloc(sizeof(DmdArgv)));
+    g_pDmdArgv = new DmdArgv;
     if (NULL == g_pDmdArgv) {
         DMD_LOG_ERROR("InitArgvEnviron(), failed to new g_pDmdArgv");
         return DMD_S_FAIL;
     }
-    g_pDmdEnviron = static_cast<DmdEnviron *>(malloc(sizeof(DmdEnviron)));
+    g_pDmdEnviron = new DmdEnviron;
     if (NULL == g_pDmdEnviron) {
         DMD_LOG_ERROR("InitArgvEnviron(), failed to new g_pDmdEnviron");
         return DMD_S_FAIL;
@@ -134,46 +136,46 @@ DMD_RESULT UnInitArgvEnviron() {
     return DMD_S_OK;
 }
 
+typedef char *charP;
 DMD_RESULT SaveArgv(int argc, char *argv[]) {
     if (!g_pDmdArgv) {
         DMD_LOG_ERROR("SaveArgv(), g_pDmdArgv == NULL");
         return DMD_S_FAIL;
     }
     if (g_pDmdArgv->base) {
-        free(g_pDmdArgv->base);
+        delete [] g_pDmdArgv->base;
         g_pDmdArgv->base = NULL;
     }
     if (g_pDmdArgv->pArgv) {
-        free(g_pDmdArgv->pArgv);
+        delete [] g_pDmdArgv->pArgv;
         g_pDmdArgv->pArgv = NULL;
     }
     if (g_pDmdArgv->pOriginArgv) {
-        free(g_pDmdArgv->pOriginArgv);
+        delete [] g_pDmdArgv->pOriginArgv;
         g_pDmdArgv->pOriginArgv = NULL;
     }
 
     g_pDmdArgv->base = NULL;
     g_pDmdArgv->iArgc = argc;
-    g_pDmdArgv->pOriginArgv = static_cast<char **>
-        (malloc(sizeof(char **) * argc));
+    g_pDmdArgv->pOriginArgv = new charP[argc];
     if (NULL == g_pDmdArgv->pOriginArgv) {
-        DMD_LOG_ERROR("SaveArgv(), malloc g_pDmdArgv->pOriginArgv error");
+        DMD_LOG_ERROR("SaveArgv(), new g_pDmdArgv->pOriginArgv error");
         return DMD_S_FAIL;
     }
-    g_pDmdArgv->pArgv = static_cast<char **>(malloc(sizeof(char **) * argc));
+    g_pDmdArgv->pArgv = new charP[argc];
     if (NULL == g_pDmdArgv->pArgv) {
-        DMD_LOG_ERROR("SaveArgv(), malloc g_pDmdArgv->pArgv error");
+        DMD_LOG_ERROR("SaveArgv(), new g_pDmdArgv->pArgv error");
         return DMD_S_FAIL;
     }
 
     int totallen = 0;
     for (int i = 0; i < argc; i++) {
-        totallen += strlen(argv[i]);
+        totallen += strlen(argv[i]) + 1;
     }
 
-    g_pDmdArgv->base = static_cast<char *>(malloc(totallen));
+    g_pDmdArgv->base = new char[totallen];
     if (NULL == g_pDmdArgv->base) {
-        DMD_LOG_ERROR("SaveArgv(), malloc g_pDmdArgv->base error");
+        DMD_LOG_ERROR("SaveArgv(), new g_pDmdArgv->base error");
         return DMD_S_FAIL;
     }
     memset(g_pDmdArgv->base, 0, totallen);
@@ -202,11 +204,11 @@ DMD_RESULT SaveEnviron() {
         return DMD_S_FAIL;
     }
     if (g_pDmdEnviron->base) {
-        free(g_pDmdEnviron->base);
+        delete [] g_pDmdEnviron->base;
         g_pDmdEnviron->base = NULL;
     }
     if (g_pDmdEnviron->pEnviron) {
-        free(g_pDmdEnviron->pEnviron);
+        delete [] g_pDmdEnviron->pEnviron;
         g_pDmdEnviron->pEnviron = NULL;
     }
 
@@ -216,24 +218,23 @@ DMD_RESULT SaveEnviron() {
     int totallen = 0;
     int iNumOfEnviron = 0;
     for (iNumOfEnviron = 0; environ[iNumOfEnviron]; iNumOfEnviron++) {
-        totallen += strlen(environ[iNumOfEnviron]);
+        totallen += strlen(environ[iNumOfEnviron]) + 1;
     }
-    g_pDmdEnviron->pEnviron = static_cast<char **>
-        (malloc(sizeof(char **) * iNumOfEnviron));
+    g_pDmdEnviron->iNumOfEnviron = iNumOfEnviron;
+    g_pDmdEnviron->pEnviron = new charP[iNumOfEnviron];
     if (NULL == g_pDmdEnviron->pEnviron) {
-        DMD_LOG_ERROR("SaveEnviron(), malloc g_pDmdEnviron->pEnviron error");
+        DMD_LOG_ERROR("SaveEnviron(), new g_pDmdEnviron->pEnviron error");
         return DMD_S_FAIL;
     }
 
-    g_pDmdEnviron->base = static_cast<char *>(malloc(totallen));
+    g_pDmdEnviron->base = new char[totallen];
     if (NULL == g_pDmdEnviron->base) {
-        DMD_LOG_ERROR("SaveEnviron(), malloc g_pDmdEnviron->base error");
+        DMD_LOG_ERROR("SaveEnviron(), new g_pDmdEnviron->base error");
         return DMD_S_FAIL;
     }
     memset(g_pDmdEnviron->base, 0, totallen);
 
     char *pCurrent = g_pDmdEnviron->base;
-    g_pDmdEnviron->iNumOfEnviron = iNumOfEnviron;
     for (int i = 0; i < iNumOfEnviron; i++) {
         strncpy(pCurrent, environ[i], strlen(environ[i]));
         g_pDmdEnviron->pEnviron[i] = pCurrent;
@@ -244,7 +245,7 @@ DMD_RESULT SaveEnviron() {
 #ifdef DEBUG
     for (int i = 0; i < g_pDmdEnviron->iNumOfEnviron; i++) {
         DMD_LOG_INFO("SaveEnviron(), saved environ[" << i << "] = "
-                << g_pDmdEnviron->pEnviron[i]);
+                << string(g_pDmdEnviron->pEnviron[i]));
         DMD_LOG_INFO("SaveEnviron(), environ[" << i << "] = "
                 << environ[i]);
     }
