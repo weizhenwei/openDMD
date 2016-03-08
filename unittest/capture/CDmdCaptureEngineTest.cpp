@@ -126,3 +126,22 @@ TEST_F(CDmdCaptureEngineTest, StartCapture) {
     EXPECT_EQ(DMD_S_OK, pCaptureEngine->StopCapture());
     EXPECT_EQ(DMD_S_OK, pCaptureEngine->Uninit());
 }
+
+TEST_F(CDmdCaptureEngineTest, RunCaptureLoop) {
+    DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
+    capVideoFormat.eVideoType = DmdI420;
+    capVideoFormat.iWidth = 1280;
+    capVideoFormat.iHeight = 720;
+    capVideoFormat.fFrameRate = 30;
+    char *pDeviceName = GetDeviceName();
+    if (NULL == pDeviceName) {
+        return;
+    }
+    strncpy(capVideoFormat.sVideoDevice, pDeviceName, strlen(pDeviceName));
+    EXPECT_EQ(DMD_S_OK, pCaptureEngine->Init(capVideoFormat));
+    EXPECT_EQ(DMD_S_OK, pCaptureEngine->StartCapture());
+    // EXPECT_EQ(DMD_S_OK, pCaptureEngine->RunCaptureLoop());
+    EXPECT_EQ(DMD_S_OK, pCaptureEngine->StopCapture());
+    EXPECT_EQ(DMD_S_OK, pCaptureEngine->Uninit());
+}
+
