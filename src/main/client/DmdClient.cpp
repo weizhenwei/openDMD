@@ -82,10 +82,6 @@ int DmdClientMain(int argc, char *argv[]) {
 
     DMD_LOG_INFO("client_main(), main thread is exiting");
 
-    // main thread exit, but main process is still running;
-    // with all child threads are running.
-    pthread_exit(NULL);
-
     return DMD_S_OK;
 }
 

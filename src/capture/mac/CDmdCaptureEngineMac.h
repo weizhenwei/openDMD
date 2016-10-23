@@ -80,6 +80,7 @@ private:
     CDmdAVVideoCapSession *m_pVideoCapSession;
     DmdCaptureVideoFormat m_capVideoFormat;
     MacCaptureSessionFormat m_capSessionFormat;
+    DmdVideoRawData *m_pVideoRawData;
 };
 
 DMD_RESULT CVImageBuffer2VideoRawPacket(

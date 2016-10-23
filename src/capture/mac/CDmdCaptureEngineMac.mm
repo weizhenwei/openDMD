@@ -77,6 +77,7 @@ const char *dmdVideoType[] = {
 CDmdCaptureEngineMac::CDmdCaptureEngineMac() : m_pVideoCapSession(nil) {
     memset(&m_capVideoFormat, 0, sizeof(m_capVideoFormat));
     memset(&m_capSessionFormat, 0, sizeof(m_capSessionFormat));
+    m_pVideoRawData = new DmdVideoRawData;
 }
 
 CDmdCaptureEngineMac::~CDmdCaptureEngineMac() {
@@ -344,6 +345,8 @@ DMD_RESULT CDmdCaptureEngineMac::RunCaptureLoop() {
         sleep(1);
         DMD_LOG_INFO("CDmdCaptureEngineMac::RunCaptureLoop(), "
                      << "capture thread is running");
+        // TODO(weizhenwei): push m_pVideoRawData to upper module;
+
     }
 
     return DMD_S_OK;
@@ -357,11 +360,11 @@ DMD_RESULT CDmdCaptureEngineMac::DeliverVideoData(
         CMSampleBufferRef sampleBuffer) {
     CVImageBufferRef imageBuffer =
     CMSampleBufferGetImageBuffer(sampleBuffer);
-    DmdVideoRawData packet;
-    memset(&packet, 0, sizeof(packet));
+    // memset(&m_pVideoRawData, 0, sizeof(DmdVideoRawData));
     if (kCVReturnSuccess == CVPixelBufferLockBaseAddress(imageBuffer, 0)) {
-        if (DMD_S_OK == CVImageBuffer2VideoRawPacket(imageBuffer, packet)) {
-            // DeliverVideoData(&packet);
+        if (DMD_S_OK == CVImageBuffer2VideoRawPacket(imageBuffer, *m_pVideoRawData)) {
+            DMD_LOG_INFO("CDmdCaptureEngineMac::DeliverVideoData(), "
+                         << "got a frame of raw data");
         }
         CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
     }
