@@ -54,9 +54,7 @@ DmdThreadManager::DmdThreadManager() {
 }
 
 DmdThreadManager::~DmdThreadManager() {
-    if (0 != m_listThreadList.size()) {
-        m_listThreadList.clear();
-    }
+    m_listThreadList.clear();
 }
 
 DMD_RESULT DmdThreadManager::addThread(DmdThreadType eType,
@@ -184,8 +182,8 @@ DMD_RESULT DmdThreadManager::killAllThreads() {
     DMD_RESULT ret = DMD_S_OK;
     DmdThread *pThread = NULL;
     DmdThreadListIterator iter;
-    for (iter = m_listThreadList.begin(); iter != m_listThreadList.end();
-            iter++) {
+    iter = m_listThreadList.begin();
+    while (iter != m_listThreadList.end()) {
         pThread = *iter;
 
         DmdThreadType eType = pThread->getThreadType();
@@ -196,7 +194,7 @@ DMD_RESULT DmdThreadManager::killAllThreads() {
             ret = DMD_S_FAIL;
             return ret;
         }
-#if 0
+
         int val = -1;
         DmdThreadHandler handler = pThread->getThreadHandler();
         if (0 != (val = pthread_kill(handler, SIGUSR1))) {
@@ -214,7 +212,9 @@ DMD_RESULT DmdThreadManager::killAllThreads() {
             ret = DMD_S_FAIL;
             return ret;
         }
-#endif
+
+        delete pThread;
+        iter++;
     }
 
     return ret;
@@ -225,6 +225,7 @@ void DmdThreadManager::cleanThread(DmdThreadType eType) {
     for (iter = m_listThreadList.begin(); iter != m_listThreadList.end();
             iter++) {
         if (eType == (*iter)->getThreadType()) {
+            delete *iter;
             m_listThreadList.erase(iter);
             break;
         }
