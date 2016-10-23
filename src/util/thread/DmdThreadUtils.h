@@ -40,6 +40,9 @@
 #define SRC_UTIL_THREAD_DMDTHREADUTILS_H
 
 #include <pthread.h>
+#if defined(LINUX)
+#include <sys/prctl.h>
+#endif
 
 namespace opendmd {
 
@@ -59,6 +62,8 @@ typedef enum {
 } DmdThreadType;
 
 extern const char *dmdThreadType[];
+
+extern void DmdThreadSetName(const char *name);
 
 }  // namespace opendmd
 

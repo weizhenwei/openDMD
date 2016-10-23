@@ -381,13 +381,13 @@ DMD_RESULT CVImageBuffer2VideoRawPacket(CVImageBufferRef imageBuffer,
     packet.ulPlaneCount = CVPixelBufferGetPlaneCount(imageBuffer);
     if (kCVPixelFormatType_422YpCbCr8_yuvs == pixelFormat) {
         packet.fmtVideoFormat.eVideoType = DmdYUYV;
-        packet.pSrcData[0] =
+        packet.pSrcDataPanel[0] =
             (unsigned char *)CVPixelBufferGetBaseAddress(imageBuffer);
         packet.ulDataLen = CVPixelBufferGetBytesPerRow(imageBuffer)
             * packet.fmtVideoFormat.iHeight;
     } else if (kCVPixelFormatType_422YpCbCr8 == pixelFormat) {
         packet.fmtVideoFormat.eVideoType = DmdUYVY;
-        packet.pSrcData[0] =
+        packet.pSrcDataPanel[0] =
             (unsigned char *)CVPixelBufferGetBaseAddress(imageBuffer);
         packet.ulDataLen = CVPixelBufferGetBytesPerRow(imageBuffer)
             * packet.fmtVideoFormat.iHeight;
@@ -398,14 +398,14 @@ DMD_RESULT CVImageBuffer2VideoRawPacket(CVImageBufferRef imageBuffer,
             unsigned char *pPlane = nil;
             pPlane = (unsigned char *)
                 CVPixelBufferGetBaseAddressOfPlane(imageBuffer, i);
-            packet.pSrcData[i] = pPlane;
+            packet.pSrcDataPanel[i] = pPlane;
             size_t bytesPerRow = 0;
             bytesPerRow = CVPixelBufferGetBytesPerRowOfPlane(imageBuffer, i);
-            packet.ulSrcStride[i] = bytesPerRow;
+            packet.ulSrcDataStride[i] = bytesPerRow;
             size_t height = 0;
             height = CVPixelBufferGetHeightOfPlane(imageBuffer, i);
-            packet.ulSrcDatalen[i] = bytesPerRow * height;
-            packet.ulDataLen += packet.ulSrcDatalen[i];
+            packet.ulSrcDataLength[i] = bytesPerRow * height;
+            packet.ulDataLen += packet.ulSrcDataLength[i];
         }
     }
 

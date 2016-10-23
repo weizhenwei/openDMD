@@ -50,5 +50,13 @@ const char *dmdThreadType[] = {
     "thread_decode",
 };
 
+void DmdThreadSetName(const char *name) {
+#if defined(LINUX)
+  prctl(PR_SET_NAME, name);
+#elif defined(MACOSX)
+  pthread_setname_np(name);
+#endif
+}
+
 }  // namespace opendmd
 
