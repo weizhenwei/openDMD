@@ -58,8 +58,17 @@
 namespace opendmd {
 
 CDmdV4L2Impl::CDmdV4L2Impl() {
+    m_pDataSink = NULL;
     memset(&m_videoFormat, 0, sizeof(m_videoFormat));
     memset(&m_v4l2Param, 0, sizeof(m_v4l2Param));
+    memset(&m_videoRawData, 0, sizeof(m_videoRawData));
+}
+
+CDmdV4L2Impl::CDmdV4L2Impl(IDmdCaptureEngineSink *pDataSink) {
+    m_pDataSink = pDataSink;
+    memset(&m_videoFormat, 0, sizeof(m_videoFormat));
+    memset(&m_v4l2Param, 0, sizeof(m_v4l2Param));
+    memset(&m_videoRawData, 0, sizeof(m_videoRawData));
 }
 
 CDmdV4L2Impl::~CDmdV4L2Impl() {
@@ -182,6 +191,42 @@ DMD_RESULT CDmdV4L2Impl::StopCapture() {
     return ret;
 }
 
+/*
+ * typedef struct {
+ *     DmdVideoType    eVideoType;
+ *     unsigned int    iWidth;
+ *     unsigned int    iHeight;
+ *     float           fFrameRate;
+ *     uint64_t        ulTimestamp;
+ * } DmdVideoFormat;
+ * 
+ * #define MAX_PLANE_COUNT 3
+ * #define MAX_PLANAR_NUM 4
+ * 
+ * typedef struct {
+ *     unsigned char   *pSrcData[MAX_PLANAR_NUM];
+ *     size_t          ulSrcStride[MAX_PLANAR_NUM];
+ *     size_t          ulSrcDatalen[MAX_PLANAR_NUM];
+ *     DmdVideoFormat  fmtVideoFormat;
+ *     size_t          ulPlaneCount;
+ *     unsigned int    ulRotation;
+ *     size_t          ulDataLen;
+ * } DmdVideoRawData;
+*/
+DMD_RESULT CDmdV4L2Impl::_deliverRawData(uint8_t *data, int length,
+            int width, int height) {
+    DMD_RESULT ret = DMD_S_OK;
+    m_videoRawData.fmtVideoFormat.eVideoType = DmdYUYV;
+    m_videoRawData.fmtVideoFormat.iWidth = width;
+    m_videoRawData.fmtVideoFormat.iHeight = height;
+    m_videoRawData.ulDataLen = length;
+    m_videoRawData.pSrcData = data;
+
+    m_pDataSink->DeliverVideoData(&m_videoRawData);
+
+    return ret;
+}
+
 DMD_RESULT CDmdV4L2Impl::RunCaptureLoop() {
     DMD_RESULT ret = DMD_S_OK;
     int fd = m_v4l2Param.video_device_fd;
@@ -239,6 +284,8 @@ DMD_RESULT CDmdV4L2Impl::RunCaptureLoop() {
                 << ", buffer index:" << buf.index
                 << ", width:" << width << ", height:" << height
                 << ", length:" << buffers[buf.index].length);
+        _deliverRawData(reinterpret_cast<uint8_t*>(buffers[buf.index].start),
+                buffers[buf.index].length, width, height);
 
         // step 4, put request buffer back to queue
         if (-1 == v4l2IOCTL(fd, VIDIOC_QBUF, &buf)) {

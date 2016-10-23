@@ -36,13 +36,15 @@
  ============================================================================
  */
 
-#include "pthread.h"
+#include "CDmdCaptureThread.h"
+
+#include <pthread.h>
+#include <sys/prctl.h>
 
 #include "DmdLog.h"
 #include "IDmdDatatype.h"
 #include "IDmdCaptureEngine.h"
 #include "CDmdCaptureEngine.h"
-#include "CDmdCaptureThread.h"
 
 namespace opendmd {
 
@@ -51,6 +53,9 @@ bool g_bCaptureThreadRunning = true;
 
 void *CaptureThreadRoutine(void *param) {
     DMD_LOG_INFO("At the beginning of capture thread function");
+
+    // set thread name;
+    prctl(PR_SET_NAME, "capture");
 
     DmdCaptureVideoFormat capVideoFormat = {DmdUnknown, 0, 0, 0, {0}};
     capVideoFormat.eVideoType = DmdI420;

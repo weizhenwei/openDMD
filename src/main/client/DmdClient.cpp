@@ -64,7 +64,7 @@ int DmdClientMain(int argc, char *argv[]) {
     InitGlobal();
     InitSignal();
 
-    if (0) {
+    if (1) {
         // create and spawn threads;
         CreateAndSpawnThreads();
 
@@ -73,7 +73,8 @@ int DmdClientMain(int argc, char *argv[]) {
             DMD_LOG_INFO("client_main(), main thread is running");
         }
 
-        sleep(1);  // wait all threads exit;
+        uint32_t usleeps = 500000;  // sleep 0.5 s;
+        usleep(usleeps);  // wait all threads exit;
 
         // exit and clean threads;
         ExitAndCleanThreads();

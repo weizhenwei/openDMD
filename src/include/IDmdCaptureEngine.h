@@ -68,6 +68,9 @@ class IDmdCaptureEngine {
 };
 
 class IDmdCaptureEngineSink {
+public:
+    IDmdCaptureEngineSink() {}
+    virtual ~IDmdCaptureEngineSink() {}
     virtual DMD_RESULT DeliverVideoData(DmdVideoRawData *pVideoRawData) = 0;
 };
 

@@ -12,6 +12,8 @@ message(STATUS "CMAKE_SYSTEM_PROCESSOR is ${CMAKE_SYSTEM_PROCESSOR}")
 option(test "Enable unit test" OFF)
 
 # set CPP flags;
+set(CMAKE_CXX_FLAGS "$ENV{CXXFLAGS} -std=c++11")
+
 set(CMAKE_CXX_FLAGS_DEBUG
     "$ENV{CXXFLAGS} -std=c++11 -O0 -Wall -g -ggdb -DDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -std=c++11 -O2 -Wall")

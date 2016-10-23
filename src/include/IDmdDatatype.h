@@ -92,9 +92,10 @@ typedef struct {
 #define MAX_PLANAR_NUM 4
 
 typedef struct {
-    unsigned char   *pSrcData[MAX_PLANAR_NUM];
-    size_t          ulSrcStride[MAX_PLANAR_NUM];
-    size_t          ulSrcDatalen[MAX_PLANAR_NUM];
+    uint8_t         *pSrcData;
+    uint8_t         *pSrcDataPanel[MAX_PLANAR_NUM];
+    size_t          ulSrcDataStride[MAX_PLANAR_NUM];
+    size_t          ulSrcDataLength[MAX_PLANAR_NUM];
     DmdVideoFormat  fmtVideoFormat;
     size_t          ulPlaneCount;
     unsigned int    ulRotation;

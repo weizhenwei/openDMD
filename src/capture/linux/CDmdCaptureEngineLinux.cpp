@@ -69,12 +69,18 @@ const char *dmdVideoType[] = {
 CDmdCaptureEngineLinux::CDmdCaptureEngineLinux() : m_pV4L2Impl(NULL),
         m_bStartCapture(false) {
     memset(&m_capVideoFormat, 0, sizeof(m_capVideoFormat));
+    m_pVideoRawData = new DmdVideoRawData();
+    memset(m_pVideoRawData, 0, sizeof(DmdVideoRawData));
 }
 
 CDmdCaptureEngineLinux::~CDmdCaptureEngineLinux() {
     if (m_pV4L2Impl) {
         delete m_pV4L2Impl;
         m_pV4L2Impl = NULL;
+    }
+    if (m_pVideoRawData) {
+        delete [] m_pVideoRawData->pSrcData;
+        delete m_pVideoRawData;
     }
 }
 
@@ -94,7 +100,7 @@ DMD_RESULT CDmdCaptureEngineLinux::Init(const DmdCaptureVideoFormat
         delete m_pV4L2Impl;
         m_pV4L2Impl = NULL;
     }
-    m_pV4L2Impl = new CDmdV4L2Impl();
+    m_pV4L2Impl = new CDmdV4L2Impl(this);
     if (!m_pV4L2Impl) {
         DMD_LOG_ERROR("CDmdCaptureEngineLinux::Init(), "
                 << "create m_pV4L2Impl failed");
@@ -155,6 +161,21 @@ DMD_RESULT CDmdCaptureEngineLinux::StopCapture() {
 
 DMD_RESULT CDmdCaptureEngineLinux::DeliverVideoData(
         DmdVideoRawData *pVideoRawData) {
+    m_pVideoRawData->fmtVideoFormat = pVideoRawData->fmtVideoFormat;
+    if (m_pVideoRawData->pSrcData) {
+        delete [] m_pVideoRawData->pSrcData;
+        m_pVideoRawData->pSrcData = NULL;
+    }
+    m_pVideoRawData->ulDataLen = pVideoRawData->ulDataLen;
+    m_pVideoRawData->pSrcData = new uint8_t[m_pVideoRawData->ulDataLen];
+    if (m_pVideoRawData->pSrcData == NULL) {
+        DMD_LOG_ERROR("CDmdCaptureEngineLinux::StopCapture(), "
+                << "failed to allocate memory for VideoRawData");
+        return DMD_S_FAIL;
+    }
+    memcpy(m_pVideoRawData->pSrcData, pVideoRawData->pSrcData,
+            m_pVideoRawData->ulDataLen);
+
     return DMD_S_OK;
 }
 

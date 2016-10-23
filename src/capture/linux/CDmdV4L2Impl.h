@@ -71,6 +71,7 @@ typedef struct _v4l2_capture_param {
 class CDmdV4L2Impl {
 public:
     CDmdV4L2Impl();
+    explicit CDmdV4L2Impl(IDmdCaptureEngineSink *pDataSink);
     ~CDmdV4L2Impl();
 
     DMD_RESULT Init(const DmdCaptureVideoFormat &videoFormat);
@@ -82,6 +83,10 @@ public:
 
     // capture runloop;
     DMD_RESULT RunCaptureLoop();
+
+private:
+    DMD_RESULT _deliverRawData(uint8_t *data, int length,
+            int width, int heigth);
 
 private:
     DMD_RESULT _v4l2OpenCaptureDevice();
@@ -126,6 +131,8 @@ private:
 private:
     DmdCaptureVideoFormat m_videoFormat;
     v4l2_capture_param m_v4l2Param;
+    IDmdCaptureEngineSink *m_pDataSink;
+    DmdVideoRawData m_videoRawData;
 };
 
 }  // namespace opendmd

@@ -66,8 +66,9 @@ public:
 
 private:
     DmdCaptureVideoFormat m_capVideoFormat;
-    CDmdV4L2Impl                   *m_pV4L2Impl;
-    bool                                          m_bStartCapture;
+    CDmdV4L2Impl         *m_pV4L2Impl;
+    bool                  m_bStartCapture;
+    DmdVideoRawData      *m_pVideoRawData;
 };
 
 }  // namespace opendmd

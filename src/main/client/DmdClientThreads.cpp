@@ -39,6 +39,7 @@
 #include <assert.h>
 #include <pthread.h>
 #include <signal.h>
+#include <sys/prctl.h>
 
 #include "DmdLog.h"
 #include "DmdSignal.h"
@@ -71,6 +72,9 @@ void *SignalManagerThreadRoutine(void *param) {
     int ret = -1;
     int sig = -1;
     DMD_LOG_INFO("At the beginning of signal manager thread function");
+
+    // set thread name;
+    prctl(PR_SET_NAME, "signalManager");
 
     sigset_t sigwaitSet;
     sigemptyset(&sigwaitSet);
