@@ -48,3 +48,6 @@ tags
 # ycm python bytecode
 .ycm_extra_conf.pyc
 
+# openh264 source code
+vendor/openh264/openh264
+

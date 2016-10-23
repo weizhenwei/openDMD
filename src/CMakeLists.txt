@@ -25,11 +25,19 @@ include_directories(${PROJECT_SOURCE_DIR}/src/util)
 include_directories(${PROJECT_SOURCE_DIR}/src/main)
 
 if(LINUX_PLATFORM)
+    # library glog
     include_directories(${PROJECT_SOURCE_DIR}/vendor/glog/linux-x86_64/include)
     link_directories(${PROJECT_SOURCE_DIR}/vendor/glog/linux-x86_64/lib)
-elseif(MAC_PLATFORM)    
+    # library openh264
+    include_directories(${PROJECT_SOURCE_DIR}/vendor/openh264/linux-x86_64/include)
+    link_directories(${PROJECT_SOURCE_DIR}/vendor/glog/linux-x86_64/lib)
+elseif(MAC_PLATFORM)
+    # library glog
     include_directories(${PROJECT_SOURCE_DIR}/vendor/glog/mac-x86_64/include)
     link_directories(${PROJECT_SOURCE_DIR}/vendor/glog/mac-x86_64/lib)
+    # library openh264
+    include_directories(${PROJECT_SOURCE_DIR}/vendor/openh264/mac-x86_64/include)
+    link_directories(${PROJECT_SOURCE_DIR}/vendor/openh264/mac-x86_64/lib)
 endif()
 
 # main source files;
