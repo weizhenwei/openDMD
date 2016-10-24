@@ -52,9 +52,6 @@ DmdThread::DmdThread(DmdThreadType eType, DmdThreadRoutine pThreadRoutine)
 }
 
 DmdThread::~DmdThread() {
-    if (m_bThreadSpawned) {
-        pthread_exit(NULL);
-    }
     m_bThreadSpawned = false;
 }
 

@@ -87,7 +87,9 @@ void *CaptureThreadRoutine(void *param) {
     pVideoCapEngine = NULL;
 
     DMD_LOG_INFO("CaptureThreadRoutine(), capture thread is exiting");
-    return NULL;
+
+    // exit the thread;
+    pthread_exit(NULL);
 }
 
 }  // namespace opendmd

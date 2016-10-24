@@ -54,7 +54,9 @@ DmdThreadManager::DmdThreadManager() {
 }
 
 DmdThreadManager::~DmdThreadManager() {
-    m_listThreadList.clear();
+    if (0 != m_listThreadList.size()) {
+        m_listThreadList.clear();
+    }
 }
 
 DMD_RESULT DmdThreadManager::addThread(DmdThreadType eType,
@@ -195,15 +197,16 @@ DMD_RESULT DmdThreadManager::killAllThreads() {
             return ret;
         }
 
+#if 0
         int val = -1;
         DmdThreadHandler handler = pThread->getThreadHandler();
-        if (0 != (val = pthread_kill(handler, SIGUSR1))) {
+        if (0 != (val = pthread_kill(handler, SIGINT))) {
             DMD_LOG_ERROR("DmdThreadManager::killAllThreads(), "
                     << "could not to send SIGINT signal to "
                     << "thread with type " << dmdThreadType[eType]
                     << ", error number:" << val);
-            ret = DMD_S_FAIL;
-            return ret;
+            // ret = DMD_S_FAIL;
+            // return ret;
         }
 
         if (0 != (val = pthread_join(handler, NULL))) {
@@ -212,7 +215,10 @@ DMD_RESULT DmdThreadManager::killAllThreads() {
             ret = DMD_S_FAIL;
             return ret;
         }
+#endif
 
+        DMD_LOG_INFO("DmdThreadManager::killAllThreads(), "
+                << "kill thread  " << pThread->getThreadType());
         delete pThread;
         iter++;
     }

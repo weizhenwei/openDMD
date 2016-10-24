@@ -77,6 +77,7 @@ int DmdClientMain(int argc, char *argv[]) {
         usleep(usleeps);  // wait all threads exit;
 
         // exit and clean threads;
+        DMD_LOG_INFO("client_main(), before cleaning threads");
         ExitAndCleanThreads();
     }
 

@@ -92,7 +92,8 @@ void *SignalManagerThreadRoutine(void *param) {
 
     DMD_LOG_INFO("SignalManagerThreadRoutine(), "
                  << "signal manager thread is exiting");
-    return NULL;
+
+    pthread_exit(NULL);
 }
 
 void CreateAndSpawnThreads() {
