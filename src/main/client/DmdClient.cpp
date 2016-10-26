@@ -40,14 +40,43 @@
 #include <unistd.h>
 
 #include "DmdLog.h"
+#include "DmdSignal.h"
+#include "CDmdCaptureEngine.h"
+#include "CDmdCaptureThread.h"
+
 #include "thread/DmdThreadManager.h"
 #include "client/DmdClientThreads.h"
+
 
 #include "DmdClient.h"
 
 namespace opendmd {
 
-DMD_RESULT InitGlobal() {
+DmdClient::DmdClient() {}
+DmdClient::~DmdClient() {}
+
+DMD_RESULT DmdClient::Init() {
+    m_pCaptureEngine = NULL;
+    CreateVideoCaptureEngine(&m_pCaptureEngine);
+    if (nullptr == m_pCaptureEngine) {
+        DMD_LOG_ERROR("DmdClient::Init(), "
+                      << ", CreateVideoCaptureEngine failed");
+        return DMD_S_FAIL;
+    }
+
+    return DMD_S_OK;
+}
+
+DMD_RESULT DmdClient::UnInit() {
+    if (m_pCaptureEngine) {
+        ReleaseVideoCaptureEngine(&m_pCaptureEngine);
+        m_pCaptureEngine = NULL;
+    }
+
+    return DMD_S_OK;
+}
+
+DMD_RESULT DmdClient::InitGlobalThreadManager() {
     g_ThreadManager = DmdThreadManager::singleton();
     if (NULL == g_ThreadManager) {
         DMD_LOG_ERROR("InitGlobal(), "
@@ -58,10 +87,47 @@ DMD_RESULT InitGlobal() {
     return DMD_S_OK;
 }
 
-int DmdClientMain(int argc, char *argv[]) {
+void DmdClient::InitSignal() {
+    int ret = -1;
+    DmdRegisterDefaultSignal();
+
+    sigset_t blockedSignalSet;
+    sigemptyset(&blockedSignalSet);
+    sigaddset(&blockedSignalSet, SIGINT);  // block SIGINT for sigwait;
+    if (0 != (ret = pthread_sigmask(SIG_BLOCK, &blockedSignalSet, NULL))) {
+        DMD_LOG_WARNING("initSignal(), call pthread_sigmask error:"
+                        << ret);
+    }
+}
+
+void DmdClient::CreateAndSpawnThreads() {
+    // create signal manager thread;
+    DmdThreadType eSignalManagerThread = DMD_THREAD_SIGMGR;
+    DmdThreadRoutine pSigMgrRoutine = SignalManagerThreadRoutine;
+    g_ThreadManager->addThread(eSignalManagerThread, pSigMgrRoutine);
+
+    // create capture thread;
+    DmdThreadType eCaptureThread = DMD_THREAD_CAPTURE;
+    DmdThreadRoutine pCaptureRoutine = CaptureThreadRoutine;
+    g_ThreadManager->addThread(eCaptureThread, pCaptureRoutine);
+
+    // spawn all working thread;
+    g_ThreadManager->spawnAllThreads();
+}
+
+void DmdClient::ExitAndCleanThreads() {
+    // send signal to all threads;
+    g_ThreadManager->killAllThreads();
+
+    // clean all working thread;
+    g_ThreadManager->cleanAllThreads();
+}
+
+
+int DmdClient::DmdClientMain(int argc, char *argv[]) {
     DMD_LOG_INFO("At the beginning of client_main function");
 
-    InitGlobal();
+    InitGlobalThreadManager();
     InitSignal();
 
     if (1) {

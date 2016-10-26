@@ -42,11 +42,7 @@
 namespace opendmd {
 extern bool g_bMainThreadRunning;
 
-extern void InitSignal();
 extern void *SignalManagerThreadRoutine(void *param);
-
-extern void CreateAndSpawnThreads();
-extern void ExitAndCleanThreads();
 }  // namespace opendmd
 
 #endif  // SRC_MAIN_CLIENT_DMDCLIENTTHREADS_H

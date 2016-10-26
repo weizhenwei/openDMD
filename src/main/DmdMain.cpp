@@ -47,7 +47,7 @@
 #include "DmdCmdlineParameter.h"
 #include "DmdSetProcessName.h"
 
-#include "DmdMain.h"
+#include "client/DmdClient.h"
 
 using namespace opendmd;
 
@@ -86,7 +86,10 @@ int main(int argc, char *argv[]) {
     parseCmdline(argc, argv);
     setProcessName(argc, argv);
 
-    DmdClientMain(g_pDmdArgv->iArgc, g_pDmdArgv->pArgv);
+    {
+        DmdClient dmdClient;
+        dmdClient.DmdClientMain(g_pDmdArgv->iArgc, g_pDmdArgv->pArgv);
+    }
 
     UnInitArgvEnviron();
 

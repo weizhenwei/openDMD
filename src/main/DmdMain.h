@@ -42,8 +42,7 @@
 
 namespace opendmd {
 
-extern int DmdClientMain(int argc, char *argv[]);
-
+// extern int DmdClientMain(int argc, char *argv[]);
 extern int DmdServerMain(int argc, char *argv[]);
 
 }  // namespace opendmd

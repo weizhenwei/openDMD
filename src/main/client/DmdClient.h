@@ -40,9 +40,27 @@
 #define SRC_MAIN_CLIENT_DMDCLIENT_H
 
 #include "IDmdDatatype.h"
+#include "IDmdCaptureEngine.h"
 
 namespace opendmd {
-extern DMD_RESULT InitGlobal();
+class DmdClient {
+public:
+    DmdClient();
+    ~DmdClient();
+
+    DMD_RESULT Init();
+    DMD_RESULT UnInit();
+
+    DMD_RESULT InitGlobalThreadManager();
+    void InitSignal();
+    void CreateAndSpawnThreads();
+    void ExitAndCleanThreads();
+
+    int DmdClientMain(int argc, char *argv[]);
+
+private:
+    IDmdCaptureEngine *m_pCaptureEngine;
+};
 }  // namespace opendmd
 
 #endif  // SRC_MAIN_CLIENT_DMDCLIENT_H
