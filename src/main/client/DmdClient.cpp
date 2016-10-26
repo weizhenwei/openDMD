@@ -52,8 +52,12 @@
 
 namespace opendmd {
 
-DmdClient::DmdClient() {}
-DmdClient::~DmdClient() {}
+DmdClient::DmdClient() {
+    Init();
+}
+DmdClient::~DmdClient() {
+    UnInit();
+}
 
 DMD_RESULT DmdClient::Init() {
     m_pCaptureEngine = NULL;
@@ -104,12 +108,13 @@ void DmdClient::CreateAndSpawnThreads() {
     // create signal manager thread;
     DmdThreadType eSignalManagerThread = DMD_THREAD_SIGMGR;
     DmdThreadRoutine pSigMgrRoutine = SignalManagerThreadRoutine;
-    g_ThreadManager->addThread(eSignalManagerThread, pSigMgrRoutine);
+    g_ThreadManager->addThread(eSignalManagerThread, pSigMgrRoutine, nullptr);
 
     // create capture thread;
     DmdThreadType eCaptureThread = DMD_THREAD_CAPTURE;
     DmdThreadRoutine pCaptureRoutine = CaptureThreadRoutine;
-    g_ThreadManager->addThread(eCaptureThread, pCaptureRoutine);
+    g_ThreadManager->addThread(eCaptureThread, pCaptureRoutine,
+            m_pCaptureEngine);
 
     // spawn all working thread;
     g_ThreadManager->spawnAllThreads();

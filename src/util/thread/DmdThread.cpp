@@ -46,9 +46,10 @@ DmdThread::DmdThread() : m_eThreadType(DMD_THREAD_UNKNOWN),
     m_pThreadRoutine(NULL), m_ulThreadHandler(0), m_bThreadSpawned(false) {
 }
 
-DmdThread::DmdThread(DmdThreadType eType, DmdThreadRoutine pThreadRoutine)
-    : m_eThreadType(eType), m_pThreadRoutine(pThreadRoutine),
-    m_ulThreadHandler(0), m_bThreadSpawned(false) {
+DmdThread::DmdThread(DmdThreadType eType, DmdThreadRoutine pThreadRoutine,
+                     void *arg) : m_eThreadType(eType),
+    m_pThreadRoutine(pThreadRoutine), m_ulThreadHandler(0),
+    m_pArg(arg), m_bThreadSpawned(false) {
 }
 
 DmdThread::~DmdThread() {
@@ -69,7 +70,8 @@ DMD_RESULT DmdThread::spawnThread() {
     pthread_attr_t attr;
     pthread_attr_init(&attr);
     pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-    int val = pthread_create(&m_ulThreadHandler, &attr, m_pThreadRoutine, NULL);
+    int val = pthread_create(&m_ulThreadHandler, &attr, m_pThreadRoutine,
+            m_pArg);
     if (val != 0) {
         DMD_LOG_ERROR("DmdThread::spawnThread(), call pthread_create() failed, "
                       << "error number:" << val);

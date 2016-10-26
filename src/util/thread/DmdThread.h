@@ -48,7 +48,8 @@ namespace opendmd {
 class DmdThread {
 public:
     DmdThread();
-    DmdThread(DmdThreadType eType, DmdThreadRoutine pThreadRoutine);
+    DmdThread(DmdThreadType eType, DmdThreadRoutine pThreadRoutine,
+              void *arg);
     ~DmdThread();
 
     DmdThreadType getThreadType() {return m_eThreadType;}
@@ -61,6 +62,7 @@ private:
     DmdThreadType m_eThreadType;
     DmdThreadRoutine m_pThreadRoutine;
     DmdThreadHandler m_ulThreadHandler;
+    void *m_pArg;
     DmdThreadMutex m_mtxThreadMutex;
     bool m_bThreadSpawned;
 };

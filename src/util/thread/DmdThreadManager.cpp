@@ -60,7 +60,7 @@ DmdThreadManager::~DmdThreadManager() {
 }
 
 DMD_RESULT DmdThreadManager::addThread(DmdThreadType eType,
-        DmdThreadRoutine pRoutine) {
+        DmdThreadRoutine pRoutine, void *arg) {
     DMD_RESULT ret = DMD_S_OK;
 
     DmdThread *pThread = getThread(eType);
@@ -72,7 +72,7 @@ DMD_RESULT DmdThreadManager::addThread(DmdThreadType eType,
         return ret;
     }
 
-    pThread = new DmdThread(eType, pRoutine);
+    pThread = new DmdThread(eType, pRoutine, arg);
 
     m_mtxThreadManagerMutex.Lock();
     m_listThreadList.push_back(pThread);

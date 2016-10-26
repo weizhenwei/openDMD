@@ -58,7 +58,8 @@ public:
     DmdThreadManager();
     ~DmdThreadManager();
 
-    DMD_RESULT addThread(DmdThreadType eType, DmdThreadRoutine pRoutine);
+    DMD_RESULT addThread(DmdThreadType eType, DmdThreadRoutine pRoutine,
+                         void *arg);
     DmdThread *getThread(DmdThreadType eType);
     DMD_RESULT spawnThread(DmdThreadType eType);
     DMD_RESULT spawnAllThreads();

@@ -56,6 +56,9 @@ bool g_bCaptureThreadRunning = true;
 void *CaptureThreadRoutine(void *param) {
     DMD_LOG_INFO("At the beginning of capture thread function");
 
+    IDmdCaptureEngine *pVideoCapEngine =
+        reinterpret_cast<IDmdCaptureEngine*>(param);
+
     // set thread name;
     DmdThreadSetName("capture");
 
@@ -76,15 +79,11 @@ void *CaptureThreadRoutine(void *param) {
             << "Get video device name = " << pDeviceName);
     strncpy(capVideoFormat.sVideoDevice, pDeviceName, strlen(pDeviceName));
 
-    IDmdCaptureEngine *pVideoCapEngine = NULL;
-    CreateVideoCaptureEngine(&pVideoCapEngine);
     pVideoCapEngine->Init(capVideoFormat);
     pVideoCapEngine->StartCapture();
     pVideoCapEngine->RunCaptureLoop();
     pVideoCapEngine->StopCapture();
     pVideoCapEngine->Uninit();
-    ReleaseVideoCaptureEngine(&pVideoCapEngine);
-    pVideoCapEngine = NULL;
 
     DMD_LOG_INFO("CaptureThreadRoutine(), capture thread is exiting");
 
