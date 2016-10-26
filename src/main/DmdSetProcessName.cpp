@@ -243,12 +243,12 @@ DMD_RESULT SaveEnviron() {
     }
 
 #ifdef DEBUG
-    for (int i = 0; i < g_pDmdEnviron->iNumOfEnviron; i++) {
-        DMD_LOG_INFO("SaveEnviron(), saved environ[" << i << "] = "
-                << string(g_pDmdEnviron->pEnviron[i]));
-        DMD_LOG_INFO("SaveEnviron(), environ[" << i << "] = "
-                << environ[i]);
-    }
+    // for (int i = 0; i < g_pDmdEnviron->iNumOfEnviron; i++) {
+    //     DMD_LOG_INFO("SaveEnviron(), saved environ[" << i << "] = "
+    //             << string(g_pDmdEnviron->pEnviron[i]));
+    //     DMD_LOG_INFO("SaveEnviron(), environ[" << i << "] = "
+    //             << environ[i]);
+    // }
 #endif
 
     return DMD_S_OK;
